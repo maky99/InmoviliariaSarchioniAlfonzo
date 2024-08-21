@@ -21,5 +21,11 @@ public class InquilinoController : Controller
         return View("ListaInquilino", lista);
     }
 
+    public IActionResult EditarInquilino(int id)
+    {
+        var inquilino = ir.BuscarInquilino(id);
+        return View(inquilino);
+    }
+
 
 }
