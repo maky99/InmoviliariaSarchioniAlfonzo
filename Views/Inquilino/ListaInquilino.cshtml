@@ -3,33 +3,8 @@
 @{
     ViewData["Title"] = "Lista de Inquilinos";
 }
-<style>
-    body {
-        background: rgba(0, 0, 0, 0) url('/images/inquilino.jfif') no-repeat center center fixed;
-        background-size: cover;
-        margin: 0;
-        padding: 0;
-        height: 100%;
-    }
+<link rel="stylesheet" href="~/fondo/inquilino.css" />
 
-    /* Aplicar una capa de color con opacidad para suavizar la imagen de fondo */
-    body::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(255, 255, 255, 0.7);
-        /* Color blanco con 50% de opacidad */
-        z-index: -1;
-        /* Asegura que el contenido se superponga sobre la capa */
-    }
-
-    .text-center {
-        color: rgb(3, 4, 4);
-    }
-</style>
 
 @if (TempData["SuccessMessage"] != null)
 {
