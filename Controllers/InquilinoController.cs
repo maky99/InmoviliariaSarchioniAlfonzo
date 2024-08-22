@@ -32,7 +32,7 @@ public class InquilinoController : Controller
             try
             {
                 ir.NuevoInquilino(inquilino);
-                TempData["SuccessMessage"] = "El inquilino ha sido agregado exitosamente.";
+                TempData["SuccessMessage"] = $"{inquilino.Apellido}, {inquilino.Nombre} ha sido agregado exitosamente.";
                 return RedirectToAction("ListInquilino");
             }
             catch (InvalidOperationException ex)
@@ -54,9 +54,25 @@ public class InquilinoController : Controller
 
     public IActionResult EditarDatos(Inquilino inquilino)
     {
-        ir.EditarDatos(inquilino);
-        return RedirectToAction("ListInquilino");
+        if (ModelState.IsValid)
+        {
+            try
+            {
+                ir.EditarDatos(inquilino);
+            TempData["SuccessMessage"] = $"El inquilino {inquilino.Apellido} {inquilino.Nombre} ha sido editado exitosamente.";
+                return RedirectToAction("ListInquilino");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("EditarDatos", new { id = inquilino.Id_Inquilino });
+            }
+        }
+
+        // Si el modelo no es válido, volver a la vista de edición con el modelo actual.
+        return View(inquilino);
     }
+
 
 
 }
