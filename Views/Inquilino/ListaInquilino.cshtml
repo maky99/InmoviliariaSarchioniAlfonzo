@@ -73,13 +73,13 @@
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
 
-
-                        <!-- Enlace para eliminar -->
-                        <a href="CambEstadoInquilino?numero=@item.Id_Inquilino"
+                        <!-- Enlace para desactivar -->
+                        <a href="@Url.Action("CambEstadoInquilino", new { id = item.Id_Inquilino })"
                             onclick="return confirm('¿Estás seguro de que deseas desactivar a @item.Apellido @item.Nombre?')"
                             class="btn btn-danger">
                             <i class="fa-solid fa-trash"></i>
                         </a>
+
                     </td>
                 </tr>
             }
