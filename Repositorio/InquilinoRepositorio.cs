@@ -15,8 +15,7 @@ public class InquilinoRepositorio
         {
             var sql = @$"Select {nameof(Inquilino.Id_Inquilino)}, {nameof(Inquilino.Dni)}, {nameof(Inquilino.Apellido)}, {nameof(Inquilino.Nombre)}, {nameof(Inquilino.Telefono)}, {nameof(Inquilino.Email)}, {nameof(Inquilino.Estado_Inquilino)} 
                      FROM inquilino 
-                     WHERE {nameof(Inquilino.Estado_Inquilino)}=1 
-                     ORDER BY {nameof(Inquilino.Apellido)}";
+                     ORDER BY {nameof(Inquilino.Estado_Inquilino)} DESC, {nameof(Inquilino.Apellido)}";
             using (var command = new MySqlCommand(sql, connection))
             {
                 connection.Open();
@@ -156,6 +155,20 @@ public class InquilinoRepositorio
         }
 
     }
-
+    //metodo para desactivar inquilino
+    public void DesactivarInquilino(int id)
+    {
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = @"UPDATE inquilino SET Estado_Inquilino = 0 WHERE Id_Inquilino = @Id_Inquilino";
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@Id_Inquilino", id);
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+    }
 
 }

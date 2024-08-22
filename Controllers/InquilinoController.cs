@@ -59,7 +59,7 @@ public class InquilinoController : Controller
             try
             {
                 ir.EditarDatos(inquilino);
-            TempData["SuccessMessage"] = $"El inquilino {inquilino.Apellido} {inquilino.Nombre} ha sido editado exitosamente.";
+                TempData["SuccessMessage"] = $"El inquilino {inquilino.Apellido} {inquilino.Nombre} ha sido editado exitosamente.";
                 return RedirectToAction("ListInquilino");
             }
             catch (InvalidOperationException ex)
@@ -69,10 +69,18 @@ public class InquilinoController : Controller
             }
         }
 
-        // Si el modelo no es válido, volver a la vista de edición con el modelo actual.
+        // si el modelo esta mal vuelve a la vista
         return View(inquilino);
     }
 
+    [HttpGet]
+    public IActionResult CambEstadoInquilino(int id)
+    {
+        ir.DesactivarInquilino(id);
+        TempData["SuccessMessage"] = "El inquilino ha sido desactivado exitosamente.";
+        return RedirectToAction("ListInquilino");
+
+    }
 
 
 }
