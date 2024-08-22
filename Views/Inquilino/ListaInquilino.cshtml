@@ -31,6 +31,13 @@
     }
 </style>
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
 <div class="text-center">
     <h1 class="display-3">Inquilinos</h1>
 
