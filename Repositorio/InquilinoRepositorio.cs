@@ -49,6 +49,11 @@ public class InquilinoRepositorio
     //metodo para agregar un nuevo inquilino
     public void NuevoInquilino(Inquilino inquilino)
     {
+        // Verificar si el DNI ya existe en la base de datos
+        if (DniExiste(inquilino.Dni))
+        {
+            throw new InvalidOperationException("El DNI ingresado ya está registrado.");
+        }
         using (var connection = new MySqlConnection(connectionString))
         {
             var sql = $@"INSERT INTO inquilino 
@@ -71,6 +76,24 @@ public class InquilinoRepositorio
             }
         }
     }
+
+    //metodo para controlar si el dni nuevo no esta ingresado en la base de datos 
+    public bool DniExiste(int dni)
+    {
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = "SELECT COUNT(*) FROM inquilino WHERE Dni = @Dni";
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@Dni", dni);
+                connection.Open();
+                var count = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+                return count > 0;
+            }
+        }
+    }
+
 
     //metodo para buscar inquilino antes de editar
     public Inquilino BuscarInquilino(int id)

@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using InmoviliariaSarchioniAlfonzo.Models;
-
 namespace InmoviliariaSarchioniAlfonzo.Controllers;
 
 public class InquilinoController : Controller
@@ -30,11 +29,22 @@ public class InquilinoController : Controller
     {
         if (ModelState.IsValid)
         {
-            ir.NuevoInquilino(inquilino);
-            return RedirectToAction("ListInquilino");
+            try
+            {
+                ir.NuevoInquilino(inquilino);
+                TempData["SuccessMessage"] = "El inquilino ha sido agregado exitosamente.";
+                return RedirectToAction("ListInquilino");
+            }
+            catch (InvalidOperationException ex)
+            {
+                TempData["ErrorMessage"] = ex.Message;
+            }
         }
-        return View("NuevoInquilino", inquilino); //
+
+        // En caso de error o invalidación del modelo, regresar a la vista con el mensaje de error
+        return View("NuevoInquilino", inquilino);
     }
+
 
     public IActionResult EditarInquilino(int id)
     {
