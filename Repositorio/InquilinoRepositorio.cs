@@ -46,6 +46,32 @@ public class InquilinoRepositorio
     }
 
 
+    //metodo para agregar un nuevo inquilino
+    public void NuevoInquilino(Inquilino inquilino)
+    {
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = $@"INSERT INTO inquilino 
+                        ({nameof(Inquilino.Dni)}, {nameof(Inquilino.Apellido)}, {nameof(Inquilino.Nombre)}, 
+                        {nameof(Inquilino.Telefono)}, {nameof(Inquilino.Email)}, {nameof(Inquilino.Estado_Inquilino)})
+                        VALUES (@{nameof(Inquilino.Dni)}, @{nameof(Inquilino.Apellido)}, @{nameof(Inquilino.Nombre)}, 
+                        @{nameof(Inquilino.Telefono)}, @{nameof(Inquilino.Email)}, @{nameof(Inquilino.Estado_Inquilino)})";
+
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue($"@{nameof(Inquilino.Dni)}", inquilino.Dni);
+                command.Parameters.AddWithValue($"@{nameof(Inquilino.Apellido)}", inquilino.Apellido);
+                command.Parameters.AddWithValue($"@{nameof(Inquilino.Nombre)}", inquilino.Nombre);
+                command.Parameters.AddWithValue($"@{nameof(Inquilino.Telefono)}", inquilino.Telefono);
+                command.Parameters.AddWithValue($"@{nameof(Inquilino.Email)}", inquilino.Email);
+                command.Parameters.AddWithValue($"@{nameof(Inquilino.Estado_Inquilino)}", inquilino.Estado_Inquilino);
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+    }
+
     //metodo para buscar inquilino antes de editar
     public Inquilino BuscarInquilino(int id)
     {
@@ -107,4 +133,6 @@ public class InquilinoRepositorio
         }
 
     }
+
+
 }

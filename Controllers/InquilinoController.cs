@@ -20,6 +20,21 @@ public class InquilinoController : Controller
         var lista = ir.OptenerInquilinos();
         return View("ListaInquilino", lista);
     }
+    public IActionResult NuevoInquilino()
+    {
+        return View("NuevoInquilino"); // Devuelve la vista para crear un nuevo inquilino
+    }
+
+    [HttpPost]
+    public IActionResult CrearInquilino(Inquilino inquilino)
+    {
+        if (ModelState.IsValid)
+        {
+            ir.NuevoInquilino(inquilino);
+            return RedirectToAction("ListInquilino");
+        }
+        return View("NuevoInquilino", inquilino); //
+    }
 
     public IActionResult EditarInquilino(int id)
     {
@@ -30,8 +45,7 @@ public class InquilinoController : Controller
     public IActionResult EditarDatos(Inquilino inquilino)
     {
         ir.EditarDatos(inquilino);
-        var lista = ir.OptenerInquilinos();
-        return View("ListaInquilino", lista);
+        return RedirectToAction("ListInquilino");
     }
 
 
