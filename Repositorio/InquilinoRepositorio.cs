@@ -90,8 +90,7 @@ public class InquilinoRepositorio
         {
             var sql = @$"UPDATE inquilino
         SET {nameof(Inquilino.Dni)}=@{nameof(Inquilino.Dni)},{nameof(Inquilino.Apellido)}=@{nameof(Inquilino.Apellido)},{nameof(Inquilino.Nombre)}=@{nameof(Inquilino.Nombre)},{nameof(Inquilino.Telefono)}=@{nameof(Inquilino.Telefono)},{nameof(Inquilino.Email)}=@{nameof(Inquilino.Email)},{nameof(Inquilino.Estado_Inquilino)}=@{nameof(Inquilino.Estado_Inquilino)}
-        FROM inquilino
-        WHER {nameof(Inquilino.Id_Inquilino)}=@{nameof(Inquilino.Id_Inquilino)}";
+        WHERE {nameof(Inquilino.Id_Inquilino)}=@{nameof(Inquilino.Id_Inquilino)}";
             using (var command = new MySqlCommand(sql, connection))
             {
                 command.Parameters.AddWithValue($"@{nameof(Inquilino.Id_Inquilino)}", inquilino.Id_Inquilino);

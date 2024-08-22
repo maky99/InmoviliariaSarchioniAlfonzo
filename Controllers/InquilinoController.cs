@@ -27,5 +27,12 @@ public class InquilinoController : Controller
         return View(inquilino);
     }
 
+    public IActionResult EditarDatos(Inquilino inquilino)
+    {
+        ir.EditarDatos(inquilino);
+        var lista = ir.OptenerInquilinos();
+        return View("ListaInquilino", lista);
+    }
+
 
 }
