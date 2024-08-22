@@ -10,7 +10,7 @@ public class PropietarioRepositorio
     //metodo para listar todos los propietario
     public IList<Propietario> OptenerPropietarios()
     {
-        List<Propietario>propietarios = new List<Propietario>();
+        List<Propietario> propietarios = new List<Propietario>();
         using (var connection = new MySqlConnection(connectionString))
         {
             var sql = @$"Select {nameof(Propietario.Id_Propietario)}, {nameof(Propietario.Dni)}, {nameof(Propietario.Apellido)}, {nameof(Propietario.Nombre)}, {nameof(Propietario.Telefono)}, {nameof(Propietario.Email)},{nameof(Propietario.Direccion)}, {nameof(Propietario.Estado_Propietario)} 
@@ -55,10 +55,10 @@ public class PropietarioRepositorio
         using (var connection = new MySqlConnection(connectionString))
         {
             connection.Open();
-            var sql = $"SELECT * FROM Propietario WHERE Id_Propietario = '{id}'";
+            var sql = $"SELECT * FROM propietario WHERE Id_Propietario = '{id}'";
             using (var comando = new MySqlCommand(sql, connection))
             {
-                comando.Parameters.AddWithValue("@Id", id);
+                comando.Parameters.AddWithValue("@Id_Propietario", id);
 
                 using (var reader = comando.ExecuteReader())
                 {
@@ -86,29 +86,77 @@ public class PropietarioRepositorio
 
 
     //metodo para guardar un Propietario editado
-    public void EditarDatosPropietario(Propietario Propietario)
+    public int EditarDatosPropietario(Propietario propietario)
     {
+        int res = -1;
         using (var connection = new MySqlConnection(connectionString))
         {
-            var sql = @$"UPDATE Propietario
-        SET {nameof(Propietario.Dni)}=@{nameof(Propietario.Dni)},{nameof(Propietario.Apellido)}=@{nameof(Propietario.Apellido)},{nameof(Propietario.Nombre)}=@{nameof(Propietario.Nombre)},{nameof(Propietario.Telefono)}=@{nameof(Propietario.Telefono)},{nameof(Propietario.Email)}=@{nameof(Propietario.Email)},{nameof(Propietario.Direccion)}=@{nameof(Propietario.Direccion)},{nameof(Propietario.Estado_Propietario)}=@{nameof(Propietario.Estado_Propietario)}
-        FROM Propietario
-        WHER {nameof(Propietario.Id_Propietario)}=@{nameof(Propietario.Id_Propietario)}";
-            using (var command = new MySqlCommand(sql, connection))
+            var sql = @$"UPDATE propietario SET
+         {nameof(Propietario.Dni)}=@Dni,
+         {nameof(Propietario.Apellido)}=@Apellido,
+         {nameof(Propietario.Nombre)}=@Nombre,
+         {nameof(Propietario.Telefono)}=@Telefono,
+         {nameof(Propietario.Email)}=@Email,
+         {nameof(Propietario.Direccion)}=@Direccion,
+         {nameof(Propietario.Estado_Propietario)}=@Estado_Propietario
+         WHERE {nameof(Propietario.Id_Propietario)}=@Id_Propietario";
+           using(MySqlCommand command = new MySqlCommand(sql, connection))
             {
-                command.Parameters.AddWithValue($"@{nameof(Propietario.Id_Propietario)}", Propietario.Id_Propietario);
-                command.Parameters.AddWithValue($"@{nameof(Propietario.Dni)}", Propietario.Dni);
-                command.Parameters.AddWithValue($"@{nameof(Propietario.Apellido)}", Propietario.Apellido);
-                command.Parameters.AddWithValue($"@{nameof(Propietario.Nombre)}", Propietario.Nombre);
-                command.Parameters.AddWithValue($"@{nameof(Propietario.Telefono)}", Propietario.Telefono);
-                command.Parameters.AddWithValue($"@{nameof(Propietario.Email)}", Propietario.Email);
-                command.Parameters.AddWithValue($"@{nameof(Propietario.Direccion)}", Propietario.Direccion);
-                command.Parameters.AddWithValue($"@{nameof(Propietario.Estado_Propietario)}", Propietario.Estado_Propietario);
+                command.Parameters.AddWithValue("@Id_Propietario", propietario.Id_Propietario);
+                command.Parameters.AddWithValue("@Dni", propietario.Dni);
+                command.Parameters.AddWithValue("@Apellido", propietario.Apellido);
+                command.Parameters.AddWithValue("@Nombre", propietario.Nombre);
+                command.Parameters.AddWithValue("@Telefono", propietario.Telefono);
+                command.Parameters.AddWithValue("@Email", propietario.Email);
+                command.Parameters.AddWithValue("@Direccion", propietario.Direccion);
+                command.Parameters.AddWithValue("@Estado_Propietario", propietario.Estado_Propietario);
                 connection.Open();
-                command.ExecuteNonQuery();
+                res = command.ExecuteNonQuery();
                 connection.Close();
             }
         }
-
+         return res;
     }
+
+    public int Alta(Propietario propietario)
+    {
+        int res = -1;
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            var query = $@"INSERT INTO propietario
+        ({nameof(Propietario.Dni)},{nameof(Propietario.Apellido)},{nameof(Propietario.Nombre)},{nameof(Propietario.Direccion)},{nameof(Propietario.Telefono)},{nameof(Propietario.Email)},{nameof(Propietario.Estado_Propietario)})
+        VALUES (@Dni, @Apellido, @Nombre, @Direccion, @Telefono, @Email, @Estado_Propietario);
+         SELECT LAST_INSERT_ID();";
+
+            using (MySqlCommand command = new MySqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@Dni", propietario.Dni);
+                command.Parameters.AddWithValue("@Apellido", propietario.Apellido);
+                command.Parameters.AddWithValue("@Nombre", propietario.Nombre);
+                command.Parameters.AddWithValue("@Telefono", propietario.Telefono);
+                command.Parameters.AddWithValue("@Email", propietario.Email);
+                command.Parameters.AddWithValue("@Direccion", propietario.Direccion);
+                command.Parameters.AddWithValue("@Estado_Propietario", propietario.Estado_Propietario);
+                connection.Open();
+                res = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+            }
+        }
+        return res;
+    }
+public int Baja(int id){
+        int res = -1;
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            var query = $@"UPDATE propietario SET {nameof(Propietario.Estado_Propietario)} = 0 WHERE {nameof(Propietario.Id_Propietario)} = @id";
+            using(MySqlCommand command = new MySqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue("@id", id);
+                connection.Open();
+                res = command.ExecuteNonQuery();
+                connection.Close();
+        }
+        return res;
+    }  
+  }
 }

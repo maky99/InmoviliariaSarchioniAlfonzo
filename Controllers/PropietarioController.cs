@@ -21,11 +21,36 @@ public class PropietarioController : Controller
         return View("ListaPropietario", lista);
     }
 
-    public IActionResult EditarPropietario(int id)
+  
+
+  public IActionResult EditarPropietario(int id)
     {
-        var Propietario = po.BuscarPropietario(id);
-        return View(Propietario);
+    if(id == 0)
+        return View();
+        else{
+            var propietario = po.BuscarPropietario(id);
+            return View(propietario);
+        }
+    }
+[HttpPost]
+public IActionResult Guardar( int id, Propietario propietario)
+    {
+        id =  propietario.Id_Propietario;
+        if(id == 0)
+            {
+               po.Alta(propietario);
+            }
+        else
+            {
+              po.EditarDatosPropietario(propietario);
+            }
+        return RedirectToAction(nameof(ListPropietario));
     }
 
+public IActionResult EliminarPropietario( int id)
+    {
+        po.Baja(id);
+        return RedirectToAction(nameof(ListPropietario));
+    }
 
 }

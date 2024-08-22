@@ -24,8 +24,13 @@
 <div class="text-center">
     <h1 class="display-3">Propietarios</h1>
     <div class="mb-3">
-        <a asp-action="NuevoPropietario" class="btn btn-success">Nuevo Registro</a>
+        <a asp-action="EditarPropietario" class="btn btn-success">Nuevo Registro</a>
     </div>
+
+
+
+
+
     <div class="mb-3">
         <!-- Campo de búsqueda -->
         <input type="text" id="inputBusqueda" placeholder="Buscar..." onkeyup="filtrarTabla()">
@@ -79,7 +84,7 @@
 
 
                         <!-- Enlace para eliminar -->
-                        <a href="EliminarPropietario?numero=@item.Id_Propietario"
+                        <a href="EliminarPropietario/@item.Id_Propietario"
                             onclick="return confirm('¿Estás seguro de que deseas eliminar a @item.Apellido @item.Nombre?')"
                             class="btn btn-danger">
                             <i class="fa-solid fa-trash"></i>

@@ -6,7 +6,17 @@
 
 <h2>Editar Propietario</h2>
 
-<form asp-action="EditarPropietario" method="post">
+<form asp-action="Guardar">
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+    <!-- Campo Id -->
+    <div>
+
+        <input asp-for="Id_Propietario" type="hidden" /> <!-- readonly si no se debe editar -->
+
+    </div>
     <div class="form-group">
         <label asp-for="Dni" class="control-label">DNI</label>
         <input asp-for="Dni" class="form-control" />
@@ -32,8 +42,8 @@
         <input asp-for="Email" class="form-control" />
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
- <div class="form-group">
-        <label asp-for="Direccion" class="control-label">Email</label>
+    <div class="form-group">
+        <label asp-for="Direccion" class="control-label">Direccion</label>
         <input asp-for="Direccion" class="form-control" />
         <span asp-validation-for="Direccion" class="text-danger"></span>
     </div>
@@ -42,7 +52,6 @@
         <input asp-for="Estado_Propietario" class="form-control" />
         <span asp-validation-for="Estado_Propietario" class="text-danger"></span>
     </div>
-    <input type="hidden" asp-for="Id_Propietario" />
     <button type="submit" class="btn btn-primary">Guardar cambios</button>
     <a asp-action="listPropietario" class="btn btn-secondary">Cancelar</a>
 </form>
