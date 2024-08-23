@@ -43,6 +43,7 @@ public class PropietarioController : Controller
             {
                 if(po.DniyaExiste(dni)){
                 TempData["error"] = " dni ya existe no puede introducirlo";
+                      return RedirectToAction(nameof(EditarPropietario));
                 }else{
                 po.Alta(propietario);  // Crear nuevo propietario
                  TempData["Advertencia"] = " se dio de alta nuevo propietario ."; }
@@ -51,6 +52,7 @@ public class PropietarioController : Controller
             {
             if(po.EsDniDelPropietarioActual(id, dni)){
                 TempData["error"] = " dni ya existe no puede introducirlo .";
+                return RedirectToAction ("EditarPropietario", new { id = propietario.Id_Propietario });
                 }else{
                 po.EditarDatosPropietario(propietario);  // Editar propietario existente
                TempData["Advertencia"] = " se edito el propietario .";  

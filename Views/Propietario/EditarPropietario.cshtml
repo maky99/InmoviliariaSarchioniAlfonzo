@@ -7,25 +7,25 @@
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
-            <h2>Editar Propietario</h2>
-            @{
-                var advertencia = TempData["Advertencia"] as string;
-                var error = TempData["Error"] as string;
-            }
+            <h2> Propietario</h2>
+                @{
+                    var advertencia = TempData["Advertencia"] as string;
+                    var error = TempData["Error"] as string;
+                }
 
-            @if (!string.IsNullOrEmpty(advertencia))
-            {
-                <div class="alert alert-warning">
-                    @advertencia
-                </div>
-            }
+                @if (!string.IsNullOrEmpty(advertencia))
+                {
+                    <div class="alert alert-warning temp-message">
+                        @advertencia
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(error))
+                {
+                    <div class="alert alert-danger temp-message">
+                        @error
 
-            @if (!string.IsNullOrEmpty(error))
-            {
-                <div class="alert alert-danger">
-                    @error
-                </div>
-            }
+                    </div>
+                }
             <form asp-action="Guardar">
 
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -76,8 +76,8 @@
                     </select>
                     <span asp-validation-for="Estado_Propietario" class="text-danger"></span>
                 </div>
-                <button type="submit" class="btn btn-primary">Guardar cambios</button>
-                <a asp-action="listPropietario" class="btn btn-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-primary mt-3">Guardar cambios</button>
+                <a asp-action="listPropietario" class="btn btn-secondary mt-3">Cancelar</a>
             </form>
         </div>
     </div>
@@ -86,4 +86,23 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+            // Seleccionar todos los elementos de mensaje
+            var messages = document.querySelectorAll(".temp-message");
+
+            // Ocultar los mensajes después de 5 segundos
+            setTimeout(function () {
+                messages.forEach(function (message) {
+                    message.style.display = "none"; // Ocultar con display: none;
+
+                });
+            }, 5000); // 5000 ms = 5 segundos
+        });
+</script>
+
+
+
+
 }
