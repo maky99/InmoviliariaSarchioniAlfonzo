@@ -1,6 +1,11 @@
 ﻿/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
-
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden; 
+}
 a.navbar-brand {
   white-space: normal;
   text-align: center;
@@ -40,12 +45,20 @@ button.accept-policy {
   font-size: 1rem;
   line-height: inherit;
 }
+/* div ocupe toda la pantalla */
+.full-screen-container {
+  width: 100%;
+  min-height: 100vh; 
+  box-sizing: border-box;
+  padding-bottom: 60px; 
+}
 
 .footer {
-  position: relative;
-  /* se lo cambie para que no se superponga con los botones  */
+  height: 50px; 
+  position: fixed;
   bottom: 0;
+  left: 0;
   width: 100%;
   white-space: nowrap;
-  line-height: 60px;
+  line-height: 50px;
 }
