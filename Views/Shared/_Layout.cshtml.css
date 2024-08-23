@@ -17,7 +17,8 @@ a {
   border-color: #1861ac;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+.nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
   color: #fff;
   background-color: #1b6ec2;
   border-color: #1861ac;
@@ -26,6 +27,7 @@ a {
 .border-top {
   border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom {
   border-bottom: 1px solid #e5e5e5;
 }
@@ -40,7 +42,8 @@ button.accept-policy {
 }
 
 .footer {
-  position: absolute;
+  position: relative;
+  /* se lo cambie para que no se superponga con los botones  */
   bottom: 0;
   width: 100%;
   white-space: nowrap;
