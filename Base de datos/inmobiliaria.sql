@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 21-08-2024 a las 16:34:59
+-- Tiempo de generación: 24-08-2024 a las 01:27:15
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -86,8 +86,16 @@ CREATE TABLE `inquilino` (
 --
 
 INSERT INTO `inquilino` (`Id_Inquilino`, `Dni`, `Apellido`, `Nombre`, `Telefono`, `Email`, `Estado_Inquilino`) VALUES
-(1, 123456, 'Orosco', 'Jose Luis', '333333', 'orosco@gmail.com', 1),
-(2, 3333, 'Lopez', 'Miguel', '55555', 'miguel@gmail.com', 1);
+(1, 34567891, 'Ramirez', 'Claudia', '9876-5432', 'claudia.ramirez@example.com', 1),
+(2, 45678912, 'Gómez', 'Roberto', '8765-4321', 'roberto.gomez@example.com', 0),
+(3, 56789123, 'Sosa', 'Patricia', '7654-3210', 'patricia.sosa@example.com', 1),
+(4, 67891234, 'Molina', 'Javier', '6543-2109', 'javier.molina@example.com', 0),
+(5, 78912345, 'Navarro', 'Gabriela', '5432-1098', 'gabriela.navarro@example.com', 1),
+(6, 89123456, 'Ríos', 'Federico', '4321-0987', 'federico.rios@example.com', 1),
+(7, 91234567, 'Vega', 'Natalia', '3210-9876', 'natalia.vega@example.com', 0),
+(8, 12345678, 'Castro', 'Diego', '2109-8765', 'diego.castro@example.com', 1),
+(9, 23456789, 'Ortiz', 'Florencia', '1098-7654', 'florencia.ortiz@example.com', 0),
+(10, 34567890, 'Paz', 'Ricardo', '0987-6543', 'ricardo.paz@example.com', 1);
 
 -- --------------------------------------------------------
 
@@ -123,6 +131,22 @@ CREATE TABLE `propietario` (
   `Email` varchar(255) DEFAULT NULL,
   `Estado_Propietario` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `propietario`
+--
+
+INSERT INTO `propietario` (`Id_Propietario`, `Dni`, `Apellido`, `Nombre`, `Direccion`, `Telefono`, `Email`, `Estado_Propietario`) VALUES
+(1, 12345678, 'González', 'María', 'Calle Falsa 123', '1234-5678', 'maria.gonzalez@example.com', 1),
+(2, 23456789, 'Pérez', 'Juan', 'Av. Siempre Viva 742', '2345-6789', 'juan.perez@example.com', 0),
+(3, 34567890, 'Rodríguez', 'Ana', 'Calle 9 de Julio 456', '3456-7890', 'ana.rodriguez@example.com', 1),
+(4, 45678901, 'López', 'Carlos', 'Boulevard San Martín 789', '4567-8901', 'carlos.lopez@example.com', 0),
+(5, 56789012, 'Fernández', 'Laura', 'Pasaje Rivadavia 321', '5678-9012', 'laura.fernandez@example.com', 1),
+(6, 67890123, 'García', 'Pedro', 'Avenida Belgrano 654', '6789-0123', 'pedro.garcia@example.com', 1),
+(7, 78901234, 'Martínez', 'Lucía', 'Calle Mitre 987', '7890-1234', 'lucia.martinez@example.com', 0),
+(8, 89012345, 'Sánchez', 'Jorge', 'Ruta 8 km 45', '8901-2345', 'jorge.sanchez@example.com', 1),
+(9, 90123456, 'Ramírez', 'Sofía', 'Calle Alberdi 112', '9012-3456', 'sofia.ramirez@example.com', 0),
+(10, 1234567, 'Torres', 'Fernando', 'Avenida Libertador 200', '0123-4567', 'fernando.torres@example.com', 1);
 
 -- --------------------------------------------------------
 
@@ -225,7 +249,7 @@ ALTER TABLE `inmueble`
 -- AUTO_INCREMENT de la tabla `inquilino`
 --
 ALTER TABLE `inquilino`
-  MODIFY `Id_Inquilino` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `Id_Inquilino` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `pago`
@@ -237,7 +261,7 @@ ALTER TABLE `pago`
 -- AUTO_INCREMENT de la tabla `propietario`
 --
 ALTER TABLE `propietario`
-  MODIFY `Id_Propietario` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id_Propietario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_inmueble`
