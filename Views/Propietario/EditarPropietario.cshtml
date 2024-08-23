@@ -1,57 +1,89 @@
 ﻿@model InmoviliariaSarchioniAlfonzo.Models.Propietario
-
 @{
     ViewData["Title"] = "Editar";
 }
+<link rel="stylesheet" href="~/fondo/propietario.css" />
 
-<h2>Editar Propietario</h2>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <h2>Editar Propietario</h2>
+            @{
+                var advertencia = TempData["Advertencia"] as string;
+                var error = TempData["Error"] as string;
+            }
 
-<form asp-action="Guardar">
+            @if (!string.IsNullOrEmpty(advertencia))
+            {
+                <div class="alert alert-warning">
+                    @advertencia
+                </div>
+            }
 
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @if (!string.IsNullOrEmpty(error))
+            {
+                <div class="alert alert-danger">
+                    @error
+                </div>
+            }
+            <form asp-action="Guardar">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
 
-    <!-- Campo Id -->
-    <div>
+                <!-- Campo Id -->
+                <div>
 
-        <input asp-for="Id_Propietario" type="hidden" /> <!-- readonly si no se debe editar -->
+                    <input asp-for="Id_Propietario" type="hidden" /> <!-- readonly si no se debe editar -->
 
+                </div>
+                <div class="form-group">
+                    <label asp-for="Dni" class="control-label">DNI</label>
+                    <input asp-for="Dni" class="form-control" />
+                    <span asp-validation-for="Dni" class="text-danger"></span>
+
+                </div>
+                <div class="form-group">
+                    <label asp-for="Apellido" class="control-label">Apellido</label>
+                    <input asp-for="Apellido" class="form-control" />
+                    <span asp-validation-for="Apellido" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Nombre" class="control-label">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Telefono" class="control-label">Teléfono</label>
+                    <input asp-for="Telefono" class="form-control" />
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label">Email</label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Direccion" class="control-label">Direccion</label>
+                    <input asp-for="Direccion" class="form-control" />
+                    <span asp-validation-for="Direccion" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Estado_Propietario" class="control-label">Estado</label>
+                    <select asp-for="Estado_Propietario" class="form-control">
+                        <option value="1">Activo</option>
+                        <option value="0">Inactivo</option>
+                    </select>
+                    <span asp-validation-for="Estado_Propietario" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                <a asp-action="listPropietario" class="btn btn-secondary">Cancelar</a>
+            </form>
+        </div>
     </div>
-    <div class="form-group">
-        <label asp-for="Dni" class="control-label">DNI</label>
-        <input asp-for="Dni" class="form-control" />
-        <span asp-validation-for="Dni" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Apellido" class="control-label">Apellido</label>
-        <input asp-for="Apellido" class="form-control" />
-        <span asp-validation-for="Apellido" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Nombre" class="control-label">Nombre</label>
-        <input asp-for="Nombre" class="form-control" />
-        <span asp-validation-for="Nombre" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Telefono" class="control-label">Teléfono</label>
-        <input asp-for="Telefono" class="form-control" />
-        <span asp-validation-for="Telefono" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Email" class="control-label">Email</label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Direccion" class="control-label">Direccion</label>
-        <input asp-for="Direccion" class="form-control" />
-        <span asp-validation-for="Direccion" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Estado_Propietario" class="control-label">Estado</label>
-        <input asp-for="Estado_Propietario" class="form-control" />
-        <span asp-validation-for="Estado_Propietario" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Guardar cambios</button>
-    <a asp-action="listPropietario" class="btn btn-secondary">Cancelar</a>
-</form>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

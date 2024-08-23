@@ -15,8 +15,7 @@ public class PropietarioRepositorio
         {
             var sql = @$"Select {nameof(Propietario.Id_Propietario)}, {nameof(Propietario.Dni)}, {nameof(Propietario.Apellido)}, {nameof(Propietario.Nombre)}, {nameof(Propietario.Telefono)}, {nameof(Propietario.Email)},{nameof(Propietario.Direccion)}, {nameof(Propietario.Estado_Propietario)} 
                      FROM propietario 
-                     WHERE {nameof(Propietario.Estado_Propietario)}=1 
-                     ORDER BY {nameof(Propietario.Apellido)}";
+                     ORDER BY {nameof(Propietario.Estado_Propietario)} DESC, {nameof(Propietario.Apellido)}";
             using (var command = new MySqlCommand(sql, connection))
             {
                 connection.Open();
@@ -120,6 +119,8 @@ public class PropietarioRepositorio
 
     public int Alta(Propietario propietario)
     {
+ 
+
         int res = -1;
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
@@ -159,4 +160,39 @@ public int Baja(int id){
         return res;
     }  
   }
+
+    //metodo para controlar si el dni nuevo no esta ingresado en la base de datos 
+    public bool DniyaExiste(int dni)
+    {
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = "SELECT COUNT(*) FROM propietario WHERE Dni = @Dni";
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@Dni", dni);
+                connection.Open();
+                var count = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+                return count > 0;
+            }
+        }
+    }
+  //metodo para comparar si el dni que se esta editando no exista 
+    public bool EsDniDelPropietarioActual(int idPropietario, int dni)
+    {
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = "SELECT COUNT(*) FROM propietario WHERE Dni = @Dni AND Id_Propietario != @Id_Propietario";
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@Dni", dni);
+                command.Parameters.AddWithValue("@Id_Propietario", idPropietario);
+                connection.Open();
+                var count = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+                return count > 0;
+            }
+        }
+    }
+
 }

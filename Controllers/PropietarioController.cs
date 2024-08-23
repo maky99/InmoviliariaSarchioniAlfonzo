@@ -21,33 +21,48 @@ public class PropietarioController : Controller
         return View("ListaPropietario", lista);
     }
 
-  
 
-  public IActionResult EditarPropietario(int id)
+
+    public IActionResult EditarPropietario(int id)
     {
-    if(id == 0)
-        return View();
-        else{
+        if (id == 0)
+            return View();
+        else
+        {
             var propietario = po.BuscarPropietario(id);
             return View(propietario);
         }
     }
-[HttpPost]
-public IActionResult Guardar( int id, Propietario propietario)
+    [HttpPost]
+    public IActionResult Guardar(int id,Propietario propietario)
     {
-        id =  propietario.Id_Propietario;
-        if(id == 0)
+
+         id = propietario.Id_Propietario;
+         int dni = propietario.Dni;
+            if (id == 0)
             {
-               po.Alta(propietario);
+                if(po.DniyaExiste(dni)){
+                TempData["error"] = " dni ya existe no puede introducirlo";
+                }else{
+                po.Alta(propietario);  // Crear nuevo propietario
+                 TempData["Advertencia"] = " se dio de alta nuevo propietario ."; }
             }
-        else
+            else
             {
-              po.EditarDatosPropietario(propietario);
+            if(po.EsDniDelPropietarioActual(id, dni)){
+                TempData["error"] = " dni ya existe no puede introducirlo .";
+                }else{
+                po.EditarDatosPropietario(propietario);  // Editar propietario existente
+               TempData["Advertencia"] = " se edito el propietario .";  
+                }
             }
-        return RedirectToAction(nameof(ListPropietario));
+        
+    
+       return RedirectToAction(nameof(ListPropietario));
     }
 
-public IActionResult EliminarPropietario( int id)
+
+    public IActionResult EliminarPropietario(int id)
     {
         po.Baja(id);
         return RedirectToAction(nameof(ListPropietario));
