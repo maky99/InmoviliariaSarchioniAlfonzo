@@ -56,21 +56,29 @@ public class InquilinoController : Controller
     {
         if (ModelState.IsValid)
         {
-            try
+            if (ir.EsDniDelInquilinoActual(inquilino.Id_Inquilino, inquilino.Dni))
             {
-                ir.EditarDatos(inquilino);
-                TempData["SuccessMessage"] = $"El inquilino {inquilino.Apellido} {inquilino.Nombre} ha sido editado exitosamente.";
-                return RedirectToAction("ListInquilino");
+                ModelState.AddModelError("Dni", "El DNI ingresado ya está registrado.");
             }
-            catch (InvalidOperationException ex)
+            if (ModelState.IsValid)
             {
-                TempData["ErrorMessage"] = ex.Message;
-                return RedirectToAction("EditarDatos", new { id = inquilino.Id_Inquilino });
+                try
+                {
+                    ir.EditarDatos(inquilino);
+                    TempData["SuccessMessage"] = $"El inquilino {inquilino.Apellido} {inquilino.Nombre} ha sido editado exitosamente.";
+                    return RedirectToAction("ListInquilino");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    TempData["ErrorMessage"] = ex.Message;
+                    return RedirectToAction("EditarDatos", new { id = inquilino.Id_Inquilino });
+                }
+
             }
         }
 
         // si el modelo esta mal vuelve a la vista
-        return View(inquilino);
+        return View("EditarInquilino", inquilino);
     }
 
     [HttpGet]

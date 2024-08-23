@@ -43,8 +43,6 @@ public class InquilinoRepositorio
         }
         return inquilinos;
     }
-
-
     //metodo para agregar un nuevo inquilino
     public void NuevoInquilino(Inquilino inquilino)
     {
@@ -75,7 +73,6 @@ public class InquilinoRepositorio
             }
         }
     }
-
     //metodo para controlar si el dni nuevo no esta ingresado en la base de datos 
     public bool DniExiste(int dni)
     {
@@ -92,7 +89,23 @@ public class InquilinoRepositorio
             }
         }
     }
-
+    //metodo para comparar si el dni que se esta editando no exista 
+    public bool EsDniDelInquilinoActual(int idInquilino, int dni)
+    {
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = "SELECT COUNT(*) FROM inquilino WHERE Dni = @Dni AND Id_Inquilino != @Id_Inquilino";
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@Dni", dni);
+                command.Parameters.AddWithValue("@Id_Inquilino", idInquilino);
+                connection.Open();
+                var count = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+                return count > 0;
+            }
+        }
+    }
 
     //metodo para buscar inquilino antes de editar
     public Inquilino BuscarInquilino(int id)
@@ -129,8 +142,6 @@ public class InquilinoRepositorio
 
         return inquilino;
     }
-
-
     //metodo para guardar un inquilino editado
     public void EditarDatos(Inquilino inquilino)
     {

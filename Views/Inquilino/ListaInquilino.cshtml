@@ -20,7 +20,7 @@
     <h1 class="display-3">Inquilinos</h1>
 
     <div class="mb-3">
-        <a asp-action="NuevoInquilino" class="btn btn-success">
+        <a asp-action="NuevoInquilino" class="btn btn-success" title="Cargar Nuevo Inquilino">
             <i class="fa-solid fa-user-plus"></i> Nuevo
         </a>
     </div>
@@ -69,15 +69,16 @@
                     <td>
                         <!-- Enlace para editar -->
                         <a href="@Url.Action("EditarInquilino", "Inquilino", new { id = item.Id_Inquilino })"
-                            class="btn btn-primary">
+                            class="btn btn-primary" title="Editar información">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
 
                         <!-- Enlace para desactivar -->
                         <a href="@Url.Action("CambEstadoInquilino", new { id = item.Id_Inquilino })"
                             onclick="return confirm('¿Estás seguro de que deseas desactivar a @item.Apellido @item.Nombre?')"
-                            class="btn btn-danger">
-                            <i class="fa-solid fa-trash"></i>
+                            class="btn btn-danger" title="Desactivar inquilino">
+                            <i class="fa-solid fa-user-minus"></i>
+                            @* <i class="fa-solid fa-trash"></i> *@
                         </a>
 
                     </td>
