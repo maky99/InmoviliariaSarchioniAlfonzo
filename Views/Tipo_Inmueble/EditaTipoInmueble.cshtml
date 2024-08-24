@@ -1,0 +1,43 @@
+@model InmoviliariaSarchioniAlfonzo.Models.Tipo_Inmueble
+
+@{
+    ViewData["Title"] = "Edita Tipo de Inmueble";
+}
+
+<link rel="stylesheet" href="~/fondo/tipoinmueble.css" />
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <h2 class="text-center">Edita Tipo de Inmueble</h2>
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
+
+            <form asp-action="GuardarCambiosTipo" method="post">
+                <input type="hidden" asp-for="Id_Tipo_Inmueble" />
+                <div class="form-group">
+                    <label asp-for="Tipo" class="control-label">Tipo</label>
+                    <input asp-for="Tipo" class="form-control" />
+                    <span asp-validation-for="Tipo" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Estado_Tipo_Inmueble" class="control-label">Estado Tipo Inmueble</label>
+                    <select asp-for="Estado_Tipo_Inmueble" class="form-control">
+                        <option value="1">Activo</option>
+                        <option value="0">Inactivo</option>
+                    </select>
+                    <span asp-validation-for="Estado_Tipo_Inmueble" class="text-danger"></span>
+                </div>
+
+
+                <button type="submit" class="btn btn-primary mt-3">Guardar</button>
+                <a asp-action="ListTipo" class="btn btn-secondary mt-3">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>

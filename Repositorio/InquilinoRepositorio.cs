@@ -36,10 +36,7 @@ public class InquilinoRepositorio
                     }
                     connection.Close();
                 }
-
             }
-
-
         }
         return inquilinos;
     }

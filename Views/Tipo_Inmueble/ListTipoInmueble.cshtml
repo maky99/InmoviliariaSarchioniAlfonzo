@@ -1,0 +1,106 @@
+@model IEnumerable<InmoviliariaSarchioniAlfonzo.Models.Tipo_Inmueble>
+
+@{
+    ViewData["Title"] = "Lista de Tipos de Inmueble";
+}
+
+<link rel="stylesheet" href="~/fondo/tipoInmueble.css" />
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["InfoMessage"] != null)
+{
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
+        @TempData["InfoMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="text-center">
+    <h1 class="display-3">Tipos de Inmueble</h1>
+    <div class="mb-3">
+        <a asp-action="NuevoTipo" class="btn btn-success" title="Cargar Nuevo Tipo de Inmueble">
+            <i class="fa-solid fa-house"></i> Nuevo
+        </a>
+    </div>
+    <div class="mb-3">
+        <!-- Campo de búsqueda -->
+        <input type="text" id="inputBusqueda" placeholder="Buscar..." onkeyup="filtrarTabla()">
+    </div>
+    <table class="table" style="color: rgb(13, 12, 14); background-color: white;">
+        <thead>
+            <tr>
+                @* <th>ID</th> *@
+                <th>Tipo</th>
+                <th>Estado</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    @* <td>@item.Id_Tipo_Inmueble</td> *@
+                    <td>@item.Tipo</td>
+                    <td>
+                        @switch (item.Estado_Tipo_Inmueble)
+                        {
+                            case 0:
+                                <span>Inactivo</span>
+                                break;
+                            case 1:
+                                <span>Activo</span>
+                                break;
+                        }
+                    </td>
+                    <td>
+                        <!-- Enlace para editar -->
+                        <a href="@Url.Action("EditarTipo", "Tipo_Inmueble", new { id = item.Id_Tipo_Inmueble })"
+                            class="btn btn-primary" title="Editar información">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+
+                        <!-- Enlace para desactivar -->
+                        <a href="@Url.Action("CambioEstado", new { id = item.Id_Tipo_Inmueble })"
+                            onclick="return confirm('¿Estás seguro de que deseas desactivar el tipo de inmueble @item.Tipo?')"
+                            class="btn btn-danger" title="Desactivar Tipo de Inmueble">
+                            <i class="fa-solid fa-minus-circle"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        function filtrarTabla() {
+            var input, filtro, tabla, filas, celdas, texto;
+            input = document.getElementById("inputBusqueda");
+            filtro = input.value.toUpperCase();
+            tabla = document.querySelector(".table");
+            filas = tabla.getElementsByTagName("tr");
+
+            for (var i = 0; i < filas.length; i++) {
+                celdas = filas[i].getElementsByTagName("td");
+                var mostrar = false;
+
+                for (var j = 0; j < celdas.length; j++) {
+                    texto = celdas[j].textContent || celdas[j].innerText;
+                    if (texto.toUpperCase().indexOf(filtro) > -1) {
+                        mostrar = true;
+                        break;
+                    }
+                }
+
+                filas[i].style.display = mostrar ? "" : "none";
+            }
+        }
+    </script>
+}
