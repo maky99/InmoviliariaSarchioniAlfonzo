@@ -45,6 +45,45 @@ public class PropietarioRepositorio
         return propietarios;
     }
 
+    //metodo para listar todos los propietario ACTIVOS 
+    public IList<Propietario> OptenerPropietariosActivos()
+    {
+        List<Propietario> propietarios = new List<Propietario>();
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = @$"Select {nameof(Propietario.Id_Propietario)}, {nameof(Propietario.Dni)}, {nameof(Propietario.Apellido)}, {nameof(Propietario.Nombre)}, {nameof(Propietario.Telefono)}, {nameof(Propietario.Email)},{nameof(Propietario.Direccion)}, {nameof(Propietario.Estado_Propietario)} 
+                     FROM propietario 
+                     WHERE {nameof(Propietario.Estado_Propietario)}=1
+                     ORDER BY {nameof(Propietario.Estado_Propietario)} DESC, {nameof(Propietario.Apellido)}";
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        propietarios.Add(new Propietario
+                        {
+                            Id_Propietario = reader.GetInt32("Id_Propietario"),
+                            Dni = reader.GetInt32("Dni"),
+                            Apellido = reader.GetString("Apellido"),
+                            Nombre = reader.GetString("Nombre"),
+                            Telefono = reader.GetString("Telefono"),
+                            Email = reader.GetString("Email"),
+                            Direccion = reader.GetString("Direccion"),
+                            Estado_Propietario = reader.GetInt32("Estado_Propietario")
+                        });
+                    }
+                    connection.Close();
+                }
+
+            }
+
+
+        }
+        return propietarios;
+    }
+
 
     //metodo para buscar Propietario antes de editar
     public Propietario BuscarPropietario(int id)
@@ -99,7 +138,7 @@ public class PropietarioRepositorio
          {nameof(Propietario.Direccion)}=@Direccion,
          {nameof(Propietario.Estado_Propietario)}=@Estado_Propietario
          WHERE {nameof(Propietario.Id_Propietario)}=@Id_Propietario";
-           using(MySqlCommand command = new MySqlCommand(sql, connection))
+            using (MySqlCommand command = new MySqlCommand(sql, connection))
             {
                 command.Parameters.AddWithValue("@Id_Propietario", propietario.Id_Propietario);
                 command.Parameters.AddWithValue("@Dni", propietario.Dni);
@@ -114,12 +153,12 @@ public class PropietarioRepositorio
                 connection.Close();
             }
         }
-         return res;
+        return res;
     }
 
     public int Alta(Propietario propietario)
     {
- 
+
 
         int res = -1;
         using (MySqlConnection connection = new MySqlConnection(connectionString))
@@ -145,21 +184,22 @@ public class PropietarioRepositorio
         }
         return res;
     }
-public int Baja(int id){
+    public int Baja(int id)
+    {
         int res = -1;
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
             var query = $@"UPDATE propietario SET {nameof(Propietario.Estado_Propietario)} = 0 WHERE {nameof(Propietario.Id_Propietario)} = @id";
-            using(MySqlCommand command = new MySqlCommand(query, connection))
+            using (MySqlCommand command = new MySqlCommand(query, connection))
             {
                 command.Parameters.AddWithValue("@id", id);
                 connection.Open();
                 res = command.ExecuteNonQuery();
                 connection.Close();
+            }
+            return res;
         }
-        return res;
-    }  
-  }
+    }
 
     //metodo para controlar si el dni nuevo no esta ingresado en la base de datos 
     public bool DniyaExiste(int dni)
@@ -177,7 +217,7 @@ public int Baja(int id){
             }
         }
     }
-  //metodo para comparar si el dni que se esta editando no exista 
+    //metodo para comparar si el dni que se esta editando no exista 
     public bool EsDniDelPropietarioActual(int idPropietario, int dni)
     {
         using (var connection = new MySqlConnection(connectionString))

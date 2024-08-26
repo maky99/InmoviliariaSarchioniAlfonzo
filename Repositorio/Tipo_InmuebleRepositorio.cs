@@ -35,6 +35,35 @@ public class Tipo_InmuebleRepositorio
         }
         return tipos;
     }
+    //lista todos los tipos de inmuebles que hay 
+    public IList<Tipo_Inmueble> TipoInmuActivo()
+    {
+        List<Tipo_Inmueble> tipos = new List<Tipo_Inmueble>();
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = @$" Select {nameof(Tipo_Inmueble.Id_Tipo_Inmueble)},{nameof(Tipo_Inmueble.Tipo)},{nameof(Tipo_Inmueble.Estado_Tipo_Inmueble)}
+            FROM Tipo_Inmueble
+            WHERE {nameof(Tipo_Inmueble.Estado_Tipo_Inmueble)}=1";
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        tipos.Add(new Tipo_Inmueble
+                        {
+                            Id_Tipo_Inmueble = reader.GetInt32("Id_Tipo_Inmueble"),
+                            Tipo = reader.GetString("Tipo"),
+                            Estado_Tipo_Inmueble = reader.GetInt32("Estado_Tipo_Inmueble")
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+        }
+        return tipos;
+    }
 
     //metodo para nuevo tipo de inmueble
     public void NuevoTipo(Tipo_Inmueble tipo_Inmueble)
