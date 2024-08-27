@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-08-2024 a las 18:16:03
+-- Tiempo de generación: 27-08-2024 a las 23:33:06
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -53,8 +53,8 @@ CREATE TABLE `inmueble` (
   `Direccion` varchar(255) DEFAULT NULL,
   `Uso` varchar(50) DEFAULT NULL,
   `Ambientes` int(11) DEFAULT NULL,
-  `Latitud` double DEFAULT NULL,
-  `Longitud` double DEFAULT NULL,
+  `Latitud` varchar(255) DEFAULT NULL,
+  `Longitud` varchar(255) DEFAULT NULL,
   `Tamano` double DEFAULT NULL,
   `Id_Tipo_Inmueble` int(11) DEFAULT NULL,
   `Servicios` varchar(255) DEFAULT NULL,
@@ -71,11 +71,11 @@ CREATE TABLE `inmueble` (
 --
 
 INSERT INTO `inmueble` (`Id_Inmueble`, `Id_Propietario`, `Direccion`, `Uso`, `Ambientes`, `Latitud`, `Longitud`, `Tamano`, `Id_Tipo_Inmueble`, `Servicios`, `Bano`, `Cochera`, `Patio`, `Precio`, `Condicion`, `Estado_Inmueble`) VALUES
-(1, 1, '123 Main St', 'Residencial', 4, -34.603722, -58.381592, 120.5, 1, 'Agua, Electricidad', 2, 1, 1, 250000, 'Venta', 1),
-(2, 2, '456 Oak Ave', 'Comercial', 8, -34.608418, -58.370036, 350, 2, 'Agua, Electricidad, Gas', 4, 2, 0, 1200000, 'Venta', 1),
-(3, 3, '789 Pine Rd', 'Residencial', 3, -34.611778, -58.417309, 90, 1, 'Agua, Electricidad', 1, 0, 1, 150000, 'Alquiler', 0),
-(4, 4, '101 Maple Ln', 'Comercial', 5, -34.615852, -58.377232, 200, 3, 'Agua, Electricidad, Teléfono', 3, 1, 0, 500000, 'Alquiler', 1),
-(5, 5, '202 Birch Blvd', 'Residencial', 6, -34.620522, -58.384473, 180, 1, 'Agua, Electricidad, Gas, Internet', 3, 2, 1, 750000, 'Alquiler', 1);
+(1, 1, '123 Main St', 'Residencial', 2, '-34.603722', '-58.381592', 120.5, 8, 'Agua, Electricidad', 2, 1, 1, 250000, 'Venta', 1),
+(2, 2, '456 Oak Ave', 'Comercial', 8, '-34.608418', '-58.370036', 350, 2, 'Agua, Electricidad, Gas', 4, 2, 0, 1200000, 'Venta', 1),
+(3, 3, '789 Pine Rd', 'Residencial', 3, '-34.611778', '-58.417309', 90, 1, 'Agua, Electricidad', 1, 0, 1, 150000, 'Alquiler', 1),
+(4, 4, '101 Maple Ln', 'Comercial', 5, '-34.615852', '-58.377232', 200, 3, 'Agua, Electricidad, Teléfono', 3, 1, 0, 500000, 'Alquiler', 0),
+(5, 5, '202 Birch Blvd', 'Residencial', 6, '-34.620522', '-58.384473', 180, 1, 'Agua, Electricidad, Gas, Internet', 3, 2, 1, 750000, 'Alquiler', 0);
 
 -- --------------------------------------------------------
 
@@ -108,7 +108,7 @@ INSERT INTO `inquilino` (`Id_Inquilino`, `Dni`, `Apellido`, `Nombre`, `Telefono`
 (8, 12345678, 'Castro', 'Diego', '2109-8765', 'diego.castro@example.com', 1),
 (9, 23456789, 'Ortiz', 'Florencia', '1098-7654', 'florencia.ortiz@example.com', 0),
 (10, 34567890, 'Paz', 'Ricardo', '0987-6543', 'ricardo.paz@example.com', 1),
-(11, 99999999, '99', '99', '99', 'a@a.a', 1);
+(11, 99999999, 'gomez', 'Pedro', '99', 'a@a.a', 1);
 
 -- --------------------------------------------------------
 

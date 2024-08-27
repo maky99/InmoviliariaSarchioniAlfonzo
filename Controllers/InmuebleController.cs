@@ -51,18 +51,23 @@ public class InmuebleController : Controller
     public IActionResult EditarInmueble(int id)
     {
         var inmueble = ir.ObtenerInmueblePorId(id);
-        if (inmueble.Estado_Inmueble == 0)
-        {
-            TempData["ErrorMessage"] = "No s epuede editar este inmueble el mismo no se encuentra activo .";
-            return RedirectToAction("ListInmueble");
-        }
+
         var tiposInmuebles = ti.TipoInmu();
         ViewData["tipoInmueble"] = tiposInmuebles;
-        var propietario = po.ObtenerPropietarios();
-        ViewData["propietario"] = propietario;
+        var propietarios = po.ObtenerPropietarios();
+        ViewData["propietario"] = propietarios;
+
+
+        if (inmueble.Estado_Inmueble == 0)
+        {
+            TempData["ErrorMessage"] = "El inmueble se encuentra actualmente inactivo.";
+
+            return View("EditarInmueble", inmueble);
+        }
 
         return View("EditarInmueble", inmueble);
     }
+
 
     [HttpPost]
     [ValidateAntiForgeryToken]

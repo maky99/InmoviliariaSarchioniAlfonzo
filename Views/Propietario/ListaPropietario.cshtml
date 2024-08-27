@@ -3,26 +3,9 @@
 @{
     ViewData["Title"] = "Lista de Propietarios";
 }
-<style>
-    body {
-        background-image: url('/images/propietario.jfif');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        margin: 0;
-        padding: 0;
-        height: 100%;
-    }
 
-    .text-center {
-        color: rgb(44, 170, 201);
-        /* Cambia el color del texto si es necesario para que sea legible sobre la imagen */
-    }
-</style>
 
 <link rel="stylesheet" href="~/fondo/propietario.css" />
-
 
 
 <div class="text-center">
@@ -71,7 +54,8 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
+                var rowClass = item.Estado_Propietario == 0 ? "inactivo" : "";
+                <tr class="@rowClass">
                     <td>@item.Dni</td>
                     <td>@item.Apellido</td>
                     <td>@item.Nombre</td>
@@ -116,51 +100,4 @@
     </table>
 </div>
 
-
-
-
-@section Scripts {
-    <script>
-        function filtrarTabla() {
-            var input, filtro, tabla, filas, celdas, texto;
-            input = document.getElementById("inputBusqueda");
-            filtro = input.value.toUpperCase();
-            tabla = document.querySelector(".table");
-            filas = tabla.getElementsByTagName("tr");
-
-            for (var i = 0; i < filas.length; i++) {
-                celdas = filas[i].getElementsByTagName("td");
-                var mostrar = false;
-
-                for (var j = 0; j < celdas.length; j++) {
-                    texto = celdas[j].textContent || celdas[j].innerText;
-                    if (texto.toUpperCase().indexOf(filtro) > -1) {
-                        mostrar = true;
-                        break;
-                    }
-                }
-
-                filas[i].style.display = mostrar ? "" : "none";
-            }
-        }
-
-        document.addEventListener("DOMContentLoaded", function () {
-            // Seleccionar todos los elementos de mensaje
-            var messages = document.querySelectorAll(".temp-message");
-
-            // Ocultar los mensajes después de 5 segundos
-            setTimeout(function () {
-                messages.forEach(function (message) {
-                    message.style.display = "none"; // Ocultar con display: none;
-
-                });
-            }, 5000); // 5000 ms = 5 segundos
-        });
-
-
-    </script>
-
-
-
-
-}
+<script src="~/js/site.js"></script>

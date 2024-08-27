@@ -6,23 +6,24 @@
 
 <link rel="stylesheet" href="~/fondo/inmueble.css" />
 
+
 @if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert alert-success alert-dismissible fade show temp-message" role="alert">
         @TempData["SuccessMessage"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 @if (TempData["InfoMessage"] != null)
 {
-    <div class="alert alert-info alert-dismissible fade show" role="alert">
+    <div class="alert alert-info alert-dismissible fade show temp-message" role="alert">
         @TempData["InfoMessage"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 @if (TempData["ErrorMessage"] != null)
 {
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <div class="alert alert-danger alert-dismissible fade show temp-message" role="alert">
         @TempData["ErrorMessage"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
@@ -34,10 +35,10 @@
             <h1 class="text-center mb-4">Detalles del Inmueble</h1>
 
             <table class="table table-bordered">
-                <tr>
-                    <th>ID Inmueble</th>
-                    <td>@Model.Id_Inmueble</td>
-                </tr>
+                @* <tr>
+                <th>ID Inmueble</th>
+                <td>@Model.Id_Inmueble</td>
+                </tr> *@
                 <tr>
                     <th>Propietario</th>
                     <td>@Model.propietario?.Apellido, @Model.propietario?.Nombre</td>
@@ -56,10 +57,9 @@
                 </tr>
                 <tr>
                     <th>Coordenadas</th>
-                    <td>@Model.Latitud.ToString("F6", System.Globalization.CultureInfo.InvariantCulture) /
-                        @Model.Longitud.ToString("F6", System.Globalization.CultureInfo.InvariantCulture)
-                        <a href="https://www.google.com/maps/?q=@Model.Latitud.ToString("F6", System.Globalization.CultureInfo.InvariantCulture),@Model.Longitud.ToString("F6", System.Globalization.CultureInfo.InvariantCulture)"
-                            target="_blank"> Mapa
+                    <td>@Model.Latitud /
+                        @Model.Longitud
+                        <a href="https://www.google.com/maps/?q=@Model.Latitud,@Model.Longitud" target="_blank"> Mapa
                             <i class="fa-solid fa-location-dot"> </i></a>
                     </td>
                 </tr>
@@ -70,10 +70,6 @@
                 <tr>
                     <th>Tipo de Inmueble</th>
                     <td>@Model.tipo?.Tipo</td>
-                </tr>
-                <tr>
-                    <th>Estado del Tipo</th>
-                    <td>@Model.tipo?.Estado_Tipo_Inmueble</td>
                 </tr>
                 <tr>
                     <th>Servicios</th>
@@ -101,14 +97,15 @@
                 </tr>
                 <tr>
                     <th>Estado del Inmueble</th>
-                    <td>@Model.Estado_Inmueble</td>
+                    <td>@(Model.Estado_Inmueble == 1 ? "Activo" : "Inactivo")</td>
                 </tr>
+
             </table>
 
-            <hr />
-            <div>
-                <a href="@Url.Action("ListInmueble", "Inmueble")" class="btn btn-primary">Volver</a>
-            </div>
+        </div>
+        <div class="col-md-8 col-lg-10 p-4 rounded shadow-sm">
+            <a href="@Url.Action("ListInmueble", "Inmueble")" class="btn btn-primary">Volver</a>
         </div>
     </div>
 </div>
+<script src="~/js/site.js"></script>

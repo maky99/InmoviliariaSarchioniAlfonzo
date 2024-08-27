@@ -22,7 +22,8 @@ public class InmuebleRepositorio
              {nameof(Inmueble.Patio)},{nameof(Inmueble.Precio)},{nameof(Inmueble.Condicion)},
              {nameof(Inmueble.Estado_Inmueble)}
              FROM Inmueble
-             JOIN Tipo_Inmueble ON Inmueble.{nameof(Inmueble.Id_Tipo_Inmueble)} = Tipo_Inmueble.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)}";
+             JOIN Tipo_Inmueble ON Inmueble.{nameof(Inmueble.Id_Tipo_Inmueble)} = Tipo_Inmueble.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)}
+              ORDER BY {nameof(Inmueble.Estado_Inmueble)} DESC";
 
             using (var command = new MySqlCommand(sql, connection))
             {
@@ -38,8 +39,8 @@ public class InmuebleRepositorio
                             Direccion = reader.GetString("Direccion"),
                             Uso = reader.GetString("Uso"),
                             Ambientes = reader.GetInt32("Ambientes"),
-                            Latitud = reader.GetDouble("Latitud"),
-                            Longitud = reader.GetDouble("Longitud"),
+                            Latitud = reader.GetString("Latitud"),
+                            Longitud = reader.GetString("Longitud"),
                             Tamano = reader.GetDouble("Tamano"),
                             Servicios = reader.GetString("Servicios"),
                             Bano = reader.GetInt32("Bano"),
@@ -150,8 +151,8 @@ public class InmuebleRepositorio
                             Direccion = reader.GetString("Direccion"),
                             Uso = reader.GetString("Uso"),
                             Ambientes = reader.GetInt32("Ambientes"),
-                            Latitud = reader.GetDouble("Latitud"),
-                            Longitud = reader.GetDouble("Longitud"),
+                            Latitud = reader.GetString("Latitud"),
+                            Longitud = reader.GetString("Longitud"),
                             Tamano = reader.GetDouble("Tamano"),
                             Servicios = reader.GetString("Servicios"),
                             Bano = reader.GetInt32("Bano"),
@@ -202,7 +203,7 @@ public class InmuebleRepositorio
               FROM {nameof(Inmueble)} 
               JOIN {nameof(Tipo_Inmueble)} ON {nameof(Inmueble)}.{nameof(Inmueble.Id_Tipo_Inmueble)} = {nameof(Tipo_Inmueble)}.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)}
               JOIN {nameof(Propietario)} ON {nameof(Inmueble)}.{nameof(Inmueble.Id_Propietario)} = {nameof(Propietario)}.{nameof(Propietario.Id_Propietario)}
-              WHERE {nameof(Inmueble)}.{nameof(Inmueble.Id_Inmueble)} = @Id_Inmueble and {nameof(Inmueble)}.{nameof(Inmueble.Estado_Inmueble)}=1";
+              WHERE {nameof(Inmueble)}.{nameof(Inmueble.Id_Inmueble)} = @Id_Inmueble";
 
             using (var command = new MySqlCommand(sql, connection))
             {
@@ -219,8 +220,8 @@ public class InmuebleRepositorio
                             Direccion = reader.GetString("Direccion"),
                             Uso = reader.GetString("Uso"),
                             Ambientes = reader.GetInt32("Ambientes"),
-                            Latitud = reader.GetDouble("Latitud"),
-                            Longitud = reader.GetDouble("Longitud"),
+                            Latitud = reader.GetString("Latitud"),
+                            Longitud = reader.GetString("Longitud"),
                             Tamano = reader.GetDouble("Tamano"),
                             Id_Tipo_Inmueble = reader.GetInt32("Id_Tipo_Inmueble"),
                             Servicios = reader.GetString("Servicios"),
@@ -270,7 +271,8 @@ public class InmuebleRepositorio
                     Precio = @Precio,
                     Condicion = @Condicion,
                     Id_Tipo_Inmueble = @Id_Tipo_Inmueble,
-                    Id_Propietario = @Id_Propietario
+                    Id_Propietario = @Id_Propietario,
+                    Estado_Inmueble=@Estado_Inmueble
                 WHERE Id_Inmueble = @Id_Inmueble";
 
             using (var command = new MySqlCommand(sql, connection))
@@ -290,6 +292,7 @@ public class InmuebleRepositorio
                 command.Parameters.AddWithValue("@Condicion", inmueble.Condicion);
                 command.Parameters.AddWithValue("@Id_Tipo_Inmueble", inmueble.Id_Tipo_Inmueble);
                 command.Parameters.AddWithValue("@Id_Propietario", inmueble.Id_Propietario);
+                command.Parameters.AddWithValue("@Estado_Inmueble", inmueble.Estado_Inmueble);
 
                 connection.Open();
                 command.ExecuteNonQuery();

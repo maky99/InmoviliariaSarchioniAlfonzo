@@ -8,21 +8,21 @@
 
 @if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert alert-success alert-dismissible fade show temp-message" role="alert">
         @TempData["SuccessMessage"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 @if (TempData["InfoMessage"] != null)
 {
-    <div class="alert alert-info alert-dismissible fade show" role="alert">
+    <div class="alert alert-info alert-dismissible fade show temp-message" role="alert">
         @TempData["InfoMessage"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
 @if (TempData["ErrorMessage"] != null)
 {
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <div class="alert alert-danger alert-dismissible fade show temp-message" role="alert">
         @TempData["ErrorMessage"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
@@ -51,9 +51,9 @@
                 @* <th>Tamaño</th> *@
                 <th>Tipo de Inmueble</th>
                 <th>Servicios</th>
-                <th>Baño</th>
-                <th>Cochera</th>
-                <th>Patio</th>
+                @* <th>Baño</th> *@
+                @* <th>Cochera</th> *@
+                @* <th>Patio</th> *@
                 <th>Precio</th>
                 <th>Condición</th>
                 @* <th>Estado</th> *@
@@ -63,7 +63,8 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
+                var rowClass = item.Estado_Inmueble == 0 ? "inactivo" : "";
+                <tr class="@rowClass">
                     @* <td>@item.Id_Inmueble</td> *@
                     <td>@item.Direccion</td>
                     <td>@item.Uso</td>
@@ -71,11 +72,11 @@
                     @* <td>@item.Latitud</td> *@
                     @* <td>@item.Longitud</td> *@
                     @* <td>@item.Tamano</td> *@
-                    <td>@item.tipo.Tipo</td>
+                    <td>@item.tipo?.Tipo</td>
                     <td>@item.Servicios</td>
-                    <td>@item.Bano</td>
-                    <td>@item.Cochera</td>
-                    <td>@item.Patio</td>
+                    @* <td>@item.Bano</td> *@
+                    @* <td>@item.Cochera</td> *@
+                    @* <td>@item.Patio</td> *@
                     <td>@item.Precio</td>
                     <td>@item.Condicion</td>
                     @* <td>
@@ -104,32 +105,5 @@
                 </tr>
             }
         </tbody>
-    </table>
 </div>
-
-@section Scripts {
-    <script>
-        function filtrarTabla() {
-            var input, filtro, tabla, filas, celdas, texto;
-            input = document.getElementById("inputBusqueda");
-            filtro = input.value.toUpperCase();
-            tabla = document.querySelector(".table");
-            filas = tabla.getElementsByTagName("tr");
-
-            for (var i = 0; i < filas.length; i++) {
-                celdas = filas[i].getElementsByTagName("td");
-                var mostrar = false;
-
-                for (var j = 0; j < celdas.length; j++) {
-                    texto = celdas[j].textContent || celdas[j].innerText;
-                    if (texto.toUpperCase().indexOf(filtro) > -1) {
-                        mostrar = true;
-                        break;
-                    }
-                }
-
-                filas[i].style.display = mostrar ? "" : "none";
-            }
-        }
-    </script>
-}
+<script src="~/js/site.js"></script>

@@ -9,7 +9,7 @@
 
 @if (TempData["SuccessMessage"] != null)
 {
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <div class="alert alert-success alert-dismissible fade show temp-message" role="alert">
         @TempData["SuccessMessage"]
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
@@ -43,7 +43,8 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
+                var rowClass = item.Estado_Inquilino == 0 ? "inactivo" : "";
+                <tr class="@rowClass">
                     <td>@item.Dni</td>
                     <td>@item.Apellido</td>
                     <td>@item.Nombre</td>
@@ -87,30 +88,4 @@
         </tbody>
     </table>
 </div>
-
-@section Scripts {
-    <script>
-        function filtrarTabla() {
-            var input, filtro, tabla, filas, celdas, texto;
-            input = document.getElementById("inputBusqueda");
-            filtro = input.value.toUpperCase();
-            tabla = document.querySelector(".table");
-            filas = tabla.getElementsByTagName("tr");
-
-            for (var i = 0; i < filas.length; i++) {
-                celdas = filas[i].getElementsByTagName("td");
-                var mostrar = false;
-
-                for (var j = 0; j < celdas.length; j++) {
-                    texto = celdas[j].textContent || celdas[j].innerText;
-                    if (texto.toUpperCase().indexOf(filtro) > -1) {
-                        mostrar = true;
-                        break;
-                    }
-                }
-
-                filas[i].style.display = mostrar ? "" : "none";
-            }
-        }
-    </script>
-}
+<script src="~/js/site.js"></script>

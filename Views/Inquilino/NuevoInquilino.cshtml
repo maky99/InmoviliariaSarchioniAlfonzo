@@ -14,8 +14,10 @@
 
             @if (TempData["ErrorMessage"] != null)
             {
-                <div class="alert alert-danger">
+                <div class="alert alert-danger temp-message">
                     @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+
                 </div>
             }
 
@@ -54,3 +56,4 @@
         </div>
     </div>
 </div>
+<script src="~/js/site.js"></script>
