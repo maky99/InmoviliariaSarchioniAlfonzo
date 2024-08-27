@@ -13,7 +13,7 @@ public class InmuebleRepositorio
         using (var connection = new MySqlConnection(connectionString))
         {
             var sql = @$"SELECT {nameof(Inmueble.Id_Inmueble)},{nameof(Inmueble.Id_Propietario)},{nameof(Inmueble.Direccion)},
-             {nameof(Inmueble.Uso)},{nameof(Inmueble.Ambientes)},{nameof(Inmueble.Coordenadas)},
+             {nameof(Inmueble.Uso)},{nameof(Inmueble.Ambientes)},{nameof(Inmueble.Latitud)},{nameof(Inmueble.Longitud)},
              {nameof(Inmueble.Tamano)}, 
              Tipo_Inmueble.{nameof(Tipo_Inmueble.Tipo)} AS Tipo,
              Tipo_Inmueble.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)} AS Id_Tipo_Inmueble,
@@ -38,7 +38,8 @@ public class InmuebleRepositorio
                             Direccion = reader.GetString("Direccion"),
                             Uso = reader.GetString("Uso"),
                             Ambientes = reader.GetInt32("Ambientes"),
-                            Coordenadas = reader.GetInt32("Coordenadas"),
+                            Latitud = reader.GetDouble("Latitud"),
+                            Longitud = reader.GetDouble("Longitud"),
                             Tamano = reader.GetDouble("Tamano"),
                             Servicios = reader.GetString("Servicios"),
                             Bano = reader.GetInt32("Bano"),
@@ -62,17 +63,15 @@ public class InmuebleRepositorio
         return inmuebles;
     }
 
-
     //metodo de guardar nuevo inmueble
-
     public void GuardarInmueble(Inmueble inmueble)
     {
 
         using (var connection = new MySqlConnection(connectionString))
         {
 
-            var sql = $@"INSERT INTO inmueble ({nameof(Inmueble.Id_Propietario)},{nameof(Inmueble.Direccion)},{nameof(Inmueble.Uso)},{nameof(Inmueble.Ambientes)},{nameof(Inmueble.Coordenadas)},{nameof(Inmueble.Tamano)},{nameof(Inmueble.Id_Tipo_Inmueble)},{nameof(Inmueble.Servicios)},{nameof(Inmueble.Bano)},{nameof(Inmueble.Cochera)},{nameof(Inmueble.Patio)},{nameof(Inmueble.Precio)},{nameof(Inmueble.Condicion)},{nameof(Inmueble.Estado_Inmueble)})
-            VALUES (@{nameof(Inmueble.Id_Propietario)}, @{nameof(Inmueble.Direccion)},@{nameof(Inmueble.Uso)},@{nameof(Inmueble.Ambientes)},@{nameof(Inmueble.Coordenadas)},@{nameof(Inmueble.Tamano)},@{nameof(Inmueble.Id_Tipo_Inmueble)},@{nameof(Inmueble.Servicios)},@{nameof(Inmueble.Bano)},@{nameof(Inmueble.Cochera)},@{nameof(Inmueble.Patio)},@{nameof(Inmueble.Precio)},@{nameof(Inmueble.Condicion)},@{nameof(Inmueble.Estado_Inmueble)})";
+            var sql = $@"INSERT INTO inmueble ({nameof(Inmueble.Id_Propietario)},{nameof(Inmueble.Direccion)},{nameof(Inmueble.Uso)},{nameof(Inmueble.Ambientes)},{nameof(Inmueble.Latitud)},{nameof(Inmueble.Longitud)},{nameof(Inmueble.Tamano)},{nameof(Inmueble.Id_Tipo_Inmueble)},{nameof(Inmueble.Servicios)},{nameof(Inmueble.Bano)},{nameof(Inmueble.Cochera)},{nameof(Inmueble.Patio)},{nameof(Inmueble.Precio)},{nameof(Inmueble.Condicion)},{nameof(Inmueble.Estado_Inmueble)})
+            VALUES (@{nameof(Inmueble.Id_Propietario)}, @{nameof(Inmueble.Direccion)},@{nameof(Inmueble.Uso)},@{nameof(Inmueble.Ambientes)},@{nameof(Inmueble.Latitud)},@{nameof(Inmueble.Longitud)},@{nameof(Inmueble.Tamano)},@{nameof(Inmueble.Id_Tipo_Inmueble)},@{nameof(Inmueble.Servicios)},@{nameof(Inmueble.Bano)},@{nameof(Inmueble.Cochera)},@{nameof(Inmueble.Patio)},@{nameof(Inmueble.Precio)},@{nameof(Inmueble.Condicion)},@{nameof(Inmueble.Estado_Inmueble)})";
 
 
             using (var command = new MySqlCommand(sql, connection))
@@ -81,7 +80,8 @@ public class InmuebleRepositorio
                 command.Parameters.AddWithValue($"@{nameof(Inmueble.Direccion)}", inmueble.Direccion);
                 command.Parameters.AddWithValue($"@{nameof(Inmueble.Uso)}", inmueble.Uso);
                 command.Parameters.AddWithValue($"@{nameof(Inmueble.Ambientes)}", inmueble.Ambientes);
-                command.Parameters.AddWithValue($"@{nameof(Inmueble.Coordenadas)}", inmueble.Coordenadas);
+                command.Parameters.AddWithValue($"@{nameof(Inmueble.Latitud)}", inmueble.Latitud);
+                command.Parameters.AddWithValue($"@{nameof(Inmueble.Longitud)}", inmueble.Longitud);
                 command.Parameters.AddWithValue($"@{nameof(Inmueble.Tamano)}", inmueble.Tamano);
                 command.Parameters.AddWithValue($"@{nameof(Inmueble.Id_Tipo_Inmueble)}", inmueble.Id_Tipo_Inmueble);
                 command.Parameters.AddWithValue($"@{nameof(Inmueble.Servicios)}", inmueble.Servicios);
@@ -116,7 +116,8 @@ public class InmuebleRepositorio
                             Inmueble.{nameof(Inmueble.Direccion)},
                             Inmueble.{nameof(Inmueble.Uso)},
                             Inmueble.{nameof(Inmueble.Ambientes)},
-                            Inmueble.{nameof(Inmueble.Coordenadas)},
+                            Inmueble.{nameof(Inmueble.Latitud)},
+                            Inmueble.{nameof(Inmueble.Longitud)},
                             Inmueble.{nameof(Inmueble.Tamano)},
                             Tipo_Inmueble.{nameof(Tipo_Inmueble.Tipo)} AS Tipo,
                             Tipo_Inmueble.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)} AS Id_Tipo_Inmueble,
@@ -149,7 +150,8 @@ public class InmuebleRepositorio
                             Direccion = reader.GetString("Direccion"),
                             Uso = reader.GetString("Uso"),
                             Ambientes = reader.GetInt32("Ambientes"),
-                            Coordenadas = reader.GetInt32("Coordenadas"),
+                            Latitud = reader.GetDouble("Latitud"),
+                            Longitud = reader.GetDouble("Longitud"),
                             Tamano = reader.GetDouble("Tamano"),
                             Servicios = reader.GetString("Servicios"),
                             Bano = reader.GetInt32("Bano"),
@@ -217,7 +219,8 @@ public class InmuebleRepositorio
                             Direccion = reader.GetString("Direccion"),
                             Uso = reader.GetString("Uso"),
                             Ambientes = reader.GetInt32("Ambientes"),
-                            Coordenadas = reader.GetInt32("Coordenadas"),
+                            Latitud = reader.GetDouble("Latitud"),
+                            Longitud = reader.GetDouble("Longitud"),
                             Tamano = reader.GetDouble("Tamano"),
                             Id_Tipo_Inmueble = reader.GetInt32("Id_Tipo_Inmueble"),
                             Servicios = reader.GetString("Servicios"),
@@ -257,7 +260,8 @@ public class InmuebleRepositorio
                 SET Direccion = @Direccion,
                     Uso = @Uso,
                     Ambientes = @Ambientes,
-                    Coordenadas = @Coordenadas,
+                    Latitud = @Latitud,
+                    Longitud = @Longitud,
                     Tamano = @Tamano,
                     Servicios = @Servicios,
                     Bano = @Bano,
@@ -275,7 +279,8 @@ public class InmuebleRepositorio
                 command.Parameters.AddWithValue("@Direccion", inmueble.Direccion);
                 command.Parameters.AddWithValue("@Uso", inmueble.Uso);
                 command.Parameters.AddWithValue("@Ambientes", inmueble.Ambientes);
-                command.Parameters.AddWithValue("@Coordenadas", inmueble.Coordenadas);
+                command.Parameters.AddWithValue("@Latitud", inmueble.Latitud);
+                command.Parameters.AddWithValue("@Longitud", inmueble.Longitud);
                 command.Parameters.AddWithValue("@Tamano", inmueble.Tamano);
                 command.Parameters.AddWithValue("@Servicios", inmueble.Servicios);
                 command.Parameters.AddWithValue("@Bano", inmueble.Bano);

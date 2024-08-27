@@ -4,82 +4,100 @@
     ViewBag.Title = "Detalles del Inmueble";
 }
 
-<div class="container my-4">
-    <h1 class="text-center mb-4">Detalles del Inmueble</h1>
+<!DOCTYPE html>
+<html lang="es">
 
-    <div class="row">
-        <div class="col-12">
-            <table class="table table-bordered">
-                <tr>
-                    <th>ID Inmueble</th>
-                    <td>@Model.Id_Inmueble</td>
-                </tr>
-                <tr>
-                    <th>Propietario</th>
-                    <td>@Model.propietario.Apellido, @Model.propietario.Nombre</td>
-                </tr>
-                <tr>
-                    <th>Dirección</th>
-                    <td>@Model.Direccion</td>
-                </tr>
-                <tr>
-                    <th>Uso</th>
-                    <td>@Model.Uso</td>
-                </tr>
-                <tr>
-                    <th>Ambientes</th>
-                    <td>@Model.Ambientes</td>
-                </tr>
-                <tr>
-                    <th>Coordenadas</th>
-                    <td>@Model.Coordenadas</td>
-                </tr>
-                <tr>
-                    <th>Tamaño</th>
-                    <td>@Model.Tamano m²</td>
-                </tr>
-                <tr>
-                    <th>Tipo de Inmueble</th>
-                    <td>@Model.tipo.Tipo</td>
-                </tr>
-                <tr>
-                    <th>Estado del Tipo</th>
-                    <td>@Model.tipo.Estado_Tipo_Inmueble</td>
-                </tr>
-                <tr>
-                    <th>Servicios</th>
-                    <td>@Model.Servicios</td>
-                </tr>
-                <tr>
-                    <th>Baños</th>
-                    <td>@Model.Bano</td>
-                </tr>
-                <tr>
-                    <th>Cochera</th>
-                    <td>@Model.Cochera</td>
-                </tr>
-                <tr>
-                    <th>Patio</th>
-                    <td>@Model.Patio</td>
-                </tr>
-                <tr>
-                    <th>Precio</th>
-                    <td>$@Model.Precio</td>
-                </tr>
-                <tr>
-                    <th>Condición</th>
-                    <td>@Model.Condicion</td>
-                </tr>
-                <tr>
-                    <th>Estado del Inmueble</th>
-                    <td>@Model.Estado_Inmueble</td>
-                </tr>
-            </table>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+</head>
 
-            <hr />
-            <div>
-                <a href="@Url.Action("ListInmueble", "Inmueble")" class="btn btn-primary">Volver</a>
+<body>
+    <div class="container my-4">
+        <h1 class="text-center mb-4">Detalles del Inmueble</h1>
+
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>ID Inmueble</th>
+                        <td>@Model.Id_Inmueble</td>
+                    </tr>
+                    <tr>
+                        <th>Propietario</th>
+                        <td>@Model.propietario?.Apellido, @Model.propietario?.Nombre</td>
+                    </tr>
+                    <tr>
+                        <th>Dirección</th>
+                        <td>@Model.Direccion</td>
+                    </tr>
+                    <tr>
+                        <th>Uso</th>
+                        <td>@Model.Uso</td>
+                    </tr>
+                    <tr>
+                        <th>Ambientes</th>
+                        <td>@Model.Ambientes</td>
+                    </tr>
+                    <tr>
+                        <th>Coordenadas</th>
+                        <td>@Model.Latitud.ToString("F6", System.Globalization.CultureInfo.InvariantCulture) /
+                            @Model.Longitud.ToString("F6", System.Globalization.CultureInfo.InvariantCulture)
+                            <a href="https://www.google.com/maps/?q=@Model.Latitud.ToString("F6", System.Globalization.CultureInfo.InvariantCulture),@Model.Longitud.ToString("F6", System.Globalization.CultureInfo.InvariantCulture)"
+                                target="_blank"> Mapa
+                                <i class="fa-solid fa-location-dot"> </i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Tamaño</th>
+                        <td>@Model.Tamano m²</td>
+                    </tr>
+                    <tr>
+                        <th>Tipo de Inmueble</th>
+                        <td>@Model.tipo?.Tipo</td>
+                    </tr>
+                    <tr>
+                        <th>Estado del Tipo</th>
+                        <td>@Model.tipo?.Estado_Tipo_Inmueble</td>
+                    </tr>
+                    <tr>
+                        <th>Servicios</th>
+                        <td>@Model.Servicios</td>
+                    </tr>
+                    <tr>
+                        <th>Baños</th>
+                        <td>@Model.Bano</td>
+                    </tr>
+                    <tr>
+                        <th>Cochera</th>
+                        <td>@Model.Cochera</td>
+                    </tr>
+                    <tr>
+                        <th>Patio</th>
+                        <td>@Model.Patio</td>
+                    </tr>
+                    <tr>
+                        <th>Precio</th>
+                        <td>$@Model.Precio</td>
+                    </tr>
+                    <tr>
+                        <th>Condición</th>
+                        <td>@Model.Condicion</td>
+                    </tr>
+                    <tr>
+                        <th>Estado del Inmueble</th>
+                        <td>@Model.Estado_Inmueble</td>
+                    </tr>
+                </table>
+
+                <hr />
+                <div>
+                    <a href="@Url.Action("ListInmueble", "Inmueble")" class="btn btn-primary">Volver</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
+</body>
+
+</html>

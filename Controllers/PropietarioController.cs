@@ -17,7 +17,7 @@ public class PropietarioController : Controller
 
     public IActionResult ListPropietario()
     {
-        var lista = po.OptenerPropietarios();
+        var lista = po.ObtenerPropietarios();
         return View("ListaPropietario", lista);
     }
 
@@ -34,33 +34,40 @@ public class PropietarioController : Controller
         }
     }
     [HttpPost]
-    public IActionResult Guardar(int id,Propietario propietario)
+    public IActionResult Guardar(int id, Propietario propietario)
     {
 
-         id = propietario.Id_Propietario;
-         int dni = propietario.Dni;
-            if (id == 0)
+        id = propietario.Id_Propietario;
+        int dni = propietario.Dni;
+        if (id == 0)
+        {
+            if (po.DniyaExiste(dni))
             {
-                if(po.DniyaExiste(dni)){
                 TempData["error"] = " dni ya existe no puede introducirlo";
-                      return RedirectToAction(nameof(EditarPropietario));
-                }else{
-                po.Alta(propietario);  // Crear nuevo propietario
-                 TempData["Advertencia"] = " se dio de alta nuevo propietario ."; }
+                return RedirectToAction(nameof(EditarPropietario));
             }
             else
             {
-            if(po.EsDniDelPropietarioActual(id, dni)){
-                TempData["error"] = " dni ya existe no puede introducirlo .";
-                return RedirectToAction ("EditarPropietario", new { id = propietario.Id_Propietario });
-                }else{
-                po.EditarDatosPropietario(propietario);  // Editar propietario existente
-               TempData["Advertencia"] = " se edito el propietario .";  
-                }
+                po.Alta(propietario);  // Crear nuevo propietario
+                TempData["Advertencia"] = " se dio de alta nuevo propietario .";
             }
-        
-    
-       return RedirectToAction(nameof(ListPropietario));
+        }
+        else
+        {
+            if (po.EsDniDelPropietarioActual(id, dni))
+            {
+                TempData["error"] = " dni ya existe no puede introducirlo .";
+                return RedirectToAction("EditarPropietario", new { id = propietario.Id_Propietario });
+            }
+            else
+            {
+                po.EditarDatosPropietario(propietario);  // Editar propietario existente
+                TempData["Advertencia"] = " se edito el propietario .";
+            }
+        }
+
+
+        return RedirectToAction(nameof(ListPropietario));
     }
 
 

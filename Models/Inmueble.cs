@@ -9,7 +9,8 @@ public class Inmueble
     public string? Direccion { get; set; }
     public string? Uso { get; set; }
     public int Ambientes { get; set; }
-    public int Coordenadas { get; set; }
+    public double Latitud { get; set; }
+    public double Longitud { get; set; }
     public double Tamano { get; set; }
     public int Id_Tipo_Inmueble { get; set; }
     public string? Servicios { get; set; }
