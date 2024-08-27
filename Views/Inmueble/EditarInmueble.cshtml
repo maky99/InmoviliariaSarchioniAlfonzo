@@ -1,7 +1,7 @@
 @model InmoviliariaSarchioniAlfonzo.Models.Inmueble
 
 @{
-    ViewData["Title"] = "Crear Nuevo Inmueble";
+    ViewData["Title"] = "Editar Inmueble";
 }
 
 <link rel="stylesheet" href="~/fondo/inmueble.css" />
@@ -18,8 +18,8 @@
                 </div>
             }
 
-            <form asp-action="GuardarInmueble" method="post">
-                <input type="hidden" asp-for="Estado_Inmueble" value="1" />
+            <form asp-action="ActualizarInmueble" method="post">
+                <input type="hidden" asp-for="Id_Inmueble" />
 
                 <div class="form-group">
                     <label asp-for="Id_Propietario" class="control-label">Propietario</label>

@@ -28,7 +28,7 @@ public class InmuebleController : Controller
     {
         var tiposInmuebles = ti.TipoInmuActivo();
         ViewData["tipoInmueble"] = tiposInmuebles;
-        var propietario = po.OptenerPropietariosActivos();
+        var propietario = po.ObtenerPropietariosActivos();
         ViewData["propietario"] = propietario;
 
         return View("NuevoInmueble");
@@ -46,6 +46,47 @@ public class InmuebleController : Controller
         var inmueble = ir.InformacionInmueble(id);
 
         return View("DetalleInmueble", inmueble);
+    }
+
+    public IActionResult EditarInmueble(int id)
+    {
+        var inmueble = ir.ObtenerInmueblePorId(id);
+        if (inmueble.Estado_Inmueble == 0)
+        {
+            TempData["ErrorMessage"] = "No s epuede editar este inmueble el mismo no se encuentra activo .";
+            return RedirectToAction("ListInmueble");
+        }
+        var tiposInmuebles = ti.TipoInmu();
+        ViewData["tipoInmueble"] = tiposInmuebles;
+        var propietario = po.ObtenerPropietarios();
+        ViewData["propietario"] = propietario;
+
+        return View("EditarInmueble", inmueble);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult ActualizarInmueble(Inmueble inmueble)
+    {
+        if (!ModelState.IsValid)
+        {
+            // Volver a mostrar la vista con los errores de validación
+            ViewData["propietario"] = po.ObtenerPropietarios(); // Método para obtener propietarios
+            ViewData["tipoInmueble"] = ti.TipoInmu(); // Método para obtener tipos de inmueble
+            return View("EditarInmueble", inmueble);
+        }
+
+        try
+        {
+            ir.ActualizarInmueble(inmueble);
+            TempData["SuccessMessage"] = "Inmueble actualizado correctamente.";
+        }
+        catch (Exception ex)
+        {
+            TempData["ErrorMessage"] = $"Error al actualizar el inmueble: {ex.Message}";
+        }
+
+        return RedirectToAction(nameof(ListInmueble));
     }
 
 

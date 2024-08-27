@@ -186,7 +186,112 @@ public class InmuebleRepositorio
         }
     }
 
+    //metodo para buscar el inquilino para editar 
+    public Inmueble ObtenerInmueblePorId(int id)
+    {
+        var inmueble = new Inmueble();
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = @$"SELECT {nameof(Inmueble)}.*, 
+                     {nameof(Tipo_Inmueble)}.{nameof(Tipo_Inmueble.Tipo)}, 
+                     {nameof(Tipo_Inmueble)}.{nameof(Tipo_Inmueble.Estado_Tipo_Inmueble)}, 
+                     {nameof(Propietario)}.{nameof(Propietario.Apellido)} AS Propietario_Apellido, 
+                     {nameof(Propietario)}.{nameof(Propietario.Nombre)} AS Propietario_Nombre
+              FROM {nameof(Inmueble)} 
+              JOIN {nameof(Tipo_Inmueble)} ON {nameof(Inmueble)}.{nameof(Inmueble.Id_Tipo_Inmueble)} = {nameof(Tipo_Inmueble)}.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)}
+              JOIN {nameof(Propietario)} ON {nameof(Inmueble)}.{nameof(Inmueble.Id_Propietario)} = {nameof(Propietario)}.{nameof(Propietario.Id_Propietario)}
+              WHERE {nameof(Inmueble)}.{nameof(Inmueble.Id_Inmueble)} = @Id_Inmueble and {nameof(Inmueble)}.{nameof(Inmueble.Estado_Inmueble)}=1";
 
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                connection.Open();
+                command.Parameters.AddWithValue("@Id_Inmueble", id);
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        inmueble = new Inmueble
+                        {
+                            Id_Inmueble = reader.GetInt32("Id_Inmueble"),
+                            Id_Propietario = reader.GetInt32("Id_Propietario"),
+                            Direccion = reader.GetString("Direccion"),
+                            Uso = reader.GetString("Uso"),
+                            Ambientes = reader.GetInt32("Ambientes"),
+                            Coordenadas = reader.GetInt32("Coordenadas"),
+                            Tamano = reader.GetDouble("Tamano"),
+                            Id_Tipo_Inmueble = reader.GetInt32("Id_Tipo_Inmueble"),
+                            Servicios = reader.GetString("Servicios"),
+                            Bano = reader.GetInt32("Bano"),
+                            Cochera = reader.GetInt32("Cochera"),
+                            Patio = reader.GetInt32("Patio"),
+                            Precio = reader.GetDouble("Precio"),
+                            Condicion = reader.GetString("Condicion"),
+                            Estado_Inmueble = reader.GetInt32("Estado_Inmueble"),
+                            tipo = new Tipo_Inmueble
+                            {
+                                Id_Tipo_Inmueble = reader.GetInt32("Id_Tipo_Inmueble"),
+                                Tipo = reader.GetString("Tipo"),
+                                Estado_Tipo_Inmueble = reader.GetInt32("Estado_Tipo_Inmueble")
+                            },
+                            propietario = new Propietario
+                            {
+                                Id_Propietario = reader.GetInt32("Id_Propietario"),
+                                Apellido = reader.GetString("Propietario_Apellido"),
+                                Nombre = reader.GetString("Propietario_Nombre")
+                            }
+                        };
+                    }
+                }
+            }
+            connection.Close();
+        }
+        return inmueble;
+    }
+
+    //metodo para guardar lo editado 
+    public void ActualizarInmueble(Inmueble inmueble)
+    {
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = @$"UPDATE inmueble
+                SET Direccion = @Direccion,
+                    Uso = @Uso,
+                    Ambientes = @Ambientes,
+                    Coordenadas = @Coordenadas,
+                    Tamano = @Tamano,
+                    Servicios = @Servicios,
+                    Bano = @Bano,
+                    Cochera = @Cochera,
+                    Patio = @Patio,
+                    Precio = @Precio,
+                    Condicion = @Condicion,
+                    Id_Tipo_Inmueble = @Id_Tipo_Inmueble,
+                    Id_Propietario = @Id_Propietario
+                WHERE Id_Inmueble = @Id_Inmueble";
+
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@Id_Inmueble", inmueble.Id_Inmueble);
+                command.Parameters.AddWithValue("@Direccion", inmueble.Direccion);
+                command.Parameters.AddWithValue("@Uso", inmueble.Uso);
+                command.Parameters.AddWithValue("@Ambientes", inmueble.Ambientes);
+                command.Parameters.AddWithValue("@Coordenadas", inmueble.Coordenadas);
+                command.Parameters.AddWithValue("@Tamano", inmueble.Tamano);
+                command.Parameters.AddWithValue("@Servicios", inmueble.Servicios);
+                command.Parameters.AddWithValue("@Bano", inmueble.Bano);
+                command.Parameters.AddWithValue("@Cochera", inmueble.Cochera);
+                command.Parameters.AddWithValue("@Patio", inmueble.Patio);
+                command.Parameters.AddWithValue("@Precio", inmueble.Precio);
+                command.Parameters.AddWithValue("@Condicion", inmueble.Condicion);
+                command.Parameters.AddWithValue("@Id_Tipo_Inmueble", inmueble.Id_Tipo_Inmueble);
+                command.Parameters.AddWithValue("@Id_Propietario", inmueble.Id_Propietario);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+    }
 }
 
 

@@ -8,7 +8,7 @@ public class PropietarioRepositorio
     readonly string connectionString = "Server=localhost; Port=3306; Database=inmobiliaria; User=root;";
 
     //metodo para listar todos los propietario
-    public IList<Propietario> OptenerPropietarios()
+    public IList<Propietario> ObtenerPropietarios()
     {
         List<Propietario> propietarios = new List<Propietario>();
         using (var connection = new MySqlConnection(connectionString))
@@ -46,7 +46,7 @@ public class PropietarioRepositorio
     }
 
     //metodo para listar todos los propietario ACTIVOS 
-    public IList<Propietario> OptenerPropietariosActivos()
+    public IList<Propietario> ObtenerPropietariosActivos()
     {
         List<Propietario> propietarios = new List<Propietario>();
         using (var connection = new MySqlConnection(connectionString))
