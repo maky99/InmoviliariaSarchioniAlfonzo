@@ -1,0 +1,86 @@
+﻿@model IEnumerable<InmoviliariaSarchioniAlfonzo.Models.Pago>
+
+@{
+    ViewData["Title"] = "Lista de Pagos";
+}
+
+
+<link rel="stylesheet" href="~/fondo/pago.css" />
+
+
+<div class="text-center">
+    <h1 class="display-3">Pagos</h1>
+    <div class="mb-3">
+        <a asp-action="EditarPropietario" class="btn btn-success" title="Cargar Nuevo Propietario">
+            <i class="fa-solid fa-user-plus"></i> Nuevo</a>
+    </div>
+    @{
+        var advertencia = TempData["Advertencia"] as string;
+        var error = TempData["Error"] as string;
+    }
+
+    @if (!string.IsNullOrEmpty(advertencia))
+    {
+        <div class="alert alert-warning temp-message">
+            @advertencia
+        </div>
+    }
+    @if (!string.IsNullOrEmpty(error))
+    {
+        <div class="alert alert-danger temp-message">
+            @error
+
+        </div>
+    }
+
+    <div class="mb-3">
+        <!-- Campo de búsqueda -->
+        <input type="text" id="inputBusqueda" placeholder="Buscar..." onkeyup="filtrarTabla()">
+    </div>
+    <table class="table" style="color: rgb(13, 12, 14); background-color: white;">
+
+        <thead>
+            <tr>
+                <th>Id Pago</th>
+                <th>Id Contrato</th>
+                <th>Importe</th>
+                <th>Mes</th>
+                <th>Fecha</th>
+                <th>Multa</th>
+                <th>Id Creado Por</th>
+                <th>Id Terminado Por</th>
+                <th>Estado Pago</th>
+
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pago in Model)
+            {
+                <tr>
+                    <td>@pago.Id_Pago</td>
+                    <td>@pago.Id_Contrato</td>
+                    <td>@pago.Importe</td>
+                    <td>@pago.Mes</td>
+                    <td>@pago.Fecha.ToString("dd/MM/yyyy")</td>
+                    <td>@pago.Multa</td>
+                    <td>@pago.Id_Creado_Por</td>
+                    <td>@pago.Id_Terminado_Por</td>
+                    <td>@pago.Estado_Pago</td>
+
+                    <td>
+                        <a asp-action="EditarPago" asp-route-id="@pago.Id_Pago" class="btn btn-primary" title="Editar">
+                            <i class="fa-solid fa-edit"></i>
+                        </a>
+                        <a asp-action="EliminarPago" asp-route-id="@pago.Id_Pago" class="btn btn-danger" title="Eliminar">
+                            <i class="fa-solid fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+<script src="~/js/site.js"></script>
