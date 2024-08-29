@@ -235,4 +235,9 @@ public class PropietarioRepositorio
         }
     }
 
+
+
+
+
+
 }

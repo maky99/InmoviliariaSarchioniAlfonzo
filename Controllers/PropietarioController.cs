@@ -77,4 +77,6 @@ public class PropietarioController : Controller
         return RedirectToAction(nameof(ListPropietario));
     }
 
+
+
 }

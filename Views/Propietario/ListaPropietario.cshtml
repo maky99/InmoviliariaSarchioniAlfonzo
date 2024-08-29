@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<InmoviliariaSarchioniAlfonzo.Models.Propietario>
 
+
 @{
     ViewData["Title"] = "Lista de Propietarios";
 }
@@ -87,7 +88,8 @@
 
                         <!-- Enlace para ver las propiedades -->
 
-                        <a href="" class="btn btn-success" title="Editar información">
+                        <a href="@Url.Action("DetalleInmueblexPropietario", "Propietario", new { id = item.Id_Propietario })"
+                            class="btn btn-success" title="Editar información">
                             <i class="fa-solid fa-house"></i>
                         </a>
 
