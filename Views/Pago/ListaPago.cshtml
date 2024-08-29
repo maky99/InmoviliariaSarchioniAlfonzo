@@ -11,8 +11,8 @@
 <div class="text-center">
     <h1 class="display-3">Pagos</h1>
     <div class="mb-3">
-        <a asp-action="EditarPropietario" class="btn btn-success" title="Cargar Nuevo Propietario">
-            <i class="fa-solid fa-user-plus"></i> Nuevo</a>
+        <a asp-action="EditarPropietario" class="btn btn-success" title="Cargar Nuevo Pago">
+            <i class="fa-regular fa-credit-card"></i> Nuevo</a>
     </div>
     @{
         var advertencia = TempData["Advertencia"] as string;
@@ -69,11 +69,14 @@
                     <td>@pago.Estado_Pago</td>
 
                     <td>
-                        <a asp-action="EditarPago" asp-route-id="@pago.Id_Pago" class="btn btn-primary" title="Editar">
-                            <i class="fa-solid fa-edit"></i>
+                        <a asp-action="EditarPago" asp-route-id="@pago.Id_Pago" class="btn btn-primary"
+                            title="Ver comprobante">
+                            <i class="fa-solid fa-receipt"></i>
                         </a>
-                        <a asp-action="EliminarPago" asp-route-id="@pago.Id_Pago" class="btn btn-danger" title="Eliminar">
-                            <i class="fa-solid fa-trash"></i>
+                        <a href="@Url.Action("AnularPago", new { id = pago.Id_Pago })"
+                            onclick="return confirm('¿Estás seguro de que deseas anular PAGO del contrato @pago.Id_Contrato?')"
+                            class="btn btn-danger" title="Anular Pago">
+                            <i class="fa-solid fa-ban"></i>
                         </a>
                     </td>
                 </tr>
