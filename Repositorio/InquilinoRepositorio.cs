@@ -40,6 +40,43 @@ public class InquilinoRepositorio
         }
         return inquilinos;
     }
+
+ public IList<Inquilino> OptenerInquilinosActivos()
+    {
+        List<Inquilino> inquilinos = new List<Inquilino>();
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = @$"Select {nameof(Inquilino.Id_Inquilino)}, {nameof(Inquilino.Dni)}, {nameof(Inquilino.Apellido)}, {nameof(Inquilino.Nombre)}, {nameof(Inquilino.Telefono)}, {nameof(Inquilino.Email)}, {nameof(Inquilino.Estado_Inquilino)} 
+                     FROM inquilino 
+                     WHERE {nameof(Inquilino.Estado_Inquilino)} =1
+                     ORDER BY {nameof(Inquilino.Estado_Inquilino)} DESC, {nameof(Inquilino.Apellido)}";
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        inquilinos.Add(new Inquilino
+                        {
+                            Id_Inquilino = reader.GetInt32("Id_Inquilino"),
+                            Dni = reader.GetInt32("Dni"),
+                            Apellido = reader.GetString("Apellido"),
+                            Nombre = reader.GetString("Nombre"),
+                            Telefono = reader.GetString("Telefono"),
+                            Email = reader.GetString("Email"),
+                            Estado_Inquilino = reader.GetInt32("Estado_Inquilino")
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+        }
+        return inquilinos;
+    }
+
+
+
     //metodo para agregar un nuevo inquilino
     public void NuevoInquilino(Inquilino inquilino)
     {
