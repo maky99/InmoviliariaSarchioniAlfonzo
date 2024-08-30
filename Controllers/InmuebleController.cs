@@ -81,7 +81,7 @@ public class InmuebleController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult ActualizarInmueble(Inmueble inmueble, string source)
+    public IActionResult ActualizarInmueble(Inmueble inmueble, string source, string previousUrl)
     {
         if (!ModelState.IsValid)
         {
@@ -90,15 +90,13 @@ public class InmuebleController : Controller
             ViewData["tipoInmueble"] = ti.TipoInmu(); // Método para obtener tipos de inmueble
             return View("EditarInmueble", inmueble);
         }
+        ir.ActualizarInmueble(inmueble);
+        TempData["SuccessMessage"] = "Inmueble actualizado correctamente.";
         if (source == "Propietario")
         {
-            ir.ActualizarInmueble(inmueble);
-            TempData["SuccessMessage"] = "Inmueble actualizado correctamente.";
-            return RedirectToAction(nameof(ListInmueble));
-
+            string redirectUrl = !string.IsNullOrEmpty(previousUrl) ? previousUrl : "/";
+            return Redirect(redirectUrl);
         }
-
-
         return RedirectToAction(nameof(ListInmueble));
     }
 

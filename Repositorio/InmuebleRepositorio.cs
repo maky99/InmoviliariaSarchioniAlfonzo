@@ -391,6 +391,50 @@ public class InmuebleRepositorio
         }
     }
 
+    public Propietario ObtenerPropietarioPorId(int id)
+    {
+        Propietario propietario = new Propietario();
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = @$"SELECT {nameof(Propietario.Id_Propietario)},
+                                {nameof(Propietario.Apellido)},
+                                {nameof(Propietario.Nombre)},
+                                {nameof(Propietario.Dni)},
+                                {nameof(Propietario.Telefono)},
+                                {nameof(Propietario.Email)},
+                                {nameof(Propietario.Direccion)},
+                                {nameof(Propietario.Estado_Propietario)}
+                         FROM Propietario
+                         WHERE {nameof(Propietario.Id_Propietario)} = @id";
+
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@id", id);
+
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        propietario = new Propietario
+                        {
+                            Id_Propietario = reader.GetInt32(nameof(Propietario.Id_Propietario)),
+                            Apellido = reader.GetString(nameof(Propietario.Apellido)),
+                            Nombre = reader.GetString(nameof(Propietario.Nombre)),
+                            Dni = reader.GetInt32(nameof(Propietario.Dni)),
+                            Telefono = reader.GetString(nameof(Propietario.Telefono)),
+                            Email = reader.GetString(nameof(Propietario.Email)),
+                            Direccion = reader.GetString(nameof(Propietario.Direccion)),
+                            Estado_Propietario = reader.GetInt32(nameof(Propietario.Estado_Propietario))
+                        };
+                    }
+                }
+            }
+        }
+        return propietario;
+    }
+
+
 }
 
 

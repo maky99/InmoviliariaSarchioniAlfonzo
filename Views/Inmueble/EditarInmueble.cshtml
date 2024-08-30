@@ -142,8 +142,8 @@
                     {
                         <button type="submit" class="btn btn-primary mt-3">Guardar
                             propietario</button>
-                        <input type="hidden" name="source" value="Propietario" id="sourceInput" />
-
+                        <input type="hidden" name="source" value="Propietario" id="source" />
+                        <input type="hidden" name="PreviousUrl" value="@TempData["PreviousUrl"]" />
                         <a href="@TempData["PreviousUrl"]" class="btn btn-secondary mt-3">Cancelar propietario</a>
                     }
                     else
