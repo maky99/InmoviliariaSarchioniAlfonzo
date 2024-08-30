@@ -13,10 +13,10 @@ public class ContratoRepositorio
     public IList<Contrato> ObtenerContratos()
     {
         List<Contrato> Contratos = new List<Contrato>();
-       
+
         using (var connection = new MySqlConnection(connectionString))
         {
-           var sql = @$"
+            var sql = @$"
     SELECT 
         Contrato.{nameof(Contrato.Id_Contrato)},
         Contrato.{nameof(Contrato.Id_Inmueble)} AS Id_Inmueble_Contrato, -- Especifica que es de Contrato
@@ -42,7 +42,7 @@ public class ContratoRepositorio
     JOIN Propietario ON Contrato.{nameof(Contrato.Id_Propietario)} = Propietario.{nameof(Propietario.Id_Propietario)}
     JOIN Inquilino ON Contrato.{nameof(Contrato.Id_Inquilino)} = Inquilino.{nameof(Inquilino.Id_Inquilino)}
     ORDER BY Contrato.{nameof(Contrato.Estado_Contrato)} DESC";
-           
+
             using (var command = new MySqlCommand(sql, connection))
             {
                 connection.Open();
@@ -50,40 +50,40 @@ public class ContratoRepositorio
                 {
                     while (reader.Read())
                     {
-                    Contratos.Add(new Contrato
-{
-    Id_Contrato = reader.GetInt32("Id_Contrato"),
-    Id_Inmueble = reader.GetInt32("Id_Inmueble_Contrato"), // Usando el alias especificado
-    Id_Propietario = reader.GetInt32("Id_Propietario"),
-    Id_Inquilino = reader.GetInt32("Id_Inquilino"),
-    Fecha_Inicio = reader.GetDateTime("Fecha_Inicio"),
-    Fecha_Finalizacion = reader.GetDateTime("Fecha_Finalizacion"),
-    Monto = reader.GetDouble("Monto"),
-    Finalizacion_Anticipada = reader.GetDateTime("Finalizacion_Anticipada"),
-    Id_Creado_Por = reader.GetInt32("Id_Creado_Por"),
-    Id_Terminado_Por = reader.GetInt32("Id_Terminado_Por"),
-    Estado_Contrato = reader.GetInt32("Estado_Contrato"),  
-    inmueble = new Inmueble
-    {   
-        Uso = reader.GetString("Uso"),
-        Direccion = reader.GetString("Direccion"),
-        // Id_Tipo_Inmueble no estaba en el SELECT. Si lo necesitas, inclúyelo en la consulta SQL.
-    },
-    tipo_inmueble = new Tipo_Inmueble
-    {
-        Tipo = reader.GetString("Tipo")
-    },
-    propietario = new Propietario
-    {
-        Nombre = reader.GetString("Nombre"),
-        Apellido = reader.GetString("Apellido")
-    },
-    inquilino = new Inquilino
-    {
-        Nombre = reader.GetString("NombreI"),
-        Apellido = reader.GetString("ApellidoI")
-    }
-});       
+                        Contratos.Add(new Contrato
+                        {
+                            Id_Contrato = reader.GetInt32("Id_Contrato"),
+                            Id_Inmueble = reader.GetInt32("Id_Inmueble_Contrato"), // Usando el alias especificado
+                            Id_Propietario = reader.GetInt32("Id_Propietario"),
+                            Id_Inquilino = reader.GetInt32("Id_Inquilino"),
+                            Fecha_Inicio = reader.GetDateTime("Fecha_Inicio"),
+                            Fecha_Finalizacion = reader.GetDateTime("Fecha_Finalizacion"),
+                            Monto = reader.GetDouble("Monto"),
+                            Finalizacion_Anticipada = !reader.IsDBNull(reader.GetOrdinal("Finalizacion_Anticipada")) ? reader.GetDateTime("Finalizacion_Anticipada") : default(DateTime),
+                            Id_Creado_Por = reader.GetInt32("Id_Creado_Por"),
+                            Id_Terminado_Por = reader.IsDBNull(reader.GetOrdinal("Id_Terminado_Por")) ? default(int) : reader.GetInt32("Id_Terminado_Por"),
+                            Estado_Contrato = reader.GetInt32("Estado_Contrato"),
+                            inmueble = new Inmueble
+                            {
+                                Uso = reader.GetString("Uso"),
+                                Direccion = reader.GetString("Direccion"),
+                                // Id_Tipo_Inmueble no estaba en el SELECT. Si lo necesitas, inclúyelo en la consulta SQL.
+                            },
+                            tipo_inmueble = new Tipo_Inmueble
+                            {
+                                Tipo = reader.GetString("Tipo")
+                            },
+                            propietario = new Propietario
+                            {
+                                Nombre = reader.GetString("Nombre"),
+                                Apellido = reader.GetString("Apellido")
+                            },
+                            inquilino = new Inquilino
+                            {
+                                Nombre = reader.GetString("NombreI"),
+                                Apellido = reader.GetString("ApellidoI")
+                            }
+                        });
 
 
                     }
@@ -98,13 +98,13 @@ public class ContratoRepositorio
     }
 
     //metodo para listar todos los Contrato ACTIVOS 
-public Contrato ObtenerContratoActivo(int id)
-{
-    var contrato = new Contrato();
-
-    using (var connection = new MySqlConnection(connectionString))
+    public Contrato ObtenerContratoActivo(int id)
     {
-        var sql = @$"SELECT 
+        var contrato = new Contrato();
+
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = @$"SELECT 
             Contrato.{nameof(Contrato.Id_Contrato)},
             Contrato.{nameof(Contrato.Id_Inmueble)} AS Id_Inmueble_Contrato, -- Especifica que es de Contrato
             Inmueble.{nameof(Inmueble.Uso)} AS Uso,
@@ -117,6 +117,7 @@ public Contrato ObtenerContratoActivo(int id)
             Inquilino.{nameof(Inquilino.Apellido)} AS ApellidoI,
             Contrato.{nameof(Contrato.Id_Inquilino)},
             Contrato.{nameof(Contrato.Fecha_Inicio)}, 
+            Contrato.{nameof(Contrato.Meses)}, 
             Contrato.{nameof(Contrato.Fecha_Finalizacion)},
             Contrato.{nameof(Contrato.Monto)},
             Contrato.{nameof(Contrato.Finalizacion_Anticipada)},
@@ -131,55 +132,56 @@ public Contrato ObtenerContratoActivo(int id)
         WHERE Contrato.{nameof(Contrato.Estado_Contrato)} = 1 AND Contrato.{nameof(Contrato.Id_Contrato)} = @Id
         ORDER BY Contrato.{nameof(Contrato.Estado_Contrato)} DESC";
 
-        using (var command = new MySqlCommand(sql, connection))
-        {
-            command.Parameters.AddWithValue("@Id", id);
-            connection.Open();
-            using (var reader = command.ExecuteReader())
+            using (var command = new MySqlCommand(sql, connection))
             {
-                if (reader.Read())
+                command.Parameters.AddWithValue("@Id", id);
+                connection.Open();
+                using (var reader = command.ExecuteReader())
                 {
-                    contrato = new Contrato
+                    if (reader.Read())
                     {
-                        Id_Contrato = reader.GetInt32("Id_Contrato"),
-                        Id_Inmueble = reader.GetInt32("Id_Inmueble_Contrato"), // Usando el alias especificado
-                        Id_Propietario = reader.GetInt32("Id_Propietario"),
-                        Id_Inquilino = reader.GetInt32("Id_Inquilino"),
-                        Fecha_Inicio = reader.GetDateTime("Fecha_Inicio"),
-                        Fecha_Finalizacion = reader.GetDateTime("Fecha_Finalizacion"),
-                        Monto = reader.GetDouble("Monto"),
-                        Finalizacion_Anticipada = reader.GetDateTime("Finalizacion_Anticipada"),
-                        Id_Creado_Por = reader.GetInt32("Id_Creado_Por"),
-                        Id_Terminado_Por = reader.GetInt32("Id_Terminado_Por"),
-                        Estado_Contrato = reader.GetInt32("Estado_Contrato"),
-                        inmueble = new Inmueble
+                        contrato = new Contrato
                         {
-                            Uso = reader.GetString("Uso"),
-                            Direccion = reader.GetString("Direccion"),
-                        },
-                        tipo_inmueble = new Tipo_Inmueble
-                        {
-                            Tipo = reader.GetString("Tipo")
-                        },
-                        propietario = new Propietario
-                        {
-                            Nombre = reader.GetString("Nombre"),
-                            Apellido = reader.GetString("Apellido")
-                        },
-                        inquilino = new Inquilino
-                        {
-                            Nombre = reader.GetString("NombreI"),
-                            Apellido = reader.GetString("ApellidoI")
-                        }
-                    };
+                            Id_Contrato = reader.GetInt32("Id_Contrato"),
+                            Id_Inmueble = reader.GetInt32("Id_Inmueble_Contrato"), // Usando el alias especificado
+                            Id_Propietario = reader.GetInt32("Id_Propietario"),
+                            Id_Inquilino = reader.GetInt32("Id_Inquilino"),
+                            Fecha_Inicio = reader.GetDateTime("Fecha_Inicio"),
+                            Meses = reader.GetInt32("Meses"),
+                            Fecha_Finalizacion = reader.GetDateTime("Fecha_Finalizacion"),
+                            Monto = reader.GetDouble("Monto"),
+                            Finalizacion_Anticipada = reader.GetDateTime("Finalizacion_Anticipada"),
+                            Id_Creado_Por = reader.GetInt32("Id_Creado_Por"),
+                            Id_Terminado_Por = reader.GetInt32("Id_Terminado_Por"),
+                            Estado_Contrato = reader.GetInt32("Estado_Contrato"),
+                            inmueble = new Inmueble
+                            {
+                                Uso = reader.GetString("Uso"),
+                                Direccion = reader.GetString("Direccion"),
+                            },
+                            tipo_inmueble = new Tipo_Inmueble
+                            {
+                                Tipo = reader.GetString("Tipo")
+                            },
+                            propietario = new Propietario
+                            {
+                                Nombre = reader.GetString("Nombre"),
+                                Apellido = reader.GetString("Apellido")
+                            },
+                            inquilino = new Inquilino
+                            {
+                                Nombre = reader.GetString("NombreI"),
+                                Apellido = reader.GetString("ApellidoI")
+                            }
+                        };
+                    }
                 }
+                connection.Close();
             }
-            connection.Close();
         }
-    }
 
-    return contrato;
-}
+        return contrato;
+    }
 
 
 
@@ -232,18 +234,22 @@ public Contrato ObtenerContratoActivo(int id)
         int res = -1;
         using (var connection = new MySqlConnection(connectionString))
         {
-            var sql = @$"UPDATE Contrato SET
-         {nameof(Contrato.Id_Inmueble)}=@Id_Inmueble,
-         {nameof(Contrato.Id_Propietario)}=@Id_Propietario,
-         {nameof(Contrato.Id_Inquilino)}=@Id_Inquilino,
-         {nameof(Contrato.Fecha_Inicio)}=@Fecha_Inicio,
-         {nameof(Contrato.Fecha_Finalizacion)}=@Fecha_Finalizacion,
-         {nameof(Contrato.Monto)}=@Monto,
-         {nameof(Contrato.Finalizacion_Anticipada)}=@Finalizacion_Anticipada,
-         {nameof(Contrato.Id_Creado_Por)}=@Id_Creado_Por,
-         {nameof(Contrato.Id_Terminado_Por)}=@Id_Terminado_Por,
-         {nameof(Contrato.Estado_Contrato)}=@Estado_Contrato
-         WHERE {nameof(Contrato.Id_Contrato)}=@Id_Contrato";
+            var sql = @$"
+    UPDATE Contrato
+    SET
+        {nameof(Contrato.Id_Inmueble)} = @Id_Inmueble,
+        {nameof(Contrato.Id_Propietario)} = @Id_Propietario,
+        {nameof(Contrato.Id_Inquilino)} = @Id_Inquilino,
+        {nameof(Contrato.Fecha_Inicio)} = @Fecha_Inicio,
+        {nameof(Contrato.Fecha_Finalizacion)} = @Fecha_Finalizacion,
+        {nameof(Contrato.Monto)} = @Monto,
+        {nameof(Contrato.Finalizacion_Anticipada)} = @Finalizacion_Anticipada,
+        {nameof(Contrato.Id_Creado_Por)} = @Id_Creado_Por,
+        {nameof(Contrato.Id_Terminado_Por)} = @Id_Terminado_Por,
+        {nameof(Contrato.Estado_Contrato)} = @Estado_Contrato
+    WHERE
+        {nameof(Contrato.Id_Contrato)} = @Id_Contrato";
+
             using (MySqlCommand command = new MySqlCommand(sql, connection))
             {
                 command.Parameters.AddWithValue("@Id_Contrato", Contrato.Id_Contrato);
@@ -265,55 +271,56 @@ public Contrato ObtenerContratoActivo(int id)
         return res;
     }
 
-  public int Alta(Contrato Contrato)
-{
-    int res = -1;
-    using (MySqlConnection connection = new MySqlConnection(connectionString))
-    {
-        var query = $@"
-            INSERT INTO Contrato
-            ({nameof(Contrato.Id_Inmueble)}, {nameof(Contrato.Id_Propietario)}, {nameof(Contrato.Id_Inquilino)}, 
-             {nameof(Contrato.Fecha_Inicio)}, {nameof(Contrato.Fecha_Finalizacion)}, {nameof(Contrato.Monto)}, 
-             {nameof(Contrato.Finalizacion_Anticipada)}, {nameof(Contrato.Id_Creado_Por)}, 
-             {nameof(Contrato.Id_Terminado_Por)}, {nameof(Contrato.Estado_Contrato)}) 
-            VALUES (@Id_Inmueble, @Id_Propietario, @Id_Inquilino, @Fecha_Inicio, @Fecha_Finalizacion, @Monto, 
-                    @Finalizacion_Anticipada, @Id_Creado_Por, @Id_Terminado_Por, @Estado_Contrato);
-            SELECT LAST_INSERT_ID();";
-
-        using (MySqlCommand command = new MySqlCommand(query, connection))
-        {
-            command.Parameters.AddWithValue("@Id_Inmueble", Contrato.Id_Inmueble);
-            command.Parameters.AddWithValue("@Id_Propietario", Contrato.Id_Propietario);
-            command.Parameters.AddWithValue("@Id_Inquilino", Contrato.Id_Inquilino);
-            command.Parameters.AddWithValue("@Fecha_Inicio", Contrato.Fecha_Inicio);
-            command.Parameters.AddWithValue("@Fecha_Finalizacion", Contrato.Fecha_Finalizacion);
-            command.Parameters.AddWithValue("@Monto", Contrato.Monto);
-            command.Parameters.AddWithValue("@Finalizacion_Anticipada", Contrato.Finalizacion_Anticipada);
-            command.Parameters.AddWithValue("@Id_Creado_Por", Contrato.Id_Creado_Por);
-            command.Parameters.AddWithValue("@Id_Terminado_Por", Contrato.Id_Terminado_Por);
-            command.Parameters.AddWithValue("@Estado_Contrato", Contrato.Estado_Contrato);
-            connection.Open();
-            res = Convert.ToInt32(command.ExecuteScalar());
-            connection.Close();
-        }
-    }
-    return res;
-}
-
-    public int Baja(int id)
+    public int Alta(Contrato Contrato)
     {
         int res = -1;
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
-            var query = $@"UPDATE Contrato SET {nameof(Contrato.Estado_Contrato)} = 0 WHERE {nameof(Contrato.Id_Contrato)} = @id";
+            var query = $@"
+            INSERT INTO Contrato
+            ({nameof(Contrato.Id_Inmueble)}, {nameof(Contrato.Id_Propietario)}, {nameof(Contrato.Id_Inquilino)}, 
+             {nameof(Contrato.Fecha_Inicio)}, 
+             {nameof(Contrato.Meses)}, {nameof(Contrato.Fecha_Finalizacion)}, {nameof(Contrato.Monto)}, 
+             {nameof(Contrato.Id_Creado_Por)}, {nameof(Contrato.Estado_Contrato)}) 
+            VALUES (@Id_Inmueble, @Id_Propietario, @Id_Inquilino, @Fecha_Inicio,@Meses,@Fecha_Finalizacion, @Monto, @Id_Creado_Por, @Estado_Contrato);
+            SELECT LAST_INSERT_ID();";
+
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
-                command.Parameters.AddWithValue("@id", id);
+                command.Parameters.AddWithValue("@Id_Inmueble", Contrato.Id_Inmueble);
+                command.Parameters.AddWithValue("@Id_Propietario", Contrato.Id_Propietario);
+                command.Parameters.AddWithValue("@Id_Inquilino", Contrato.Id_Inquilino);
+                command.Parameters.AddWithValue("@Fecha_Inicio", Contrato.Fecha_Inicio);
+                command.Parameters.AddWithValue("@Meses", Contrato.Meses);
+                command.Parameters.AddWithValue("@Fecha_Finalizacion", Contrato.Fecha_Finalizacion);
+                command.Parameters.AddWithValue("@Monto", Contrato.Monto);
+                command.Parameters.AddWithValue("@Finalizacion_Anticipada", Contrato.Finalizacion_Anticipada);
+                command.Parameters.AddWithValue("@Id_Creado_Por", Contrato.Id_Creado_Por);
+                command.Parameters.AddWithValue("@Estado_Contrato", Contrato.Estado_Contrato);
+                connection.Open();
+                res = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+            }
+        }
+        return res;
+    }
+
+    public Contrato Baja(Contrato contrato)
+    {
+        int res = -1;
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            var query = $@"UPDATE Contrato SET {nameof(Contrato.Finalizacion_Anticipada)} = @{nameof(Contrato.Finalizacion_Anticipada)}
+             WHERE {nameof(Contrato.Id_Contrato)} = @{nameof(Contrato.Id_Contrato)}";
+            using (MySqlCommand command = new MySqlCommand(query, connection))
+            {
+                command.Parameters.AddWithValue($"@{nameof(Contrato.Id_Contrato)}", contrato.Id_Contrato);
+                command.Parameters.AddWithValue($"@{nameof(Contrato.Finalizacion_Anticipada)}", contrato.Finalizacion_Anticipada);
                 connection.Open();
                 res = command.ExecuteNonQuery();
                 connection.Close();
             }
-            return res;
+            return new Contrato();
         }
     }
 
