@@ -135,8 +135,22 @@
                     <span asp-validation-for="Estado_Inmueble" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary mt-3">Guardar</button>
-                    <a asp-action="ListInmueble" class="btn btn-secondary mt-3">Cancelar</a>
+                    @{
+                        var quienLlamo = ViewData["QuienLlamo"] as string;
+                    }
+                    @if (quienLlamo == "propietario")
+                    {
+                        <button type="submit" class="btn btn-primary mt-3">Guardar
+                            propietario</button>
+                        <input type="hidden" name="source" value="Propietario" id="sourceInput" />
+
+                        <a href="@TempData["PreviousUrl"]" class="btn btn-secondary mt-3">Cancelar propietario</a>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-primary mt-3">Guardar comun</button>
+                        <a asp-action="ListInmueble" class="btn btn-secondary mt-3">Cancelar comun</a>
+                    }
                 </div>
             </form>
         </div>

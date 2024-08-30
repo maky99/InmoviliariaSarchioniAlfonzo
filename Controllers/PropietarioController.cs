@@ -80,6 +80,8 @@ public class PropietarioController : Controller
 
     public IActionResult ListInmueblePropietario(int id)
     {
+        ViewBag.DesdeListInmueblePropietario = true;
+        TempData["PreviousUrl"] = Url.Action("ListInmueblePropietario", "Propietario", new { id });
         var inmueble = ir.InformacionInmueblePropietario(id);
         return View("ListInmueblePropietario", inmueble);
     }

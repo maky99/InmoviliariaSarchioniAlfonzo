@@ -104,8 +104,16 @@
 
         </div>
         <div class="col-md-8 col-lg-10 p-4 rounded shadow-sm">
-            <a href="@Url.Action("ListInmueble", "Inmueble")" class="btn btn-primary">Volver</a>
+            @if (TempData["PreviousUrl"] != null)
+            {
+                <a href="@TempData["PreviousUrl"]" class="btn btn-primary">Volver</a>
+            }
+            else
+            {
+                <a href="@Url.Action("ListInmueble", "Inmueble")" class="btn btn-primary">Volver</a>
+            }
         </div>
+
     </div>
 </div>
 <script src="~/js/site.js"></script>

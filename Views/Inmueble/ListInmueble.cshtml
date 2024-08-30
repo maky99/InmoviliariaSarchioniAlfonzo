@@ -91,13 +91,13 @@
                 @* </td> *@
                     <td>
                         <!-- Enlace para editar -->
-                        <a href="@Url.Action("EditarInmueble", new { id = item.Id_Inmueble })" class="btn btn-primary"
-                            title="Editar información">
+                        <a href="@Url.Action("EditarInmueble", new { id = item.Id_Inmueble,source = "inmueble" })"
+                            class="btn btn-primary title=" Editar información">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
 
                         <!-- Enlace para desactivar -->
-                        <a href="@Url.Action("DetalleInmueble", new { id = item.Id_Inmueble })"
+                        <a href="@Url.Action("DetalleInmueble", new { id = item.Id_Inmueble,source = "inmueble"  })"
                             title="Informacion del Inmueble">
                             <i class="fa-solid fa-circle-info"></i>
                         </a>

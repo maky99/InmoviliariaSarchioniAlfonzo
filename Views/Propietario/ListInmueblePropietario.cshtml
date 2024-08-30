@@ -29,7 +29,7 @@
 }
 
 <div class="text-center">
-    <h1 class="display-3">Inmuebles</h1>
+    <h1 class="display-3">Inmuebles pepe</h1>
     <div class="mb-3">
         <a asp-controller="Inmueble" asp-action="NuevoInmueble" class="btn btn-success" title="Cargar Nuevo Inmueble">
             <i class="fa-solid fa-house"></i> Nuevo
@@ -92,19 +92,24 @@
                     <td>
                         <!-- Enlace para editar -->
                         <a asp-controller="Inmueble" asp-action="EditarInmueble" class="btn btn-primary"
-                            asp-route-id="@item.Id_Inmueble" title="Editar información">
+                            asp-route-id="@item.Id_Inmueble" asp-route-source="propietario" title="Editar información">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
 
                         <!-- Enlace para ver el detalle -->
-                        <a asp-controller="Inmueble" asp-action="DetalleInmueble" class="btn btn-success"
-                            asp-route-id="@item.Id_Inmueble" title="Información del Inmueble">
+                        <a asp-controller="Inmueble" asp-action="DetalleInmueble" asp-route-id="@item.Id_Inmueble"
+                            asp-route-source="propietario" title="Información del Inmueble">
                             <i class="fa-solid fa-circle-info"></i>
                         </a>
-
                     </td>
                 </tr>
             }
         </tbody>
+        <div>
+            @if (ViewBag.DesdeListInmueblePropietario != null && ViewBag.DesdeListInmueblePropietario == true)
+            {
+                <a href="@Url.Action("ListPropietario")" class="btn btn-primary mb-3">Volver </a>
+            }
+        </div>
 </div>
 <script src="~/js/site.js"></script>

@@ -41,14 +41,23 @@ public class InmuebleController : Controller
         return RedirectToAction("ListInmueble");
     }
 
-    public IActionResult DetalleInmueble(int id)
+    public IActionResult DetalleInmueble(int id, string source)
     {
-        var inmueble = ir.InformacionInmueble(id);
 
-        return View("DetalleInmueble", inmueble);
+        var inmueble = ir.InformacionInmueble(id);
+        if (source == "propietario") // manejo los botones de volver segun la vista que lo llama 
+        {
+            return View("DetalleInmueble", inmueble);
+
+        }
+        else
+        {
+            TempData["PreviousUrl"] = null;
+            return View("DetalleInmueble", inmueble);
+        }
     }
 
-    public IActionResult EditarInmueble(int id)
+    public IActionResult EditarInmueble(int id, string source)
     {
         var inmueble = ir.ObtenerInmueblePorId(id);
 
@@ -56,6 +65,7 @@ public class InmuebleController : Controller
         ViewData["tipoInmueble"] = tiposInmuebles;
         var propietarios = po.ObtenerPropietarios();
         ViewData["propietario"] = propietarios;
+        ViewData["QuienLlamo"] = source;
 
 
         if (inmueble.Estado_Inmueble == 0)
@@ -71,7 +81,7 @@ public class InmuebleController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult ActualizarInmueble(Inmueble inmueble)
+    public IActionResult ActualizarInmueble(Inmueble inmueble, string source)
     {
         if (!ModelState.IsValid)
         {
@@ -80,19 +90,18 @@ public class InmuebleController : Controller
             ViewData["tipoInmueble"] = ti.TipoInmu(); // Método para obtener tipos de inmueble
             return View("EditarInmueble", inmueble);
         }
-
-        try
+        if (source == "Propietario")
         {
             ir.ActualizarInmueble(inmueble);
             TempData["SuccessMessage"] = "Inmueble actualizado correctamente.";
+            return RedirectToAction(nameof(ListInmueble));
+
         }
-        catch (Exception ex)
-        {
-            TempData["ErrorMessage"] = $"Error al actualizar el inmueble: {ex.Message}";
-        }
+
 
         return RedirectToAction(nameof(ListInmueble));
     }
+
 
 
 
