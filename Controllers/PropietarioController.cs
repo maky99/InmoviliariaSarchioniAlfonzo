@@ -9,6 +9,7 @@ public class PropietarioController : Controller
     private readonly ILogger<PropietarioController> _logger;
 
     private PropietarioRepositorio po = new PropietarioRepositorio();
+    private InmuebleRepositorio ir = new InmuebleRepositorio();
 
     public PropietarioController(ILogger<PropietarioController> logger)
     {
@@ -75,6 +76,12 @@ public class PropietarioController : Controller
     {
         po.Baja(id);
         return RedirectToAction(nameof(ListPropietario));
+    }
+
+    public IActionResult ListInmueblePropietario(int id)
+    {
+        var inmueble = ir.InformacionInmueblePropietario(id);
+        return View("ListInmueblePropietario", inmueble);
     }
 
 

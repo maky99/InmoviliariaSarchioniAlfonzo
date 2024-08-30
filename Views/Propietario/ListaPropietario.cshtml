@@ -88,11 +88,10 @@
 
                         <!-- Enlace para ver las propiedades -->
 
-                        <a href="@Url.Action("DetalleInmueblexPropietario", "Propietario", new { id = item.Id_Propietario })"
+                        <a href="@Url.Action("ListInmueblePropietario", "Propietario", new { id = item.Id_Propietario })"
                             class="btn btn-success" title="Editar información">
                             <i class="fa-solid fa-house"></i>
                         </a>
-
 
                         <!-- Enlace para eliminar -->
                         <a href="EliminarPropietario/@item.Id_Propietario"
