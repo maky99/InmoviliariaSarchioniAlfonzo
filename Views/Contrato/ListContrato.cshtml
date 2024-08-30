@@ -45,17 +45,17 @@
                 <th>Id Contrato</th>
              @*   <th>Id Inmueble</th>*@
                 <th>Uso</th>
-                <th>Direccion</th>
+
                 <th>Tipo</th>
             @*    <th>Id Propietario</th>*@
                 <th>Nombre Pro</th>
-                <th>Ape Pro</th>
+              
                 <th>nombre Inq</th>
-                <th>Ape Inquilino</th>
+              
              @*   <th>Id Inquilino</th>*@
                 <th>Fecha Inicio</th>
                 <th>Fecha Finalizacion</th>
-                <th>Monto</th>
+             @*   <th>Monto</th>*@
             @*  <th>Finalizacion Anticipada</th> *@
             @* <th>Id Creado Por</th> *@
             @* <th>Id Terminado</th> *@
@@ -70,18 +70,18 @@
                 <tr class="@rowClass">
                     <td>@item.Id_Contrato</td> 
                    @* <td>@item.Id_Inmueble</td>*@
-                    <td>@item.inmueble.Uso</td>
-                    <td>@item.inmueble.Direccion</td>
-                     <td>@item.tipo_inmueble.Tipo</td>
+                    <td>@item.inmueble?.Uso @item.inmueble?.Direccion </td>
+                   
+                     <td>@item.tipo_inmueble?.Tipo</td>
                   @*  <td>@item.Id_Propietario</td>*@
-                    <td>@item.propietario.Nombre</td>
-                    <td>@item.propietario.Apellido</td>
+                    <td>@item.propietario?.Nombre @item.propietario?.Apellido</td>
+                    
                   @*  <td>@item.Id_Inquilino</td>*@
-                    <td>@item.inquilino.Nombre</td>
-                    <td>@item.inquilino.Apellido</td>
+                    <td>@item.inquilino?.Nombre @item.inquilino?.Apellido</td>
+                    
                      <td>@item.Fecha_Inicio</td> 
                      <td>@item.Fecha_Finalizacion</td>
-                    <td>@item.Monto</td>
+                 @*   <td>@item.Monto</td> *@
                  @* <td>@item.Finalizacion_Anticipada</td> *@
                  @* <td>@item.Id_Creado_Por</td> *@
                  @* <td>@item.Id_Terminado_Por</td> *@
@@ -105,9 +105,17 @@
 
                         <!-- Enlace para desactivar -->
                         <a href="@Url.Action("DetalleContrato", new { id = item.Id_Contrato })"
-                            title="Informacion del Contrato">
+                            title="Informacion del Inmueble">
                             <i class="fa-solid fa-circle-info"></i>
                         </a>
+                         <!-- Enlace para eliminar -->
+                        <a href="EliminarContrato/@item.Id_Contrato"
+                            onclick="return confirm('¿Estás seguro de que deseas eliminar a @item.Id_Contrato?')"
+                            class="btn btn-danger" title="Desactivar Contrato">
+                            <i class="fa-solid fa-user-minus"></i>
+                        </a>
+
+
                     </td>
                 </tr>
             }
