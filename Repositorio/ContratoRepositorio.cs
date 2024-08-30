@@ -280,9 +280,9 @@ public class ContratoRepositorio
             INSERT INTO Contrato
             ({nameof(Contrato.Id_Inmueble)}, {nameof(Contrato.Id_Propietario)}, {nameof(Contrato.Id_Inquilino)}, 
              {nameof(Contrato.Fecha_Inicio)}, 
-             {nameof(Contrato.Meses)}, {nameof(Contrato.Fecha_Finalizacion)}, {nameof(Contrato.Monto)}, 
-             {nameof(Contrato.Id_Creado_Por)}, {nameof(Contrato.Estado_Contrato)}) 
-            VALUES (@Id_Inmueble, @Id_Propietario, @Id_Inquilino, @Fecha_Inicio,@Meses,@Fecha_Finalizacion, @Monto, @Id_Creado_Por, @Estado_Contrato);
+             {nameof(Contrato.Meses)}, {nameof(Contrato.Fecha_Finalizacion)},{nameof(Contrato.Finalizacion_Anticipada)}, {nameof(Contrato.Monto)}, 
+             {nameof(Contrato.Id_Creado_Por)},{nameof(Contrato.Id_Terminado_Por)}, {nameof(Contrato.Estado_Contrato)}) 
+            VALUES (@Id_Inmueble, @Id_Propietario, @Id_Inquilino, @Fecha_Inicio,@Meses,@Fecha_Finalizacion,@Finalizacion_Anticipada, @Monto, @Id_Creado_Por,@Id_Terminado_Por, @Estado_Contrato);
             SELECT LAST_INSERT_ID();";
 
             using (MySqlCommand command = new MySqlCommand(query, connection))
@@ -296,6 +296,7 @@ public class ContratoRepositorio
                 command.Parameters.AddWithValue("@Monto", Contrato.Monto);
                 command.Parameters.AddWithValue("@Finalizacion_Anticipada", Contrato.Finalizacion_Anticipada);
                 command.Parameters.AddWithValue("@Id_Creado_Por", Contrato.Id_Creado_Por);
+                command.Parameters.AddWithValue("@Id_Terminado_Por", Contrato.Id_Terminado_Por);
                 command.Parameters.AddWithValue("@Estado_Contrato", Contrato.Estado_Contrato);
                 connection.Open();
                 res = Convert.ToInt32(command.ExecuteScalar());

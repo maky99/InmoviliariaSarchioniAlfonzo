@@ -18,10 +18,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             }
-
             <form asp-action="FinalizaFechaContrato" method="post">
                 <input type="hidden" asp-for="Id_Contrato" />
-                <input asp-for="Estado_Contrato" type="hidden" value="1" />
+                <input asp-for="Estado_Contrato" type="hidden" value="0" />
 
                 <div class="form-group">
                     <label asp-for="Id_Inmueble" class="control-label">Inmueble</label>
@@ -39,11 +38,6 @@
                     <label asp-for="Id_Inquilino" class="control-label">Inquilino</label>
                     <input class="form-control" readonly value="@Model.inquilino?.Apellido @Model.inquilino?.Nombre" />
                 </div>
-
-                @* <div class="form-group">
-                <label asp-for="Id_Inquilino" class="control-label">Inquilino</label>
-                <input asp-for="Id_Inquilino" class="form-control" readonly />
-                </div> *@
 
                 <div class="form-group">
                     <label asp-for="Fecha_Inicio" class="control-label">Fecha Inicio</label>

@@ -23,6 +23,10 @@
             <form asp-action="Guardar" method="post">
                 <input type="hidden" asp-for="Id_Contrato" />
                 <input asp-for="Estado_Contrato" type="hidden" value="1" />
+                <input asp-for="Finalizacion_Anticipada" type="hidden" value="0001-01-01" />
+                <input asp-for="Id_Terminado_Por" type="hidden" value="0" />
+
+
                 <!-- #region 
                   -->
                 <div class="form-group">
@@ -91,11 +95,11 @@
                     <span asp-validation-for="Monto" class="text-danger"></span>
                 </div>
 
-                <div class="form-group">
-                    <label asp-for="Finalizacion_Anticipada" class="control-label">Finalizacion Anticipada</label>
-                    <input asp-for="Finalizacion_Anticipada" class="form-control" type="text" />
-                    <span asp-validation-for="Finalizacion_Anticipada" class="text-danger"></span>
-                </div>
+                @* <div class="form-group">
+                <label asp-for="Finalizacion_Anticipada" class="control-label">Finalizacion Anticipada</label>
+                <input asp-for="Finalizacion_Anticipada" class="form-control" type="text" />
+                <span asp-validation-for="Finalizacion_Anticipada" class="text-danger"></span>
+                </div> *@
                 <div class="form-group">
                     <label asp-for="Id_Creado_Por" class="control-label">Id Creado Por</label>
                     <input asp-for="Id_Creado_Por" class="form-control" type="text" />
