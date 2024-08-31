@@ -109,4 +109,14 @@ public class ContratoController : Controller
         return RedirectToAction(nameof(ListContrato));
     }
 
-}
+
+    public IActionResult DetalleContrato(int id)
+
+    {
+        var Contrato = co.ObtenerDetalle(id);
+     
+        return View("DetalleContrato", Contrato);
+    
+    }
+    
+    }

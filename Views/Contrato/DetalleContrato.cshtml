@@ -1,0 +1,219 @@
+@model InmoviliariaSarchioniAlfonzo.Models.Contrato
+
+@{
+    ViewBag.Title = "Detalles del Inmueble";
+}
+
+<link rel="stylesheet" href="~/fondo/inmueble.css" />
+
+
+
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-10 bg-white p-4 rounded shadow-sm">
+            <h1 class="text-center mb-4">Detalles del Contrato</h1>
+            <h2>Detalles del Contrato</h2>
+
+            <!-- Detalles del Contrato -->
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th colspan="2">Contrato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Id Contrato</td>
+                        <td>@Model.Id_Contrato</td>
+                    </tr>
+                    <tr>
+                        <td>Fecha Inicio</td>
+                        <td>@Model.Fecha_Inicio.ToString("dd/MM/yyyy")</td>
+                    </tr>
+                    <tr>
+                        <td>Meses</td>
+                        <td>@Model.Meses</td>
+                    </tr>
+                    <tr>
+                        <td>Fecha Finalización</td>
+                        <td>@Model.Fecha_Finalizacion.ToString("dd/MM/yyyy")</td>
+                    </tr>
+                    <tr>
+                        <td>Monto</td>
+                        <td>@Model.Monto</td>
+                    </tr>
+                    <tr>
+                        <td>Finalización Anticipada</td>
+                        <td>@(Model.Finalizacion_Anticipada != DateTime.MinValue ?
+                                Model.Finalizacion_Anticipada.ToString("dd/MM/yyyy") : "No Aplica")</td>
+                    </tr>
+
+                    <tr>
+                        <td>Id Creado Por</td>
+                        <td>@Model.Id_Creado_Por</td>
+                    </tr>
+                    <tr>
+                        <td>Id Terminado Por</td>
+                        <td>@Model.Id_Terminado_Por</td>
+                    </tr>
+                    <tr>
+                        <td>Estado Contrato</td>
+                        <td>@(Model.Estado_Contrato == 1 ? "Activo" : "Inactivo")</td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <!-- Detalles del Inmueble -->
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th colspan="2">Inmueble</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Dirección</td>
+                        <td>@Model.inmueble?.Direccion</td>
+                    </tr>
+                    <tr>
+                        <td>Uso</td>
+                        <td>@Model.inmueble?.Uso</td>
+                    </tr>
+                    <tr>
+                        <th>Coordenadas</th>
+                        <td>@Model.inmueble?.Latitud /
+                            @Model.inmueble?.Longitud
+                            <a href="https://www.google.com/maps/?q=@Model.inmueble?.Latitud,@Model.inmueble?.Longitud"
+                                target="_blank"> Mapa
+                                <i class="fa-solid fa-location-dot"> </i></a>
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td>Ambientes</td>
+                        <td>@Model.inmueble?.Ambientes</td>
+                    </tr>
+                    <tr>
+                        <td>Tamaño</td>
+                        <td>@Model.inmueble?.Tamano</td>
+                    </tr>
+                    <tr>
+                        <td>Servicios</td>
+                        <td>@Model.inmueble?.Servicios</td>
+                    </tr>
+                    <tr>
+                        <td>Baño</td>
+                        <td>@Model.inmueble?.Bano</td>
+                    </tr>
+                    <tr>
+                        <td>Cochera</td>
+                        <td>@Model.inmueble?.Cochera</td>
+                    </tr>
+                    <tr>
+                        <td>Patio</td>
+                        <td>@Model.inmueble?.Patio</td>
+                    </tr>
+                    <tr>
+                        <td>Condicion</td>
+                        <td>@Model.inmueble?.Condicion</td>
+                    </tr>
+                    <tr>
+                        <td>Precio</td>
+                        <td>@Model.inmueble?.Precio</td>
+                    </tr>
+                    <!-- Agregar más campos de Inmueble según sea necesario -->
+                </tbody>
+            </table>
+
+            <!-- Detalles del Tipo de Inmueble -->
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th colspan="2">Tipo de Inmueble</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Tipo</td>
+                        <td>@Model.tipo_inmueble?.Tipo</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Detalles del Propietario -->
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th colspan="2">Propietario</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Nombre</td>
+                        <td>@Model.propietario?.Nombre @Model.propietario?.Apellido</td>
+                    </tr>
+                    <tr>
+                        <td>DNI</td>
+                        <td>@Model.propietario?.Dni</td>
+                    </tr>
+                    <tr>
+                        <td>Direccion</td>
+                        <td>@Model.propietario?.Direccion</td>
+                    </tr>
+                    <tr>
+                        <td>Teléfono</td>
+                        <td>@Model.propietario?.Telefono</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>@Model.propietario?.Email</td>
+                    </tr>
+                    <!-- Agregar más campos de Propietario según sea necesario -->
+                </tbody>
+            </table>
+
+            <!-- Detalles del Inquilino -->
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th colspan="2">Inquilino</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Nombre</td>
+                        <td>@Model.inquilino?.Nombre @Model.inquilino?.Apellido</td>
+                    </tr>
+                    <tr>
+                        <td>DNI</td>
+                        <td>@Model.inquilino?.Dni</td>
+                    </tr>
+                    <tr>
+                        <td>Teléfono</td>
+                        <td>@Model.inquilino?.Telefono</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>@Model.inquilino?.Email</td>
+                    </tr>
+                    <!-- Agregar más campos de Inquilino según sea necesario -->
+                </tbody>
+            </table>
+    <div class="col-md-8 col-lg-10 p-4 rounded shadow-sm">
+         
+                <a href="@Url.Action("ListContrato", "Contrato")" class="btn btn-primary">Volver</a>
+            
+        </div>
+
+
+
+
+        </div>
+
+
+    </div>
+</div>
+<script src="~/js/site.js"></script>

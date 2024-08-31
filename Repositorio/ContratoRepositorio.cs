@@ -184,50 +184,6 @@ public class ContratoRepositorio
     }
 
 
-
-
-
-    //metodo para buscar Contrato antes de editar
-    public Contrato BuscarContrato(int id)
-    {
-        var Contrato = new Contrato();
-
-        using (var connection = new MySqlConnection(connectionString))
-        {
-            connection.Open();
-            var sql = $"SELECT * FROM Contrato WHERE Id_Contrato = '{id}'";
-            using (var comando = new MySqlCommand(sql, connection))
-            {
-                comando.Parameters.AddWithValue("@Id_Contrato", id);
-
-                using (var reader = comando.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        Contrato = (new Contrato
-                        {
-                            Id_Contrato = reader.GetInt32("Id_Contrato"),
-                            Id_Inmueble = reader.GetInt32("Id_Inmueble"),
-                            Id_Propietario = reader.GetInt32("Id_Propietario"),
-                            Id_Inquilino = reader.GetInt32("Id_Inquilino"),
-                            Fecha_Inicio = reader.GetDateTime("Fecha_Inicio"),
-                            Fecha_Finalizacion = reader.GetDateTime("Fecha_Finalizacion"),
-                            Monto = reader.GetDouble("Monto"),
-                            Finalizacion_Anticipada = reader.GetDateTime("Finalizacion_Anticipada"),
-                            Id_Creado_Por = reader.GetInt32("Id_Creado_Por"),
-                            Id_Terminado_Por = reader.GetInt32("Id_Terminado_Por"),
-                            Estado_Contrato = reader.GetInt32("Estado_Contrato")
-                        });
-                    }
-                }
-            }
-
-        }
-
-        return Contrato;
-    }
-
-
     //metodo para guardar un Contrato editado
     public int EditarDatosContrato(Contrato Contrato)
     {
@@ -325,38 +281,126 @@ public class ContratoRepositorio
         }
     }
 
-    //metodo para controlar si el dni nuevo no esta ingresado en la base de datos 
-    public bool ContratoExiste(int Id)
-    {
-        using (var connection = new MySqlConnection(connectionString))
-        {
-            var sql = "SELECT COUNT(*) FROM Contrato WHERE Dni = @Dni";
-            using (var command = new MySqlCommand(sql, connection))
-            {
-                command.Parameters.AddWithValue("@Dni", Id);
-                connection.Open();
-                var count = Convert.ToInt32(command.ExecuteScalar());
-                connection.Close();
-                return count > 0;
-            }
-        }
-    }
-    //metodo para comparar si el dni que se esta editando no exista 
-    public bool EsIdDelContratoActual(int idContrato, int dni)
-    {
-        using (var connection = new MySqlConnection(connectionString))
-        {
-            var sql = "SELECT COUNT(*) FROM Contrato WHERE Dni = @Dni AND Id_Contrato != @Id_Contrato";
-            using (var command = new MySqlCommand(sql, connection))
-            {
-                command.Parameters.AddWithValue("@Dni", dni);
-                command.Parameters.AddWithValue("@Id_Contrato", idContrato);
-                connection.Open();
-                var count = Convert.ToInt32(command.ExecuteScalar());
-                connection.Close();
-                return count > 0;
-            }
-        }
-    }
 
-}
+ 
+
+
+    public Contrato ObtenerDetalle(int id)
+    {
+        var contrato = new Contrato();
+
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = @$"SELECT 
+            Contrato.{nameof(Contrato.Id_Contrato)},
+            Contrato.{nameof(Contrato.Id_Inmueble)} AS Id_Inmueble_Contrato, 
+            Inmueble.{nameof(Inmueble.Direccion)} AS Direccion,
+            Inmueble.{nameof(Inmueble.Uso)} AS Uso,
+            Inmueble.{nameof(Inmueble.Ambientes)} AS Ambientes,
+            Inmueble.{nameof(Inmueble.Longitud)} AS Longitud,
+            Inmueble.{nameof(Inmueble.Latitud)} AS Latitud,
+            Inmueble.{nameof(Inmueble.Tamano)} AS Tamano,
+            Inmueble.{nameof(Inmueble.Servicios)} AS Servicios,
+            Inmueble.{nameof(Inmueble.Bano)} AS Bano,
+            Inmueble.{nameof(Inmueble.Cochera)} AS Cochera,
+            Inmueble.{nameof(Inmueble.Patio)} AS Patio,
+            Inmueble.{nameof(Inmueble.Precio)} AS Precio,
+            Inmueble.{nameof(Inmueble.Condicion)} AS Condicion,
+            Tipo_Inmueble.{nameof(Tipo_Inmueble.Tipo)} AS Tipo,
+            Contrato.{nameof(Contrato.Id_Propietario)},
+            Propietario.{nameof(Propietario.Dni)} AS Dni,
+            Propietario.{nameof(Propietario.Nombre)} AS Nombre,
+            Propietario.{nameof(Propietario.Apellido)} AS Apellido,
+            Propietario.{nameof(Propietario.Direccion)} AS Direccion,
+            Propietario.{nameof(Propietario.Telefono)} AS Telefono,
+            Propietario.{nameof(Propietario.Email)} AS Email,
+            Inquilino.{nameof(Inquilino.Dni)} AS DniI,
+            Inquilino.{nameof(Inquilino.Nombre)} AS NombreI,
+            Inquilino.{nameof(Inquilino.Apellido)} AS ApellidoI,
+            Inquilino.{nameof(Inquilino.Telefono)} AS TelefonoI,
+            Inquilino.{nameof(Inquilino.Email)} AS EmailI,
+            Contrato.{nameof(Contrato.Id_Inquilino)},
+            Contrato.{nameof(Contrato.Fecha_Inicio)}, 
+            Contrato.{nameof(Contrato.Meses)}, 
+            Contrato.{nameof(Contrato.Fecha_Finalizacion)},
+            Contrato.{nameof(Contrato.Monto)},
+            Contrato.{nameof(Contrato.Finalizacion_Anticipada)},
+            Contrato.{nameof(Contrato.Id_Creado_Por)},
+            Contrato.{nameof(Contrato.Id_Terminado_Por)}, 
+            Contrato.{nameof(Contrato.Estado_Contrato)}
+        FROM Contrato
+        JOIN Inmueble ON Contrato.{nameof(Contrato.Id_Inmueble)} = Inmueble.{nameof(Inmueble.Id_Inmueble)}
+        LEFT JOIN Tipo_Inmueble ON Inmueble.{nameof(Inmueble.Id_Tipo_Inmueble)} = Tipo_Inmueble.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)}
+        JOIN Propietario ON Contrato.{nameof(Contrato.Id_Propietario)} = Propietario.{nameof(Propietario.Id_Propietario)}
+        JOIN Inquilino ON Contrato.{nameof(Contrato.Id_Inquilino)} = Inquilino.{nameof(Inquilino.Id_Inquilino)}
+        WHERE Contrato.{nameof(Contrato.Estado_Contrato)} = 1 AND Contrato.{nameof(Contrato.Id_Contrato)} = @Id
+        ORDER BY Contrato.{nameof(Contrato.Estado_Contrato)} DESC";
+
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@Id", id);
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read())
+                    {
+                        contrato = new Contrato
+                        {
+                            Id_Contrato = reader.GetInt32("Id_Contrato"),
+                            Id_Inmueble = reader.GetInt32("Id_Inmueble_Contrato"), // Usando el alias especificado
+                            Id_Propietario = reader.GetInt32("Id_Propietario"),
+                            Id_Inquilino = reader.GetInt32("Id_Inquilino"),
+                            Fecha_Inicio = reader.GetDateTime("Fecha_Inicio"),
+                            Meses = reader.GetInt32("Meses"),
+                            Fecha_Finalizacion = reader.GetDateTime("Fecha_Finalizacion"),
+                            Monto = reader.GetDouble("Monto"),
+                            Finalizacion_Anticipada = reader.GetDateTime("Finalizacion_Anticipada"),
+                            Id_Creado_Por = reader.GetInt32("Id_Creado_Por"),
+                            Id_Terminado_Por = reader.GetInt32("Id_Terminado_Por"),
+                            Estado_Contrato = reader.GetInt32("Estado_Contrato"),
+                            inmueble = new Inmueble
+                            {
+                                Uso = reader.GetString("Uso"),
+                                Direccion = reader.GetString("Direccion"),
+                                Ambientes = reader.GetInt32("Ambientes"),
+                                Longitud = reader.GetString("Longitud"),
+                                Latitud = reader.GetString("Latitud"),
+                                Tamano = reader.GetDouble("Tamano"),
+                                Servicios = reader.GetString("Servicios"),
+                                Bano = reader.GetInt32("Bano"),
+                                Cochera = reader.GetInt32("Cochera"),
+                                Patio = reader.GetInt32("Patio"),
+                                Precio = reader.GetDouble("Precio"),
+                                Condicion = reader.GetString("Condicion")
+                            },
+                            tipo_inmueble = new Tipo_Inmueble
+                            {
+                                Tipo = reader.GetString("Tipo")
+                            },
+                            propietario = new Propietario
+                            {
+                                Nombre = reader.GetString("Nombre"),
+                                Apellido = reader.GetString("Apellido"),
+                                Dni = reader.GetInt32("Dni"),
+                                Telefono = reader.GetString("Telefono"),
+                                Email = reader.GetString("Email"),
+                                Direccion = reader.GetString("Direccion")
+                            },
+                            inquilino = new Inquilino
+                            {
+                                Nombre = reader.GetString("NombreI"),
+                                Apellido = reader.GetString("ApellidoI"),
+                                Dni = reader.GetInt32("DniI"),
+                                Telefono = reader.GetString("TelefonoI"),
+                                Email = reader.GetString("EmailI")
+                            }
+                        };
+                    }
+                }
+                connection.Close();
+            }
+        }
+
+        return contrato;
+    }
+    }
