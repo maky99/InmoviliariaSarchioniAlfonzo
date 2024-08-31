@@ -20,5 +20,6 @@ public class Contrato
    public Tipo_Inmueble? tipo_inmueble { get; set; }
    public Propietario? propietario { get; set; }
    public Inquilino? inquilino { get; set; }
+   
 
 }

@@ -55,6 +55,7 @@ public class InmuebleRepositorio
                                 Tipo = reader.GetString("Tipo"),
                                 Estado_Tipo_Inmueble = reader.GetInt32("Estado_Tipo_Inmueble")
                             }
+                          
                         });
                     }
                     connection.Close();
@@ -68,32 +69,42 @@ public IList<Inmueble> ObtenerInmueblesConPropietario()
     List<Inmueble> inmuebles = new List<Inmueble>();
     using (var connection = new MySqlConnection(connectionString))
     {
-        var sql = @$"SELECT 
-            Inmueble.{nameof(Inmueble.Id_Inmueble)},
-            Inmueble.{nameof(Inmueble.Id_Propietario)} AS Id_Propietario_Inmueble, -- Especifica que es de Inmueble
-            Inmueble.{nameof(Inmueble.Direccion)},
-            Inmueble.{nameof(Inmueble.Uso)},
-            Inmueble.{nameof(Inmueble.Ambientes)},
-            Inmueble.{nameof(Inmueble.Latitud)},
-            Inmueble.{nameof(Inmueble.Longitud)},
-            Inmueble.{nameof(Inmueble.Tamano)}, 
-            Tipo_Inmueble.{nameof(Tipo_Inmueble.Tipo)} AS Tipo,
-            Tipo_Inmueble.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)} AS Id_Tipo_Inmueble,
-            Tipo_Inmueble.{nameof(Tipo_Inmueble.Estado_Tipo_Inmueble)} AS Estado_Tipo_Inmueble,
-            Propietario.{nameof(Propietario.Nombre)} AS Nombre,
-            Propietario.{nameof(Propietario.Apellido)} AS Apellido,
-            Inmueble.{nameof(Inmueble.Servicios)},
-            Inmueble.{nameof(Inmueble.Bano)},
-            Inmueble.{nameof(Inmueble.Cochera)},
-            Inmueble.{nameof(Inmueble.Patio)},
-            Inmueble.{nameof(Inmueble.Precio)},
-            Inmueble.{nameof(Inmueble.Condicion)},
-            Inmueble.{nameof(Inmueble.Estado_Inmueble)}
-        FROM Inmueble
-        JOIN Tipo_Inmueble ON Inmueble.{nameof(Inmueble.Id_Tipo_Inmueble)} = Tipo_Inmueble.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)}
-        JOIN Propietario ON Inmueble.{nameof(Inmueble.Id_Propietario)} = Propietario.{nameof(Propietario.Id_Propietario)}
-        ORDER BY Inmueble.{nameof(Inmueble.Estado_Inmueble)} DESC";
+var sql = @$"SELECT 
+    Inmueble.{nameof(Inmueble.Id_Inmueble)},
+    Inmueble.{nameof(Inmueble.Id_Propietario)} AS Id_Propietario_Inmueble, -- Especifica que es de Inmueble
+    Inmueble.{nameof(Inmueble.Direccion)},
+    Inmueble.{nameof(Inmueble.Uso)},
+    Inmueble.{nameof(Inmueble.Ambientes)},
+    Inmueble.{nameof(Inmueble.Latitud)},
+    Inmueble.{nameof(Inmueble.Longitud)},
+    Inmueble.{nameof(Inmueble.Tamano)}, 
+    Tipo_Inmueble.{nameof(Tipo_Inmueble.Tipo)} AS Tipo,
+    Tipo_Inmueble.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)} AS Id_Tipo_Inmueble,
+    Tipo_Inmueble.{nameof(Tipo_Inmueble.Estado_Tipo_Inmueble)} AS Estado_Tipo_Inmueble,
+    Propietario.{nameof(Propietario.Nombre)} AS Nombre,
+    Propietario.{nameof(Propietario.Apellido)} AS Apellido,
+    Inmueble.{nameof(Inmueble.Servicios)},
+    Inmueble.{nameof(Inmueble.Bano)},
+    Inmueble.{nameof(Inmueble.Cochera)},
+    Inmueble.{nameof(Inmueble.Patio)},
+    Inmueble.{nameof(Inmueble.Precio)},
+    Inmueble.{nameof(Inmueble.Condicion)},
+    Inmueble.{nameof(Inmueble.Estado_Inmueble)},
+    Contrato.{nameof(Contrato.Estado_Contrato)}
+FROM Inmueble
+JOIN Tipo_Inmueble ON Inmueble.{nameof(Inmueble.Id_Tipo_Inmueble)} = Tipo_Inmueble.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)}
+JOIN Propietario ON Inmueble.{nameof(Inmueble.Id_Propietario)} = Propietario.{nameof(Propietario.Id_Propietario)}
+LEFT JOIN Contrato ON Inmueble.{nameof(Inmueble.Id_Inmueble)} = Contrato.{nameof(Contrato.Id_Inmueble)}
+WHERE (Contrato.{nameof(Contrato.Estado_Contrato)} = 0 OR Contrato.{nameof(Contrato.Id_Inmueble)} IS NULL)
+    AND NOT EXISTS (
+        SELECT 1
+        FROM Contrato C2
+        WHERE C2.{nameof(Contrato.Id_Inmueble)} = Inmueble.{nameof(Inmueble.Id_Inmueble)}
+            AND C2.{nameof(Contrato.Estado_Contrato)} = 1
+    );";
 
+
+       
         using (var command = new MySqlCommand(sql, connection))
         {
             connection.Open();

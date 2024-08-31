@@ -267,7 +267,8 @@ public class ContratoRepositorio
         int res = -1;
         using (MySqlConnection connection = new MySqlConnection(connectionString))
         {
-            var query = $@"UPDATE Contrato SET {nameof(Contrato.Finalizacion_Anticipada)} = @{nameof(Contrato.Finalizacion_Anticipada)}
+            var query = $@"UPDATE Contrato SET {nameof(Contrato.Finalizacion_Anticipada)} = @{nameof(Contrato.Finalizacion_Anticipada)},
+             {nameof(Contrato.Estado_Contrato)} = 0
              WHERE {nameof(Contrato.Id_Contrato)} = @{nameof(Contrato.Id_Contrato)}";
             using (MySqlCommand command = new MySqlCommand(query, connection))
             {
