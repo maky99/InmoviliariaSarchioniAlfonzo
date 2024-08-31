@@ -132,7 +132,12 @@
 
 <script src="~/js/site.js"></script>
 
+    
+    
 @section Scripts {
+   @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
     <script>
 document.getElementById('inmueble-select').addEventListener('change', function () {
     var selectedOption = this.options[this.selectedIndex];
