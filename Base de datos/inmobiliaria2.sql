@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 31-08-2024 a las 00:31:21
+-- Tiempo de generación: 02-09-2024 a las 18:15:02
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -50,9 +50,12 @@ INSERT INTO `contrato` (`Id_Contrato`, `Id_Inmueble`, `Id_Propietario`, `Id_Inqu
 (1, 1, 5, 8, '2024-03-01', 9, '2025-08-01', 5000, '2024-08-31', 1, 0, 1),
 (2, 4, 6, 8, '2024-08-01', 6, '2024-08-31', 123456, '2024-09-20', 1, 0, 1),
 (3, 5, 5, 5, '2024-08-01', 5, '2024-08-31', 1212, '0001-01-01', 1, 0, 1),
-(4, 1, 1, 8, '2024-08-01', 3, '2024-12-01', 12, '0001-01-01', 0, 0, 1),
+(4, 1, 1, 8, '2024-08-01', 3, '2024-12-01', 12, '2026-12-24', 0, 0, 1),
 (5, 1, 1, 8, '2024-09-01', 4, '2024-12-31', 212, '2025-01-01', 1, 0, 1),
-(6, 1, 1, 8, '2024-09-01', 2, '2024-10-31', 12, '0001-01-01', 1, 0, 1);
+(6, 1, 1, 8, '2024-09-01', 2, '2024-10-31', 12, '0001-01-01', 1, 0, 1),
+(7, 1, 1, 8, '2024-09-01', 9, '2025-05-31', 999999999, '0001-01-01', 1, 0, 1),
+(8, 5, 5, 8, '2024-09-01', 5, '2025-01-31', 456789, '0001-01-01', 1, 0, 1),
+(9, 3, 3, 5, '2024-09-01', 18, '2026-03-03', 132456, '0001-01-01', 1, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -84,11 +87,15 @@ CREATE TABLE `inmueble` (
 --
 
 INSERT INTO `inmueble` (`Id_Inmueble`, `Id_Propietario`, `Direccion`, `Uso`, `Ambientes`, `Latitud`, `Longitud`, `Tamano`, `Id_Tipo_Inmueble`, `Servicios`, `Bano`, `Cochera`, `Patio`, `Precio`, `Condicion`, `Estado_Inmueble`) VALUES
-(1, 1, '123 Main St', 'Residencial', 22, '-34.603722', '-58.381592', 120.5, 8, 'Agua, Electricidad', 2, 1, 1, 250000, 'Venta', 1),
-(2, 2, '456 Oak Ave', 'Comercial', 8, '-34.608418', '-58.370036', 350, 2, 'Agua, Electricidad, Gas', 4, 2, 0, 1200000, 'Venta', 1),
-(3, 3, '789 Pine Rd', 'Residencial', 33, '-34.611778', '-58.417309', 90, 1, 'Agua, Electricidad', 1, 0, 1, 150000, 'Alquiler', 1),
-(4, 4, '101 Maple Ln', 'Comercial', 5, '-34.615852', '-58.377232', 200, 3, 'Agua, Electricidad, Teléfono', 3, 1, 0, 500000, 'Alquiler', 0),
-(5, 5, '202 Birch Blvd', 'Residencial', 65, '-34.620522', '-58.384473', 180, 1, 'Agua, Electricidad, Gas, Internet', 3, 2, 1, 750000, 'Alquiler', 0);
+(1, 1, '123 Main St', 'Residencial', 2, '-34.603722', '-58.381592', 120.5, 5, 'Agua, Electricidad', 2, 1, 1, 250000, 'Venta', 1),
+(2, 2, '456 Oak Ave', 'Comercial', 8, '-34.608418', '-58.370036', 350, 6, 'Agua, Electricidad, Gas', 4, 2, 0, 1200000, 'Venta', 1),
+(3, 3, '789 Pine Rd', 'Residencial', 3, '-34.611778', '-58.417309', 90, 2, 'Agua, Electricidad', 1, 0, 1, 150000, 'Alquiler', 1),
+(4, 4, '101 Maple Ln', 'Comercial', 5, '-34.615852', '-58.377232', 200, 3, 'Agua, Electricidad, Teléfono', 3, 1, 0, 500000, 'Alquiler', 1),
+(5, 5, '202 Birch Blvd', 'Residencial', 1, '-34.620522', '-58.384473', 180, 1, 'Agua, Electricidad, Gas, Internet', 3, 1, 2, 750000, 'Alquiler', 1),
+(9, 5, 'San Martin 123', 'departamento', 23, '-33.298908', '-66.303229', 80, 5, 'Agua, Electricidad', 2, 2, 2, 123456, 'Venta', 0),
+(10, 6, 'Mitre 567', 'departamento', 2, '-33.296643', '-66.303229', 123, 8, 'Agua, Electricidad', 2, 2, 2, 98200, 'Venta', 1),
+(11, 5, 'Pje Pepe 76', 'Comercial', 2, '-33.298908', '-66.303229', 63, 4, 'Agua, Electricidad', 1, 1, 1, 168232, 'Venta', 1),
+(12, 10, 'Ayacucho 893', 'Residencial', 1, '-33.298908', '-66.315071', 142, 8, 'Agua, Electricidad', 1, 1, 1, 109374, 'Venta', 1);
 
 -- --------------------------------------------------------
 
@@ -284,13 +291,13 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `contrato`
 --
 ALTER TABLE `contrato`
-  MODIFY `Id_Contrato` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `Id_Contrato` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `inmueble`
 --
 ALTER TABLE `inmueble`
-  MODIFY `Id_Inmueble` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `Id_Inmueble` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `inquilino`

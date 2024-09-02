@@ -422,7 +422,8 @@ WHERE (Contrato.{nameof(Contrato.Estado_Contrato)} = 0 OR Contrato.{nameof(Contr
                      FROM Inmueble
                      JOIN Tipo_Inmueble ON Inmueble.{nameof(Inmueble.Id_Tipo_Inmueble)} = Tipo_Inmueble.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)}
                      JOIN Propietario ON Inmueble.{nameof(Inmueble.Id_Propietario)} = Propietario.{nameof(Propietario.Id_Propietario)}
-                     WHERE Inmueble.{nameof(Inmueble.Id_Propietario)} = @id";
+                     WHERE Inmueble.{nameof(Inmueble.Id_Propietario)} = @id  
+                     ORDER BY Inmueble.{nameof(Inmueble.Estado_Inmueble)} DESC";
 
             using (var command = new MySqlCommand(sql, connection))
             {

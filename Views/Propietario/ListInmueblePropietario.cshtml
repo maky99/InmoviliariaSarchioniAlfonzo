@@ -31,7 +31,9 @@
 <div class="text-center">
     <h1 class="display-3">Inmuebles de @ViewBag.PropietarioNombre.Apellido, @ViewBag.PropietarioNombre.Nombre</h1>
     <div class="mb-3">
-        <a asp-controller="Inmueble" asp-action="NuevoInmueble" class="btn btn-success" title="Cargar Nuevo Inmueble">
+        <a asp-controller="Inmueble" asp-action="NuevoInmueble"
+            asp-route-idPropietario="@ViewBag.PropietarioNombre.Id_Propietario" class="btn btn-success"
+            title="Cargar Nuevo Inmueble">
             <i class="fa-solid fa-house"></i> Nuevo
         </a>
     </div>

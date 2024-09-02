@@ -1,7 +1,7 @@
 @model InmoviliariaSarchioniAlfonzo.Models.Inmueble
 
 @{
-    ViewData["Title"] = "Editar Inmueble";
+    ViewData["Title"] = "Crear Nuevo Inmueble";
 }
 
 <link rel="stylesheet" href="~/fondo/inmueble.css" />
@@ -13,29 +13,24 @@
 
             @if (TempData["ErrorMessage"] != null)
             {
-                <div class="alert alert-danger temp-message" role="alert">
+                <div class="alert alert-danger temp-message">
                     @TempData["ErrorMessage"]
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             }
 
-            <form asp-action="ActualizarInmueble" method="post">
-                <input type="hidden" asp-for="Id_Inmueble" />
+            <form asp-action="GuardarInmueble" method="post">
+                <input type="hidden" asp-for="Estado_Inmueble" value="1" />
 
                 <div class="form-group">
-                    <label asp-for="Id_Propietario" class="control-label">Propietario</label>
-                    <select asp-for="Id_Propietario" class="form-control">
-                        <option value="" disabled selected>Seleccione un propietario</option>
-                        @if (ViewData["propietario"] is List<Propietario> propietarios)
-                        {
-                            foreach (var propietario in propietarios)
-                            {
-                                <option value="@propietario.Id_Propietario">@propietario.Apellido @propietario.Nombre</option>
-                            }
-                        }
-                    </select>
+                    <label class="control-label">Propietario</label>
+                    <input type="text" class="form-control"
+                        value="@((ViewData["propietario"] as Propietario)?.Apellido + ", " + (ViewData["propietario"] as Propietario)?.Nombre)"
+                        readonly />
+                    <input type="hidden" asp-for="Id_Propietario"
+                        value="@((ViewData["propietario"] as Propietario)?.Id_Propietario)" />
                     <span asp-validation-for="Id_Propietario" class="text-danger"></span>
                 </div>
+
 
                 <div class="form-group">
                     <label asp-for="Direccion" class="control-label">Dirección</label>
@@ -125,35 +120,17 @@
                     </select>
                     <span asp-validation-for="Id_Tipo_Inmueble" class="text-danger"></span>
                 </div>
+
+
                 <div class="form-group">
-                    <label asp-for="Estado_Inmueble" class="control-label">Estado del Inmueble</label>
-                    <select asp-for="Estado_Inmueble" class="form-control">
-                        <option value="0">Inactivo</option>
-                        <option value="1">Activo</option>
-                    </select>
-                    <span asp-validation-for="Estado_Inmueble" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    @{
-                        var quienLlamo = ViewData["QuienLlamo"] as string;
-                    }
-                    @if (quienLlamo == "propietario")
-                    {
-                        <button type="submit" class="btn btn-primary mt-3">Guardar</button>
-                        <input type="hidden" name="source" value="Propietario" id="source" />
-                        <input type="hidden" name="PreviousUrl" value="@TempData["PreviousUrl"]" />
-                        <a href="@TempData["PreviousUrl"]" class="btn btn-secondary mt-3">Cancelar </a>
-                    }
-                    else
-                    {
-                        <button type="submit" class="btn btn-primary mt-3">Guardar</button>
-                        <input type="hidden" name="source" value="Inmueble" id="source" />
-                        <input type="hidden" name="PreviousUrl" value="nada" />
-                        <a asp-action="ListInmueble" class="btn btn-secondary mt-3">Cancelar</a>
-                    }
+                    <input type="hidden" name="PreviousUrl" value="@TempData["previousUrl"]" />
+                    <input type="hidden" name="source" value="propietario" />
+                    <button type="submit" class="btn btn-primary mt-3">Guardar</button>
+                    <a asp-action="ListInmueble" class="btn btn-secondary mt-3">Cancelar</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
 <script src="~/js/site.js"></script>

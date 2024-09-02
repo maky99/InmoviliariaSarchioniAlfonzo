@@ -24,20 +24,35 @@ public class InmuebleController : Controller
         return View("ListInmueble", inmueble);
     }
 
-    public IActionResult NuevoInmueble()
+    public IActionResult NuevoInmueble(int idPropietario)
     {
-        var tiposInmuebles = ti.TipoInmuActivo();
-        ViewData["tipoInmueble"] = tiposInmuebles;
-        var propietario = po.ObtenerPropietariosActivos();
-        ViewData["propietario"] = propietario;
+        if (idPropietario == 0)
+        {
+            var tiposInmuebles = ti.TipoInmuActivo();
+            ViewData["tipoInmueble"] = tiposInmuebles;
+            var propietario = po.ObtenerPropietariosActivos();
+            ViewData["propietario"] = propietario;
 
-        return View("NuevoInmueble");
+            return View("NuevoInmueble");
+        }
+        else
+        {
+            var tiposInmuebles = ti.TipoInmuActivo();
+            ViewData["tipoInmueble"] = tiposInmuebles;
+            var propietario = po.BuscarPropietario(idPropietario);
+            ViewData["propietario"] = propietario;
+            return View("NuevoInmueblePropietario");
+        }
     }
     [HttpPost]
-    public IActionResult GuardarInmueble(Inmueble inmueble)
+    public IActionResult GuardarInmueble(Inmueble inmueble, string source, string previousUrl)
     {
         ir.GuardarInmueble(inmueble);
-
+        if (source == "propietario")
+        {
+            string redirectUrl = !string.IsNullOrEmpty(previousUrl) ? previousUrl : "/";
+            return Redirect(redirectUrl);
+        }
         return RedirectToAction("ListInmueble");
     }
 
@@ -48,7 +63,6 @@ public class InmuebleController : Controller
         if (source == "propietario") // manejo los botones de volver segun la vista que lo llama 
         {
             return View("DetalleInmueble", inmueble);
-
         }
         else
         {
