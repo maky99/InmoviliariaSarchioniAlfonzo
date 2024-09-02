@@ -50,6 +50,12 @@ public class ContratoController : Controller
         else
         {
             var Contrato = co.ObtenerContratoActivo(id);
+            if (Contrato.inmueble == null)
+            {
+                TempData["ErrorMessage"] = "Contrato finalizado no se puede editar ";
+
+                return RedirectToAction(nameof(ListContrato));
+            }
             var tiposInmuebles = ti.TipoInmuActivo();
             ViewData["tipoInmueble"] = tiposInmuebles;
             var Inmuebles = ir.ObtenerInmueblesConPropietario();
@@ -114,9 +120,9 @@ public class ContratoController : Controller
 
     {
         var Contrato = co.ObtenerDetalle(id);
-     
+
         return View("DetalleContrato", Contrato);
-    
+
     }
-    
-    }
+
+}

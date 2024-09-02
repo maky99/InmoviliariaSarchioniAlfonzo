@@ -6,11 +6,12 @@
 
 <link rel="stylesheet" href="~/fondo/inmueble.css" />
 
-  @{
-        var advertencia = TempData["Advertencia"] as string;
-        var error = TempData["Error"] as string;
-    }
-@if (TempData["Advertencia"] != null){
+@{
+    var advertencia = TempData["Advertencia"] as string;
+    var error = TempData["Error"] as string;
+}
+@if (TempData["Advertencia"] != null)
+{
     @if (!string.IsNullOrEmpty(advertencia))
     {
         <div class="alert alert-warning temp-message">
@@ -18,7 +19,7 @@
         </div>
     }
 
-    
+
     @if (!string.IsNullOrEmpty(error))
     {
         <div class="alert alert-danger temp-message">
@@ -26,7 +27,14 @@
 
         </div>
     }
-    }
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show temp-message" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 
 <div class="text-center">
     <h1 class="display-3">Contratos</h1>
