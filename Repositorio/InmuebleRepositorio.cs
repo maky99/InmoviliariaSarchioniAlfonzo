@@ -55,7 +55,7 @@ public class InmuebleRepositorio
                                 Tipo = reader.GetString("Tipo"),
                                 Estado_Tipo_Inmueble = reader.GetInt32("Estado_Tipo_Inmueble")
                             }
-                          
+
                         });
                     }
                     connection.Close();
@@ -64,12 +64,12 @@ public class InmuebleRepositorio
         }
         return inmuebles;
     }
-public IList<Inmueble> ObtenerInmueblesConPropietario()
-{
-    List<Inmueble> inmuebles = new List<Inmueble>();
-    using (var connection = new MySqlConnection(connectionString))
+    public IList<Inmueble> ObtenerInmueblesConPropietario()
     {
-var sql = @$"SELECT 
+        List<Inmueble> inmuebles = new List<Inmueble>();
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = @$"SELECT 
     Inmueble.{nameof(Inmueble.Id_Inmueble)},
     Inmueble.{nameof(Inmueble.Id_Propietario)} AS Id_Propietario_Inmueble, -- Especifica que es de Inmueble
     Inmueble.{nameof(Inmueble.Direccion)},
@@ -104,50 +104,50 @@ WHERE (Contrato.{nameof(Contrato.Estado_Contrato)} = 0 OR Contrato.{nameof(Contr
     );";
 
 
-       
-        using (var command = new MySqlCommand(sql, connection))
-        {
-            connection.Open();
-            using (var reader = command.ExecuteReader())
+
+            using (var command = new MySqlCommand(sql, connection))
             {
-                while (reader.Read())
+                connection.Open();
+                using (var reader = command.ExecuteReader())
                 {
-                    inmuebles.Add(new Inmueble
+                    while (reader.Read())
                     {
-                        Id_Inmueble = reader.GetInt32("Id_Inmueble"),
-                        Id_Propietario = reader.GetInt32("Id_Propietario_Inmueble"), // Usa el alias especificado
-                        Direccion = reader.GetString("Direccion"),
-                        Uso = reader.GetString("Uso"),
-                        Ambientes = reader.GetInt32("Ambientes"),
-                        Latitud = reader.GetString("Latitud"),
-                        Longitud = reader.GetString("Longitud"),
-                        Tamano = reader.GetDouble("Tamano"),
-                        Servicios = reader.GetString("Servicios"),
-                        Bano = reader.GetInt32("Bano"),
-                        Cochera = reader.GetInt32("Cochera"),
-                        Patio = reader.GetInt32("Patio"),
-                        Precio = reader.GetDouble("Precio"),
-                        Condicion = reader.GetString("Condicion"),
-                        Estado_Inmueble = reader.GetInt32("Estado_Inmueble"),
-                        tipo = new Tipo_Inmueble
+                        inmuebles.Add(new Inmueble
                         {
-                            Id_Tipo_Inmueble = reader.GetInt32("Id_Tipo_Inmueble"),
-                            Tipo = reader.GetString("Tipo"),
-                            Estado_Tipo_Inmueble = reader.GetInt32("Estado_Tipo_Inmueble")
-                        },
-                        propietario = new Propietario
-                        {
-                            Nombre = reader.GetString("Nombre"),
-                            Apellido = reader.GetString("Apellido")
-                        }
-                    });
+                            Id_Inmueble = reader.GetInt32("Id_Inmueble"),
+                            Id_Propietario = reader.GetInt32("Id_Propietario_Inmueble"), // Usa el alias especificado
+                            Direccion = reader.GetString("Direccion"),
+                            Uso = reader.GetString("Uso"),
+                            Ambientes = reader.GetInt32("Ambientes"),
+                            Latitud = reader.GetString("Latitud"),
+                            Longitud = reader.GetString("Longitud"),
+                            Tamano = reader.GetDouble("Tamano"),
+                            Servicios = reader.GetString("Servicios"),
+                            Bano = reader.GetInt32("Bano"),
+                            Cochera = reader.GetInt32("Cochera"),
+                            Patio = reader.GetInt32("Patio"),
+                            Precio = reader.GetDouble("Precio"),
+                            Condicion = reader.GetString("Condicion"),
+                            Estado_Inmueble = reader.GetInt32("Estado_Inmueble"),
+                            tipo = new Tipo_Inmueble
+                            {
+                                Id_Tipo_Inmueble = reader.GetInt32("Id_Tipo_Inmueble"),
+                                Tipo = reader.GetString("Tipo"),
+                                Estado_Tipo_Inmueble = reader.GetInt32("Estado_Tipo_Inmueble")
+                            },
+                            propietario = new Propietario
+                            {
+                                Nombre = reader.GetString("Nombre"),
+                                Apellido = reader.GetString("Apellido")
+                            }
+                        });
+                    }
+                    connection.Close();
                 }
-                connection.Close();
             }
         }
+        return inmuebles;
     }
-    return inmuebles;
-}
 
 
 
@@ -431,7 +431,7 @@ WHERE (Contrato.{nameof(Contrato.Estado_Contrato)} = 0 OR Contrato.{nameof(Contr
                 connection.Open();
                 using (var reader = command.ExecuteReader())
                 {
-                    if (reader.Read())
+                    while (reader.Read())
                     {
                         inmueble.Add(new Inmueble
                         {
@@ -468,9 +468,8 @@ WHERE (Contrato.{nameof(Contrato.Estado_Contrato)} = 0 OR Contrato.{nameof(Contr
                                 Estado_Propietario = reader.GetInt32("Estado_Propietario")
                             }
                         });
-
-                        connection.Close();
                     }
+                    connection.Close();
                 }
 
                 return inmueble;
