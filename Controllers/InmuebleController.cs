@@ -85,6 +85,11 @@ public class InmuebleController : Controller
     {
         if (!ModelState.IsValid)
         {
+            var errors = ModelState.Values.SelectMany(v => v.Errors);
+            foreach (var error in errors)
+            {
+                Console.WriteLine(error.ErrorMessage); // O bien, usar cualquier método de logging.
+            }
             // Volver a mostrar la vista con los errores de validación
             ViewData["propietario"] = po.ObtenerPropietarios(); // Método para obtener propietarios
             ViewData["tipoInmueble"] = ti.TipoInmu(); // Método para obtener tipos de inmueble
@@ -99,12 +104,6 @@ public class InmuebleController : Controller
         }
         return RedirectToAction(nameof(ListInmueble));
     }
-
-
-
-
-
-
 
 
 }
