@@ -64,14 +64,14 @@ public class InmuebleRepositorio
         }
         return inmuebles;
     }
-    public IList<Inmueble> ObtenerInmueblesConPropietario()
+   public IList<Inmueble> ObtenerInmueblesConPropietario()
+{
+    List<Inmueble> inmuebles = new List<Inmueble>();
+    using (var connection = new MySqlConnection(connectionString))
     {
-        List<Inmueble> inmuebles = new List<Inmueble>();
-        using (var connection = new MySqlConnection(connectionString))
-        {
-            var sql = @$"SELECT 
+var sql = @$"SELECT DISTINCT
     Inmueble.{nameof(Inmueble.Id_Inmueble)},
-    Inmueble.{nameof(Inmueble.Id_Propietario)} AS Id_Propietario_Inmueble, -- Especifica que es de Inmueble
+    Inmueble.{nameof(Inmueble.Id_Propietario)} AS Id_Propietario_Inmueble,
     Inmueble.{nameof(Inmueble.Direccion)},
     Inmueble.{nameof(Inmueble.Uso)},
     Inmueble.{nameof(Inmueble.Ambientes)},
@@ -89,8 +89,7 @@ public class InmuebleRepositorio
     Inmueble.{nameof(Inmueble.Patio)},
     Inmueble.{nameof(Inmueble.Precio)},
     Inmueble.{nameof(Inmueble.Condicion)},
-    Inmueble.{nameof(Inmueble.Estado_Inmueble)},
-    Contrato.{nameof(Contrato.Estado_Contrato)}
+    Inmueble.{nameof(Inmueble.Estado_Inmueble)}
 FROM Inmueble
 JOIN Tipo_Inmueble ON Inmueble.{nameof(Inmueble.Id_Tipo_Inmueble)} = Tipo_Inmueble.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)}
 JOIN Propietario ON Inmueble.{nameof(Inmueble.Id_Propietario)} = Propietario.{nameof(Propietario.Id_Propietario)}
@@ -104,50 +103,52 @@ WHERE (Contrato.{nameof(Contrato.Estado_Contrato)} = 0 OR Contrato.{nameof(Contr
     );";
 
 
-
-            using (var command = new MySqlCommand(sql, connection))
+       
+        using (var command = new MySqlCommand(sql, connection))
+        {
+            connection.Open();
+            using (var reader = command.ExecuteReader())
             {
-                connection.Open();
-                using (var reader = command.ExecuteReader())
+                while (reader.Read())
                 {
-                    while (reader.Read())
+                    inmuebles.Add(new Inmueble
                     {
-                        inmuebles.Add(new Inmueble
+                        Id_Inmueble = reader.GetInt32("Id_Inmueble"),
+                        Id_Propietario = reader.GetInt32("Id_Propietario_Inmueble"), // Usa el alias especificado
+                        Direccion = reader.GetString("Direccion"),
+                        Uso = reader.GetString("Uso"),
+                        Ambientes = reader.GetInt32("Ambientes"),
+                        Latitud = reader.GetString("Latitud"),
+                        Longitud = reader.GetString("Longitud"),
+                        Tamano = reader.GetDouble("Tamano"),
+                        Servicios = reader.GetString("Servicios"),
+                        Bano = reader.GetInt32("Bano"),
+                        Cochera = reader.GetInt32("Cochera"),
+                        Patio = reader.GetInt32("Patio"),
+                        Precio = reader.GetDouble("Precio"),
+                        Condicion = reader.GetString("Condicion"),
+                        Estado_Inmueble = reader.GetInt32("Estado_Inmueble"),
+                        tipo = new Tipo_Inmueble
                         {
-                            Id_Inmueble = reader.GetInt32("Id_Inmueble"),
-                            Id_Propietario = reader.GetInt32("Id_Propietario_Inmueble"), // Usa el alias especificado
-                            Direccion = reader.GetString("Direccion"),
-                            Uso = reader.GetString("Uso"),
-                            Ambientes = reader.GetInt32("Ambientes"),
-                            Latitud = reader.GetString("Latitud"),
-                            Longitud = reader.GetString("Longitud"),
-                            Tamano = reader.GetDouble("Tamano"),
-                            Servicios = reader.GetString("Servicios"),
-                            Bano = reader.GetInt32("Bano"),
-                            Cochera = reader.GetInt32("Cochera"),
-                            Patio = reader.GetInt32("Patio"),
-                            Precio = reader.GetDouble("Precio"),
-                            Condicion = reader.GetString("Condicion"),
-                            Estado_Inmueble = reader.GetInt32("Estado_Inmueble"),
-                            tipo = new Tipo_Inmueble
-                            {
-                                Id_Tipo_Inmueble = reader.GetInt32("Id_Tipo_Inmueble"),
-                                Tipo = reader.GetString("Tipo"),
-                                Estado_Tipo_Inmueble = reader.GetInt32("Estado_Tipo_Inmueble")
-                            },
-                            propietario = new Propietario
-                            {
-                                Nombre = reader.GetString("Nombre"),
-                                Apellido = reader.GetString("Apellido")
-                            }
-                        });
-                    }
-                    connection.Close();
+                            Id_Tipo_Inmueble = reader.GetInt32("Id_Tipo_Inmueble"),
+                            Tipo = reader.GetString("Tipo"),
+                            Estado_Tipo_Inmueble = reader.GetInt32("Estado_Tipo_Inmueble")
+                        },
+                        propietario = new Propietario
+                        {
+                            Nombre = reader.GetString("Nombre"),
+                            Apellido = reader.GetString("Apellido")
+                        }
+                    });
                 }
+                connection.Close();
             }
         }
-        return inmuebles;
     }
+    return inmuebles;
+}
+
+
 
 
 

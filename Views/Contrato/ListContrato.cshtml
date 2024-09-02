@@ -4,7 +4,7 @@
     ViewData["Title"] = "Lista de Contratos";
 }
 
-<link rel="stylesheet" href="~/fondo/inmueble.css" />
+<link rel="stylesheet" href="~/fondo/contrato.css" />
 
 @{
     var advertencia = TempData["Advertencia"] as string;
@@ -28,6 +28,14 @@
         </div>
     }
 }
+<style>
+    .table td, .table th {
+        font-size: 14px;
+    }
+
+   
+</style>
+
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger alert-dismissible fade show temp-message" role="alert">
@@ -47,87 +55,60 @@
         <!-- Campo de búsqueda -->
         <input type="text" id="inputBusqueda" placeholder="Buscar..." onkeyup="filtrarTabla()">
     </div>
-    <table class="table" style="color: rgb(13, 12, 14); background-color: white;">
-        <thead>
-            <tr>
-                @* <th>Id Contrato</th> *@
-                @* <th>Id Inmueble</th> *@
-                <th>Uso</th>
-                <th>Tipo</th>
-                @* <th>Id Propietario</th> *@
-                <th>Nombre Pro</th>
-                <th>nombre Inq</th>
-                @* <th>Id Inquilino</th> *@
-                <th>Fecha Inicio</th>
-                <th>Fecha Finalizacion</th>
-                <th>Fecha Cancelación</th>
-                @* <th>Monto</th> *@
-                @* <th>Finalizacion Anticipada</th> *@
-                @* <th>Id Creado Por</th> *@
-                @* <th>Id Terminado</th> *@
-                @* <th>Estado Contrato</th> *@
-                <th>Acción</th>
+   <table class="table" style="color: rgb(13, 12, 14); background-color: white; width: auto; table-layout: auto;">
+    <thead>
+        <tr>
+            <th>Uso</th>
+            <th>Tipo</th>
+            <th>Nombre Pro</th>
+            <th>Nombre Inq</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Finalización</th>
+            <th>Fecha Cancelación</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            var rowClass = item.Estado_Contrato == 0 ? "inactivo" : "";
+            <tr class="@rowClass">
+                <td>@item.inmueble?.Uso @item.inmueble?.Direccion</td>
+                <td>@item.tipo_inmueble?.Tipo</td>
+                <td>@item.propietario?.Nombre @item.propietario?.Apellido</td>
+                <td>@item.inquilino?.Nombre @item.inquilino?.Apellido</td>
+                <td>@item.Fecha_Inicio.ToString("dd/MM/yyyy")</td>
+                <td>@item.Fecha_Finalizacion.ToString("dd/MM/yyyy")</td>
+                <td>
+                    @if (item.Finalizacion_Anticipada.ToString("dd/MM/yyyy") == "01/01/0001")
+                    {
+                        @:
+                    }
+                    else
+                    {
+                        @item.Finalizacion_Anticipada.ToString("dd/MM/yyyy")
+                    }
+                </td>
+                <td>
+                    <!-- Enlace para editar -->
+                    <a href="@Url.Action("EditarContrato", new { id = item.Id_Contrato })" class="btn btn-primary"
+                        title="Editar información">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </a>
+
+                    <!-- Enlace para desactivar -->
+                    <a href="@Url.Action("DetalleContrato", new { id = item.Id_Contrato })"
+                        title="Informacion del Contrato">
+                        <i class="fa-solid fa-circle-info"></i>
+                    </a>
+                    <!-- Enlace para eliminar -->
+                    <a href="EliminarContrato/@item.Id_Contrato" class="btn btn-danger" title="Desactivar Contrato">
+                        <i class="fa-solid fa-trash"></i> 
+                    </a>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                var rowClass = item.Estado_Contrato == 0 ? "inactivo" : "";
-                <tr class="@rowClass">
-                    @* <td>@item.Id_Contrato</td> *@
-                    @* <td>@item.Id_Inmueble</td> *@
-                    <td>@item.inmueble?.Uso @item.inmueble?.Direccion </td>
-                    <td>@item.tipo_inmueble?.Tipo</td>
-                    @* <td>@item.Id_Propietario</td> *@
-                    <td>@item.propietario?.Nombre @item.propietario?.Apellido</td>
-                    @* <td>@item.Id_Inquilino</td> *@
-                    <td>@item.inquilino?.Nombre @item.inquilino?.Apellido</td>
-                    <td>@item.Fecha_Inicio.ToString("dd/MM/yyyy")</td>
-                    <td>@item.Fecha_Finalizacion.ToString("dd/MM/yyyy")</td>
-                    <td>
-                        @if (item.Finalizacion_Anticipada.ToString("dd/MM/yyyy") == "01/01/0001")
-                        {
-                            @:
-                        }
-                        else
-                        {
-                            @item.Finalizacion_Anticipada.ToString("dd/MM/yyyy")
-                        }
-                    </td>
-                    @* <td>@item.Monto</td> *@
-                    @* <td>@item.Finalizacion_Anticipada</td> *@
-                    @* <td>@item.Id_Creado_Por</td> *@
-                    @* <td>@item.Id_Terminado_Por</td> *@
-                    @* <td>
-                @if (item.Estado_Contrato == 1)
-                {
-                <span>Activo</span>
-                }
-                else
-                {
-                <span>Inactivo</span>
-                }
-                </td> *@
-                    <td>
-                        <!-- Enlace para editar -->
-                        <a href="@Url.Action("EditarContrato", new { id = item.Id_Contrato })" class="btn btn-primary"
-                            title="Editar información">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </a>
-
-                        <!-- Enlace para desactivar -->
-                        <a href="@Url.Action("DetalleContrato", new { id = item.Id_Contrato })"
-                            title="Informacion del Contrato">
-                            <i class="fa-solid fa-circle-info"></i>
-                        </a>
-                        <!-- Enlace para eliminar -->
-                        <a href="EliminarContrato/@item.Id_Contrato" class="btn btn-danger" title="Desactivar Contrato">
-                            <i class="fa-solid fa-trash"></i> </a>
-
-
-                    </td>
-                </tr>
-            }
-        </tbody>
+        }
+    </tbody>
+</table>
 </div>
 <script src="~/js/site.js"></script>
