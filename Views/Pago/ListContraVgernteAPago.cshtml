@@ -6,24 +6,12 @@
 
 <link rel="stylesheet" href="~/fondo/pago.css" />
 
-@{
-    var advertencia = TempData["Advertencia"] as string;
-    var error = TempData["Error"] as string;
-}
-@if (TempData["Advertencia"] != null)
+@if (TempData["SuccessMessage"] != null)
 {
-    @if (!string.IsNullOrEmpty(advertencia))
-    {
-        <div class="alert alert-warning temp-message">
-            @advertencia
-        </div>
-    }
-    @if (!string.IsNullOrEmpty(error))
-    {
-        <div class="alert alert-danger temp-message">
-            @error
-        </div>
-    }
+    <div class="alert alert-success alert-dismissible fade show temp-message" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 }
 
 @if (TempData["ErrorMessage"] != null)
@@ -52,6 +40,7 @@
                 <th>Fecha Inicio</th>
                 <th>Fecha Finalización</th>
                 <th>Fecha Cancelación</th>
+                <th>Monto</th>
                 <th>Acción</th>
             </tr>
         </thead>
@@ -73,14 +62,15 @@
                             @:No
                         }
                     </td>
+                    <td>@($"${contrato?.Monto:N2}")</td>
                     <td>
                         <!-- Enlace para pagar -->
-                        <a href="@Url.Action("NuevoPago", new { id = contrato.Id_Contrato })" class="btn btn-primary"
+                        <a href="@Url.Action("NuevoPago", new { id = contrato?.Id_Contrato })" class="btn btn-primary"
                             title="Pagar">
                             <i class="fa-brands fa-cc-visa"></i> Pagar
                         </a>
                         <!-- Enlace para Finalización anticipada -->
-                        <a href="@contrato.Id_Contrato" class="btn btn-danger" title="Finalizar Contrato">
+                        <a href="@contrato?.Id_Contrato" class="btn btn-danger" title="Finalizar Contrato">
                             <i class="fa-solid fa-file-excel"></i> Finalizar Contrato
                         </a>
                     </td>

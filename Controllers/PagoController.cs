@@ -8,6 +8,7 @@ public class PagoController : Controller
     private readonly ILogger<PagoController> _logger;
 
     private PagoRepositorio pa = new PagoRepositorio();
+    private ContratoRepositorio cr = new ContratoRepositorio();
 
     public PagoController(ILogger<PagoController> logger)
     {
@@ -26,11 +27,26 @@ public class PagoController : Controller
     }
     public IActionResult NuevoPago(int id)
     {
-        var aPagar = pa.ContratoAPagar(id);
+        var contrato = cr.ObtenerDetalle(id);
+        ViewData["contrato"] = contrato;
 
-        return View("NuevoPago", aPagar);
+        return View("NuevoPago");
     }
+    [HttpPost]
+    public IActionResult GuardarPago(Pago pago)
+    {
+        if (ModelState.IsValid)
+        {
+            pa.GuardarPago(pago);
 
+            TempData["SuccessMessage"] = "Pago guardado exitosamente.";
+            return RedirectToAction("ListContVigentes");
+        }
+
+        TempData["ErrorMessage"] = $"Error al guardar el pago";
+        return View("NuevoPago", pago);
+
+    }
 
 
 }

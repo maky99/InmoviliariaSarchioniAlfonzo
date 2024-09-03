@@ -14,10 +14,6 @@
         <a asp-action="ListContVigentes" class="btn btn-success" title="Recibo de Pago">
             <i class="fa-solid fa-receipt"></i> Pagos</a>
     </div>
-    <div class="mb-3">
-        <a asp-action="NuevoPagos" class="btn btn-success" title="Nuevo Pago">
-            <i class="fa-regular fa-credit-card"></i> Pago Contrato Finalizado</a>
-    </div>
     @{
         var advertencia = TempData["Advertencia"] as string;
         var error = TempData["Error"] as string;

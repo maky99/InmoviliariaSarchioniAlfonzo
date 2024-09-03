@@ -1,61 +1,69 @@
 @model InmoviliariaSarchioniAlfonzo.Models.Pago
+@using System.Globalization
 
 @{
     ViewData["Title"] = "Nuevo Pago";
+    var contrato = ViewData["contrato"] as Contrato;
 }
+<link rel="stylesheet" href="~/fondo/pago.css" />
 
-<link rel="stylesheet" href="~/fondo/contrato.css" />
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <h2 class="text-center">@ViewData["Title"]</h2>
 
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger temp-message" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            <form asp-action="GuardarPago" method="post">
+                <input type="hidden" asp-for="Id_Contrato" value="@contrato?.Id_Contrato" />
+                <input type="hidden" asp-for="Multa" value="0" />
+                <input type="hidden" asp-for="Id_Creado_Por" value="1" />
+                <input type="hidden" asp-for="Id_Terminado_Por" value="1" />
+                <input type="hidden" asp-for="Estado_Pago" value="1" />
+                <input type="hidden" asp-for="Importe" value="@contrato?.Monto" />
+                <input type="hidden" asp-for="Fecha" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
 
-<div class="container">
-    @if (TempData["Advertencia"] != null)
-    {
-        <div class="alert alert-warning temp-message">
-            @TempData["Advertencia"]
-        </div>
-    }
-    @if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger temp-message">
-            @TempData["Error"]
-        </div>
-    }
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-6">
-                <h2 class="text-center">@ViewData["Title"]</h2>
+                <div class="form-group">
+                    <label class="control-label">N° de Contrato</label>
+                    <input type="text" class="form-control" value="@contrato?.Id_Contrato" readonly />
+                </div>
 
-
-
-                <form asp-action="asdsa" method="post">
-
-                    <div class="form-group">
-                        <label asp-for="Id_Contrato" class="control-label">N° de Contrato</label>
-                        <input asp-for="Id_Contrato" class="form-control" />
-                        <span asp-validation-for="Id_Contrato" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group">
-                        <label asp-for="Importe" class="control-label">Importe</label>
-                        <input asp-for="Importe" class="form-control" />
-                        <span asp-validation-for="Importe" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <label asp-for="Fecha" class="control-label">Fecha</label>
-                        <input asp-for="Fecha" class="form-control" type="date" />
-                        <span asp-validation-for="Fecha" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group mt-3">
-                        <input type="submit" value="Guardar" class="btn btn-primary " />
-                        <a asp-action="ListContVigentes" class="btn btn-secondary">Cancelar</a>
-                    </div>
-                </form>
-            </div>
+                <div class="form-group">
+                    <label class="control-label">Inquilino</label>
+                    <input type="text" class="form-control"
+                        value="@contrato?.inquilino?.Apellido, @contrato?.inquilino?.Nombre" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Monto</label>
+                    <input type="text" class="form-control" value="@($"${contrato?.Monto:N2}")" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Mes</label>
+                    <select class="form-control" name="Mes">
+                        <option value="" disabled selected>Seleccione mes</option>
+                        @for (int month = 1; month <= 12; month++)
+                        {
+                            var monthName = new DateTime(DateTime.Now.Year, month, 1).ToString("MMMM",
+                            CultureInfo.CurrentCulture);
+                            <option value="@month">@monthName</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Fecha Actual</label>
+                    <input type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly />
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary mt-3">Guardar Pago</button>
+                    <a asp-action="ListContVigentes" class="btn btn-secondary mt-3">Cancelar</a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+<script src="~/js/site.js"></script>

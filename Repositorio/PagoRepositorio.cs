@@ -184,81 +184,34 @@ public class PagoRepositorio
         return Contratos;
     }
 
-    public Contrato ContratoAPagar(int id)
+
+    //metodo para guardar pago 
+    public void GuardarPago(Pago pago)
     {
-        Contrato contrato = new Contrato();
+
         using (var connection = new MySqlConnection(connectionString))
         {
-            var sql = @$"SELECT 
-            Contrato.{nameof(Contrato.Id_Contrato)},
-            Contrato.{nameof(Contrato.Id_Inmueble)},
-            Contrato.{nameof(Contrato.Id_Propietario)},
-            Contrato.{nameof(Contrato.Id_Inquilino)} AS Contrato_Id_Inquilino,
-            Contrato.{nameof(Contrato.Fecha_Inicio)},
-            Contrato.{nameof(Contrato.Meses)},
-            Contrato.{nameof(Contrato.Fecha_Finalizacion)},
-            Contrato.{nameof(Contrato.Monto)},
-            Contrato.{nameof(Contrato.Finalizacion_Anticipada)},
-            Contrato.{nameof(Contrato.Estado_Contrato)},
-            Inquilino.{nameof(Inquilino.Id_Inquilino)},
-            Inquilino.{nameof(Inquilino.Dni)},
-            Inquilino.{nameof(Inquilino.Apellido)},
-            Inquilino.{nameof(Inquilino.Nombre)},
-            Inquilino.{nameof(Inquilino.Telefono)},
-            Inquilino.{nameof(Inquilino.Email)},
-            Inquilino.{nameof(Inquilino.Estado_Inquilino)}
-        FROM 
-            Contrato
-        JOIN 
-            Inquilino ON Inquilino.{nameof(Inquilino.Id_Inquilino)} = Contrato.{nameof(Contrato.Id_Inquilino)}
-        WHERE 
-            Contrato.{nameof(Contrato.Id_Contrato)} = @id";
-
+            var sql = $@"INSERT INTO pago ({nameof(Pago.Id_Contrato)},{nameof(Pago.Importe)},{nameof(Pago.Mes)},{nameof(Pago.Fecha)},{nameof(Pago.Multa)},{nameof(Pago.Id_Creado_Por)},{nameof(Pago.Id_Terminado_Por)},{nameof(Pago.Estado_Pago)})
+            VALUES
+            (@{nameof(Pago.Id_Contrato)},@{nameof(Pago.Importe)},@{nameof(Pago.Mes)},@{nameof(Pago.Fecha)},@{nameof(Pago.Multa)},@{nameof(Pago.Id_Creado_Por)},@{nameof(Pago.Id_Terminado_Por)},@{nameof(Pago.Estado_Pago)})";
             using (var command = new MySqlCommand(sql, connection))
             {
-                command.Parameters.AddWithValue("@id", id);
-
+                command.Parameters.AddWithValue($"@{nameof(Pago.Id_Contrato)}", pago.Id_Contrato);
+                command.Parameters.AddWithValue($"@{nameof(Pago.Importe)}", pago.Importe);
+                command.Parameters.AddWithValue($"@{nameof(Pago.Mes)}", pago.Mes);
+                command.Parameters.AddWithValue($"@{nameof(Pago.Fecha)}", pago.Fecha);
+                command.Parameters.AddWithValue($"@{nameof(Pago.Multa)}", pago.Multa);
+                command.Parameters.AddWithValue($"@{nameof(Pago.Id_Creado_Por)}", pago.Id_Creado_Por);
+                command.Parameters.AddWithValue($"@{nameof(Pago.Id_Terminado_Por)}", pago.Id_Terminado_Por);
+                command.Parameters.AddWithValue($"@{nameof(Pago.Estado_Pago)}", pago.Estado_Pago);
                 connection.Open();
-
-                using (var reader = command.ExecuteReader())
-                {
-                    if (reader.Read())
-                    {
-                        contrato = new Contrato
-                        {
-                            Id_Contrato = reader.GetInt32("Id_Contrato"), // Corregido aquí
-                            Id_Inmueble = reader.GetInt32("Id_Inmueble"),
-                            Id_Propietario = reader.GetInt32("Id_Propietario"),
-                            Id_Inquilino = reader.GetInt32("Contrato_Id_Inquilino"), // Este se mantiene igual
-                            Fecha_Inicio = reader.GetDateTime("Fecha_Inicio"),
-                            Meses = reader.GetInt32("Meses"),
-                            Fecha_Finalizacion = reader.GetDateTime("Fecha_Finalizacion"),
-                            Monto = reader.GetDouble("Monto"),
-                            Finalizacion_Anticipada = reader.GetDateTime("Finalizacion_Anticipada"),
-                            Estado_Contrato = reader.GetInt32("Estado_Contrato"),
-                            inquilino = new Inquilino
-                            {
-                                Id_Inquilino = reader.GetInt32("Id_Inquilino"),
-                                Dni = reader.GetInt32("Dni"),
-                                Apellido = reader.GetString("Apellido"),
-                                Nombre = reader.GetString("Nombre"),
-                                Telefono = reader.GetString("Telefono"),
-                                Email = reader.GetString("Email"),
-                                Estado_Inquilino = reader.GetInt32("Estado_Inquilino")
-                            }
-                        };
-                    }
-                    connection.Close();
-                }
+                command.ExecuteNonQuery();
+                connection.Close();
             }
+
         }
-
-        return contrato;
     }
-
-
 }
-
 
 
 
