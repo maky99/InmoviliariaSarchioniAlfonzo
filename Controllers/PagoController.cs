@@ -26,8 +26,9 @@ public class PagoController : Controller
     }
     public IActionResult NuevoPago(int id)
     {
+        var aPagar = pa.ContratoAPagar(id);
 
-        return View("NuevoPago");
+        return View("NuevoPago", aPagar);
     }
 
 
