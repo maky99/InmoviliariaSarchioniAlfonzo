@@ -3,10 +3,7 @@ using InmoviliariaSarchioniAlfonzo.Models;
 
 
 public class ContratoRepositorio
-
-
 {
-
     readonly string connectionString = "Server=localhost; Port=3306; Database=inmobiliaria; User=root;";
 
     //metodo para listar todos los Contrato
@@ -283,7 +280,7 @@ public class ContratoRepositorio
     }
 
 
- 
+
 
 
     public Contrato ObtenerDetalle(int id)
@@ -404,4 +401,4 @@ public class ContratoRepositorio
 
         return contrato;
     }
-    }
+}

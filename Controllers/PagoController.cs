@@ -17,10 +17,19 @@ public class PagoController : Controller
     public IActionResult ListPagos()
     {
         var pago = pa.ObtenerPagos();
-
-
         return View("ListaPago", pago);
     }
+    public IActionResult ListContVigentes()
+    {
+        var contratos = pa.ContratoVigente();
+        return View("ListContraVgernteAPago", contratos);
+    }
+    public IActionResult NuevoPago(int id)
+    {
+
+        return View("NuevoPago");
+    }
+
 
 
 }

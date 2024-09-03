@@ -13,8 +13,8 @@ public class Pago
     public int Id_Creado_Por { get; set; }
     public int Id_Terminado_Por { get; set; }
     public int Estado_Pago { get; set; }
-    //public Inquilino? inquilino { get; set; }
-    // public Contrato? contrato { get; set; }
+    public Inquilino? inquilino { get; set; }
+    public Contrato? contrato { get; set; }
 
 }
 

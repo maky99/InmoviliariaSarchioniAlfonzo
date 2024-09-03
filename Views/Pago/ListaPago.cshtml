@@ -11,8 +11,12 @@
 <div class="text-center">
     <h1 class="display-3">Pagos</h1>
     <div class="mb-3">
-        <a asp-action="EditarPropietario" class="btn btn-success" title="Cargar Nuevo Pago">
-            <i class="fa-regular fa-credit-card"></i> Nuevo</a>
+        <a asp-action="ListContVigentes" class="btn btn-success" title="Recibo de Pago">
+            <i class="fa-solid fa-receipt"></i> Pagos</a>
+    </div>
+    <div class="mb-3">
+        <a asp-action="NuevoPagos" class="btn btn-success" title="Nuevo Pago">
+            <i class="fa-regular fa-credit-card"></i> Pago Contrato Finalizado</a>
     </div>
     @{
         var advertencia = TempData["Advertencia"] as string;
@@ -41,16 +45,17 @@
 
         <thead>
             <tr>
-                <th>Id Pago</th>
-                <th>Id Contrato</th>
-                <th>Importe</th>
+                <th>Ticket de Pago</th>
+                <th>Inquilino</th>
+                <th>N° de Contrato</th>
                 <th>Mes</th>
-                <th>Fecha</th>
+                <th>Importe</th>
                 <th>Multa</th>
-                <th>Id Creado Por</th>
-                <th>Id Terminado Por</th>
+                <th>Total</th>
+                <th>Fecha de Pago</th>
+                @* <th>Id Creado Por</th>
+                <th>Id Terminado Por</th> *@
                 <th>Estado Pago</th>
-
                 <th>Acción</th>
             </tr>
         </thead>
@@ -59,14 +64,59 @@
             {
                 <tr>
                     <td>@pago.Id_Pago</td>
-                    <td>@pago.Id_Contrato</td>
-                    <td>@pago.Importe</td>
-                    <td>@pago.Mes</td>
+                    <td>@pago.inquilino?.Apellido, @pago.inquilino?.Nombre</td>
+                    <td>@pago.contrato?.Id_Contrato</td>
+                    <td>
+                        @{
+                            string mesPago;
+                            switch (pago.Mes)
+                            {
+                                case 1: mesPago = "Enero"; break;
+                                case 2: mesPago = "Febrero"; break;
+                                case 3: mesPago = "Marzo"; break;
+                                case 4: mesPago = "Abril"; break;
+                                case 5: mesPago = "Mayo"; break;
+                                case 6: mesPago = "Junio"; break;
+                                case 7: mesPago = "Julio"; break;
+                                case 8: mesPago = "Agosto"; break;
+                                case 9: mesPago = "Septiembre"; break;
+                                case 10: mesPago = "Octubre"; break;
+                                case 11: mesPago = "Noviembre"; break;
+                                case 12: mesPago = "Diciembre"; break;
+                                default: mesPago = "Mes Desconocido"; break;
+                            }
+                        }
+                        @mesPago
+                    </td>
+                    <td>$ @pago.contrato?.Monto</td>
+                    <td>
+                        @(pago.Multa != 0 ? $"$ {pago.Multa}" : "No")
+                    </td>
+                    <td>$
+                        @{
+                            var monto = pago.contrato?.Monto;
+                            var multa = pago.Multa;
+                            var total = monto + multa;
+
+                            // Mostrar el total en formato de dólares
+                            @total
+                        }
+                    </td>
                     <td>@pago.Fecha.ToString("dd/MM/yyyy")</td>
-                    <td>@pago.Multa</td>
-                    <td>@pago.Id_Creado_Por</td>
-                    <td>@pago.Id_Terminado_Por</td>
-                    <td>@pago.Estado_Pago</td>
+
+                    @* <td>@pago.Id_Creado_Por</td>
+                <td>@pago.Id_Terminado_Por</td> *@
+                    <td>
+                        @if (pago.Estado_Pago == 1)
+                        {
+                            <span>Pagado</span>
+                        }
+                        else if (pago.Estado_Pago == 0)
+                        {
+                            <span>Anulado</span>
+                        }
+                    </td>
+
 
                     <td>
                         <a asp-action="EditarPago" asp-route-id="@pago.Id_Pago" class="btn btn-primary"

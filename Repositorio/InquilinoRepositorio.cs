@@ -41,7 +41,7 @@ public class InquilinoRepositorio
         return inquilinos;
     }
 
- public IList<Inquilino> OptenerInquilinosActivos()
+    public IList<Inquilino> OptenerInquilinosActivos()
     {
         List<Inquilino> inquilinos = new List<Inquilino>();
         using (var connection = new MySqlConnection(connectionString))
@@ -215,5 +215,6 @@ public class InquilinoRepositorio
             }
         }
     }
+
 
 }

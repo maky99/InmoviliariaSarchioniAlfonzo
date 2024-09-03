@@ -75,6 +75,8 @@ public class PropietarioController : Controller
     public IActionResult EliminarPropietario(int id)
     {
         po.Baja(id);
+        TempData["Advertencia"] = "El propietario se desactivo correctamente .";
+
         return RedirectToAction(nameof(ListPropietario));
     }
 

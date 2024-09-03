@@ -87,7 +87,6 @@ public class InquilinoController : Controller
         ir.DesactivarInquilino(id);
         TempData["SuccessMessage"] = "El inquilino ha sido desactivado exitosamente.";
         return RedirectToAction("ListInquilino");
-
     }
 
 
