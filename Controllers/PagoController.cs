@@ -23,7 +23,6 @@ public class PagoController : Controller
     public IActionResult ListContVigentes()
     {
         var contratos = pa.ContratoVigente();
-        var suma = pa.CantPagos();//quiero sumar y restar la cantidad de pagos con los contratos y ver cuantas cuotas le falta pagar 
         return View("ListContraVgernteAPago", contratos);
     }
     public IActionResult NuevoPago(int id)

@@ -185,45 +185,7 @@ public class PagoRepositorio
         return Contratos;
     }
 
-    public IList<dynamic> CantPagos()
-    {
-        var resumenPagos = new List<dynamic>();
-
-        using (var connection = new MySqlConnection(connectionString))
-        {
-            var sql = $@"
-            SELECT 
-                {nameof(Pago.Id_Contrato)},
-                COUNT({nameof(Pago.Id_Pago)}) AS NumeroDePagos,
-                GROUP_CONCAT(DISTINCT {nameof(Pago.Mes)} ORDER BY {nameof(Pago.Mes)} ASC) AS MesesConPagos
-            FROM 
-                pago
-            GROUP BY 
-                {nameof(Pago.Id_Contrato)}";
-
-            using (var command = new MySqlCommand(sql, connection))
-            {
-                connection.Open();
-
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        dynamic row = new ExpandoObject();
-                        var rowDict = (IDictionary<string, object>)row;
-
-                        rowDict[nameof(Pago.Id_Contrato)] = reader.GetInt32(reader.GetOrdinal(nameof(Pago.Id_Contrato)));
-                        rowDict["NumeroDePagos"] = reader.GetInt32(reader.GetOrdinal("NumeroDePagos"));
-                        rowDict["MesesConPagos"] = reader.GetString(reader.GetOrdinal("MesesConPagos"));
-
-                        resumenPagos.Add(row);
-                    }
-                }
-            }
-        }
-
-        return resumenPagos;
-    }
+   
 
 
 
