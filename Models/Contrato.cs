@@ -5,7 +5,7 @@ namespace InmoviliariaSarchioniAlfonzo.Models;
 public class Contrato
 {
    public int Id_Contrato { get; set; }
-  [Required(ErrorMessage = "El campo es obligatorio.")]
+   [Required(ErrorMessage = "El campo es obligatorio.")]
    public int Id_Inmueble { get; set; }
    [Required(ErrorMessage = "El campo es obligatorio.")]
    public int Id_Propietario { get; set; }
@@ -19,7 +19,7 @@ public class Contrato
    public int Meses { get; set; }
    [Required(ErrorMessage = "El campo es obligatorio.")]
    public DateTime Fecha_Finalizacion { get; set; }
-   
+
 
    [Required(ErrorMessage = "El campo es obligatorio.")]
    [RegularExpression(@"^\d+$", ErrorMessage = "El campo debe contener solo números.")]
@@ -27,13 +27,13 @@ public class Contrato
    public double Monto { get; set; }
    [Required(ErrorMessage = "El campo es obligatorio.")]
    public DateTime Finalizacion_Anticipada { get; set; }
-  [Required(ErrorMessage = "El campo es obligatorio.")]
+   [Required(ErrorMessage = "El campo es obligatorio.")]
    public int Id_Creado_Por { get; set; }
    [Required(ErrorMessage = "El campo es obligatorio.")]
    public int Id_Terminado_Por { get; set; }
-  [Required(ErrorMessage = "El campo es obligatorio.")]
+   [Required(ErrorMessage = "El campo es obligatorio.")]
    public int Estado_Contrato { get; set; }
-  [Required(ErrorMessage = "El campo es obligatorio.")]
+   [Required(ErrorMessage = "El campo es obligatorio.")]
    public Inmueble? inmueble { get; set; }
    [Required(ErrorMessage = "El campo es obligatorio.")]
    public Tipo_Inmueble? tipo_inmueble { get; set; }
@@ -41,6 +41,8 @@ public class Contrato
    public Propietario? propietario { get; set; }
    [Required(ErrorMessage = "El campo es obligatorio.")]
    public Inquilino? inquilino { get; set; }
-   
+   public int MesesPagos { get; set; }
+
+
 
 }

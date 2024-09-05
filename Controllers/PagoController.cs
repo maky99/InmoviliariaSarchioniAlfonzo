@@ -22,15 +22,23 @@ public class PagoController : Controller
     }
     public IActionResult ListContVigentes()
     {
-        var contratos = pa.ContratoVigente();
+        var contratos = cr.ContratoVigente();
         return View("ListContraVgernteAPago", contratos);
     }
-    public IActionResult NuevoPago(int id)
+    public IActionResult NuevoPago(int id, string source)
     {
         var contrato = cr.ObtenerDetalle(id);
+        var pagos = pa.ObtenerPagosPorContrato(id);
+        ViewData["pagos"] = pagos;
         ViewData["contrato"] = contrato;
-
-        return View("NuevoPago");
+        if (source == "pagar")
+        {
+            return View("NuevoPago");
+        }
+        else
+        {
+            return View("NuevoPagoMulta");
+        }
     }
     [HttpPost]
     public IActionResult GuardarPago(Pago pago)
@@ -38,15 +46,39 @@ public class PagoController : Controller
         if (ModelState.IsValid)
         {
             pa.GuardarPago(pago);
+            //  busco los datos para ver si es la ultima cuota para infomrale y cambiarle el estado al contrato 
+            var contrato = cr.ObtenerDetalle(pago.Id_Contrato);
+            var pagos = pa.ObtenerPagosPorContrato(pago.Id_Contrato);
 
-            TempData["SuccessMessage"] = "Pago guardado exitosamente.";
+            if (pagos.Count >= contrato.Meses)
+            {
+                contrato.Estado_Contrato = 0;
+                cr.ActualizarContrato(contrato);
+                TempData["NotificationMessage"] = "Pago guardado exitosamente. Has pagado la última cuota.";
+            }
+            else
+            {
+                TempData["SuccessMessage"] = "Pago guardado exitosamente.";
+            }
+
             return RedirectToAction("ListContVigentes");
         }
 
-        TempData["ErrorMessage"] = $"Error al guardar el pago";
+        TempData["ErrorMessage"] = "Error al guardar el pago.";
         return View("NuevoPago", pago);
-
     }
+
+    //estoy mandando el pago y los contratos 
+    // public IActionResult NuevoPagoMulta(int id)
+    // {
+    //     var contrato = cr.ObtenerDetalle(id);
+    //     var pagos = pa.ObtenerPagosPorContrato(id);
+    //     ViewData["pagos"] = pagos;
+    //     ViewData["contrato"] = contrato;
+
+    //     return View("NuevoPagoMulta");
+    // }
+
 
 
 }

@@ -279,10 +279,7 @@ public class ContratoRepositorio
         }
     }
 
-
-
-
-
+    //metodo para optener el detalle de un cotrato especifico
     public Contrato ObtenerDetalle(int id)
     {
         var contrato = new Contrato();
@@ -401,5 +398,132 @@ public class ContratoRepositorio
 
         return contrato;
     }
+    //lista los contratos que estan vigentes
+    public IList<Contrato> ContratoVigente()
+    {
+        List<Contrato> Contratos = new List<Contrato>();
+
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = @$"
+        SELECT 
+            Contrato.{nameof(Contrato.Id_Contrato)},
+            Contrato.{nameof(Contrato.Id_Inmueble)} AS Id_Inmueble_Contrato,
+            Inmueble.{nameof(Inmueble.Uso)} AS Uso,
+            Inmueble.{nameof(Inmueble.Direccion)} AS Direccion,
+            Tipo_Inmueble.{nameof(Tipo_Inmueble.Tipo)} AS Tipo,
+            Contrato.{nameof(Contrato.Id_Propietario)},
+            Propietario.{nameof(Propietario.Nombre)} AS Nombre,
+            Propietario.{nameof(Propietario.Apellido)} AS Apellido,
+            Inquilino.{nameof(Inquilino.Nombre)} AS NombreI,
+            Inquilino.{nameof(Inquilino.Apellido)} AS ApellidoI,
+            Inquilino.{nameof(Inquilino.Dni)} AS DniI,
+            Contrato.{nameof(Contrato.Id_Inquilino)},
+            Contrato.{nameof(Contrato.Fecha_Inicio)}, 
+            Contrato.{nameof(Contrato.Fecha_Finalizacion)},
+            Contrato.{nameof(Contrato.Monto)},
+            Contrato.{nameof(Contrato.Meses)},
+            Contrato.{nameof(Contrato.Finalizacion_Anticipada)},
+            Contrato.{nameof(Contrato.Id_Creado_Por)},
+            Contrato.{nameof(Contrato.Id_Terminado_Por)}, 
+            Contrato.{nameof(Contrato.Estado_Contrato)},
+            COUNT(Pago.{nameof(Pago.Id_Pago)}) AS CuotasPagadas
+        FROM Contrato 
+        JOIN Inmueble ON Contrato.{nameof(Contrato.Id_Inmueble)} = Inmueble.{nameof(Inmueble.Id_Inmueble)}
+        LEFT JOIN Tipo_Inmueble ON Inmueble.{nameof(Inmueble.Id_Tipo_Inmueble)} = Tipo_Inmueble.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)}
+        JOIN Propietario ON Contrato.{nameof(Contrato.Id_Propietario)} = Propietario.{nameof(Propietario.Id_Propietario)}
+        JOIN Inquilino ON Contrato.{nameof(Contrato.Id_Inquilino)} = Inquilino.{nameof(Inquilino.Id_Inquilino)}
+        LEFT JOIN Pago ON Contrato.{nameof(Contrato.Id_Contrato)} = Pago.{nameof(Pago.Id_Contrato)}
+        WHERE Contrato.{nameof(Contrato.Estado_Contrato)} = 1
+        GROUP BY 
+            Contrato.{nameof(Contrato.Id_Contrato)},
+            Contrato.{nameof(Contrato.Id_Inmueble)},
+            Inmueble.{nameof(Inmueble.Uso)},
+            Inmueble.{nameof(Inmueble.Direccion)},
+            Tipo_Inmueble.{nameof(Tipo_Inmueble.Tipo)},
+            Contrato.{nameof(Contrato.Id_Propietario)},
+            Propietario.{nameof(Propietario.Nombre)},
+            Propietario.{nameof(Propietario.Apellido)},
+            Inquilino.{nameof(Inquilino.Nombre)},
+            Inquilino.{nameof(Inquilino.Apellido)},
+            Inquilino.{nameof(Inquilino.Dni)},
+            Contrato.{nameof(Contrato.Id_Inquilino)},
+            Contrato.{nameof(Contrato.Fecha_Inicio)}, 
+            Contrato.{nameof(Contrato.Fecha_Finalizacion)},
+            Contrato.{nameof(Contrato.Monto)},
+            Contrato.{nameof(Contrato.Meses)},
+            Contrato.{nameof(Contrato.Finalizacion_Anticipada)},
+            Contrato.{nameof(Contrato.Id_Creado_Por)},
+            Contrato.{nameof(Contrato.Id_Terminado_Por)}, 
+            Contrato.{nameof(Contrato.Estado_Contrato)}
+        ORDER BY Contrato.{nameof(Contrato.Estado_Contrato)} DESC";
+
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Contratos.Add(new Contrato
+                        {
+                            Id_Contrato = reader.GetInt32("Id_Contrato"),
+                            Id_Inmueble = reader.GetInt32("Id_Inmueble_Contrato"),
+                            Id_Propietario = reader.GetInt32("Id_Propietario"),
+                            Id_Inquilino = reader.GetInt32("Id_Inquilino"),
+                            Fecha_Inicio = reader.GetDateTime("Fecha_Inicio"),
+                            Fecha_Finalizacion = reader.GetDateTime("Fecha_Finalizacion"),
+                            Monto = reader.GetDouble("Monto"),
+                            Meses = reader.GetInt32("Meses"),
+                            Finalizacion_Anticipada = !reader.IsDBNull(reader.GetOrdinal("Finalizacion_Anticipada")) ? reader.GetDateTime("Finalizacion_Anticipada") : default(DateTime),
+                            Id_Creado_Por = reader.GetInt32("Id_Creado_Por"),
+                            Id_Terminado_Por = reader.IsDBNull(reader.GetOrdinal("Id_Terminado_Por")) ? default(int) : reader.GetInt32("Id_Terminado_Por"),
+                            Estado_Contrato = reader.GetInt32("Estado_Contrato"),
+                            inmueble = new Inmueble
+                            {
+                                Uso = reader.GetString("Uso"),
+                                Direccion = reader.GetString("Direccion")
+                            },
+                            tipo_inmueble = new Tipo_Inmueble
+                            {
+                                Tipo = reader.GetString("Tipo")
+                            },
+                            propietario = new Propietario
+                            {
+                                Nombre = reader.GetString("Nombre"),
+                                Apellido = reader.GetString("Apellido")
+                            },
+                            inquilino = new Inquilino
+                            {
+                                Nombre = reader.GetString("NombreI"),
+                                Apellido = reader.GetString("ApellidoI"),
+                                Dni = reader.GetInt32("DniI")
+                            },
+                            MesesPagos = reader.GetInt32("CuotasPagadas")
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+        }
+        return Contratos;
+    }
+    //cambio el estado a 0 porque ya pago la ultima cuota
+    public void ActualizarContrato(Contrato contrato)
+    {
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = "UPDATE Contrato SET Estado_Contrato = @Estado_Contrato WHERE Id_Contrato = @Id_Contrato";
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@Estado_Contrato", contrato.Estado_Contrato);
+                command.Parameters.AddWithValue("@Id_Contrato", contrato.Id_Contrato);
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+    }
+
 
 }

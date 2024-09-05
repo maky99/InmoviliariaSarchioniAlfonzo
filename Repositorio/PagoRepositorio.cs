@@ -8,7 +8,6 @@ public class PagoRepositorio
     private readonly string connectionString = "Server=localhost; Port=3306; Database=inmobiliaria; User=root;";
 
     // lista todos los pagos que hay
-
     public IList<Pago> ObtenerPagos()
     {
         List<Pago> pagos = new List<Pago>();
@@ -19,7 +18,7 @@ public class PagoRepositorio
                     Pago.{nameof(Pago.Id_Pago)},
                     Pago.{nameof(Pago.Id_Contrato)},
                     Pago.{nameof(Pago.Importe)},
-                    Pago.{nameof(Pago.Mes)},
+                    Pago.{nameof(Pago.CuotaPaga)},
                     Pago.{nameof(Pago.Fecha)},
                     Pago.{nameof(Pago.Multa)},
                     Pago.{nameof(Pago.Id_Creado_Por)},
@@ -61,7 +60,7 @@ public class PagoRepositorio
                             Id_Pago = reader.GetInt32("Id_Pago"),
                             Id_Contrato = reader.GetInt32("Id_Contrato"),
                             Importe = reader.GetDouble("Importe"),
-                            Mes = reader.GetInt32("Mes"),
+                            CuotaPaga = reader.GetInt32("CuotaPaga"),
                             Fecha = reader.GetDateTime("Fecha"),
                             Multa = reader.GetDouble("Multa"),
                             Id_Creado_Por = reader.GetInt32("Id_Creado_Por"),
@@ -99,111 +98,73 @@ public class PagoRepositorio
         return pagos;
     }
 
-    public IList<Contrato> ContratoVigente()
+    //listar pagos de un contrato especifico 
+    public IList<Pago> ObtenerPagosPorContrato(int idContrato)
     {
-        List<Contrato> Contratos = new List<Contrato>();
+        List<Pago> pagos = new List<Pago>();
 
         using (var connection = new MySqlConnection(connectionString))
         {
             var sql = @$"
-            SELECT 
-            Contrato.{nameof(Contrato.Id_Contrato)},
-            Contrato.{nameof(Contrato.Id_Inmueble)} AS Id_Inmueble_Contrato,
-            Inmueble.{nameof(Inmueble.Uso)} AS Uso,
-            Inmueble.{nameof(Inmueble.Direccion)} AS Direccion,
-            Tipo_Inmueble.{nameof(Tipo_Inmueble.Tipo)} AS Tipo,
-            Contrato.{nameof(Contrato.Id_Propietario)},
-            Propietario.{nameof(Propietario.Nombre)} AS Nombre,
-            Propietario.{nameof(Propietario.Apellido)} AS Apellido,
-            Inquilino.{nameof(Inquilino.Nombre)} AS NombreI,
-            Inquilino.{nameof(Inquilino.Apellido)} AS ApellidoI,
-            Inquilino.{nameof(Inquilino.Dni)} AS DniI,
-            Contrato.{nameof(Contrato.Id_Inquilino)},
-            Contrato.{nameof(Contrato.Fecha_Inicio)}, 
-            Contrato.{nameof(Contrato.Fecha_Finalizacion)},
-            Contrato.{nameof(Contrato.Monto)},
-            Contrato.{nameof(Contrato.Finalizacion_Anticipada)},
-            Contrato.{nameof(Contrato.Id_Creado_Por)},
-            Contrato.{nameof(Contrato.Id_Terminado_Por)}, 
-            Contrato.{nameof(Contrato.Estado_Contrato)}
-        FROM Contrato 
-        JOIN Inmueble ON Contrato.{nameof(Contrato.Id_Inmueble)} = Inmueble.{nameof(Inmueble.Id_Inmueble)}
-        LEFT JOIN Tipo_Inmueble ON Inmueble.{nameof(Inmueble.Id_Tipo_Inmueble)} = Tipo_Inmueble.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)}
-        JOIN Propietario ON Contrato.{nameof(Contrato.Id_Propietario)} = Propietario.{nameof(Propietario.Id_Propietario)}
-        JOIN Inquilino ON Contrato.{nameof(Contrato.Id_Inquilino)} = Inquilino.{nameof(Inquilino.Id_Inquilino)}
-        WHERE Contrato.{nameof(Contrato.Estado_Contrato)}=1
-        ORDER BY Contrato.{nameof(Contrato.Estado_Contrato)} DESC";
+        SELECT 
+            Pago.{nameof(Pago.Id_Pago)},
+            Pago.{nameof(Pago.Id_Contrato)},
+            Pago.{nameof(Pago.Importe)},
+            Pago.{nameof(Pago.CuotaPaga)},
+            Pago.{nameof(Pago.Fecha)},
+            Pago.{nameof(Pago.Multa)},
+            Pago.{nameof(Pago.Id_Creado_Por)},
+            Pago.{nameof(Pago.Id_Terminado_Por)},
+            Pago.{nameof(Pago.Estado_Pago)}
+        FROM Pago
+        WHERE Pago.{nameof(Pago.Id_Contrato)} = @IdContrato";
 
             using (var command = new MySqlCommand(sql, connection))
             {
+                command.Parameters.AddWithValue("@IdContrato", idContrato);
                 connection.Open();
+
                 using (var reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        Contratos.Add(new Contrato
+                        pagos.Add(new Pago
                         {
+                            Id_Pago = reader.GetInt32("Id_Pago"),
                             Id_Contrato = reader.GetInt32("Id_Contrato"),
-                            Id_Inmueble = reader.GetInt32("Id_Inmueble_Contrato"), // Usando el alias especificado
-                            Id_Propietario = reader.GetInt32("Id_Propietario"),
-                            Id_Inquilino = reader.GetInt32("Id_Inquilino"),
-                            Fecha_Inicio = reader.GetDateTime("Fecha_Inicio"),
-                            Fecha_Finalizacion = reader.GetDateTime("Fecha_Finalizacion"),
-                            Monto = reader.GetDouble("Monto"),
-                            Finalizacion_Anticipada = !reader.IsDBNull(reader.GetOrdinal("Finalizacion_Anticipada")) ? reader.GetDateTime("Finalizacion_Anticipada") : default(DateTime),
+                            Importe = reader.GetDouble("Importe"),
+                            CuotaPaga = reader.GetInt32("CuotaPaga"),
+                            Fecha = reader.GetDateTime("Fecha"),
+                            Multa = reader.GetDouble("Multa"),
                             Id_Creado_Por = reader.GetInt32("Id_Creado_Por"),
-                            Id_Terminado_Por = reader.IsDBNull(reader.GetOrdinal("Id_Terminado_Por")) ? default(int) : reader.GetInt32("Id_Terminado_Por"),
-                            Estado_Contrato = reader.GetInt32("Estado_Contrato"),
-                            inmueble = new Inmueble
-                            {
-                                Uso = reader.GetString("Uso"),
-                                Direccion = reader.GetString("Direccion"),
-                                // Id_Tipo_Inmueble no estaba en el SELECT. Si lo necesitas, inclúyelo en la consulta SQL.
-                            },
-                            tipo_inmueble = new Tipo_Inmueble
-                            {
-                                Tipo = reader.GetString("Tipo")
-                            },
-                            propietario = new Propietario
-                            {
-                                Nombre = reader.GetString("Nombre"),
-                                Apellido = reader.GetString("Apellido")
-                            },
-                            inquilino = new Inquilino
-                            {
-                                Nombre = reader.GetString("NombreI"),
-                                Apellido = reader.GetString("ApellidoI"),
-                                Dni = reader.GetInt32("DniI")
-
-                            }
+                            Id_Terminado_Por = reader.GetInt32("Id_Terminado_Por"),
+                            Estado_Pago = reader.GetInt32("Estado_Pago")
                         });
                     }
-                    connection.Close();
                 }
             }
         }
-        return Contratos;
+        return pagos;
     }
 
-   
 
 
 
 
-    //metodo para guardar pago 
+    // //metodo para guardar pago 
+
     public void GuardarPago(Pago pago)
     {
-
         using (var connection = new MySqlConnection(connectionString))
         {
-            var sql = $@"INSERT INTO pago ({nameof(Pago.Id_Contrato)},{nameof(Pago.Importe)},{nameof(Pago.Mes)},{nameof(Pago.Fecha)},{nameof(Pago.Multa)},{nameof(Pago.Id_Creado_Por)},{nameof(Pago.Id_Terminado_Por)},{nameof(Pago.Estado_Pago)})
-            VALUES
-            (@{nameof(Pago.Id_Contrato)},@{nameof(Pago.Importe)},@{nameof(Pago.Mes)},@{nameof(Pago.Fecha)},@{nameof(Pago.Multa)},@{nameof(Pago.Id_Creado_Por)},@{nameof(Pago.Id_Terminado_Por)},@{nameof(Pago.Estado_Pago)})";
+            var sql = $@"INSERT INTO pago ({nameof(Pago.Id_Contrato)},{nameof(Pago.Importe)},{nameof(Pago.CuotaPaga)},{nameof(Pago.Fecha)},{nameof(Pago.Multa)},{nameof(Pago.Id_Creado_Por)},{nameof(Pago.Id_Terminado_Por)},{nameof(Pago.Estado_Pago)})
+        VALUES
+        (@{nameof(Pago.Id_Contrato)},@{nameof(Pago.Importe)},@{nameof(Pago.CuotaPaga)},@{nameof(Pago.Fecha)},@{nameof(Pago.Multa)},@{nameof(Pago.Id_Creado_Por)},@{nameof(Pago.Id_Terminado_Por)},@{nameof(Pago.Estado_Pago)})";
             using (var command = new MySqlCommand(sql, connection))
             {
                 command.Parameters.AddWithValue($"@{nameof(Pago.Id_Contrato)}", pago.Id_Contrato);
                 command.Parameters.AddWithValue($"@{nameof(Pago.Importe)}", pago.Importe);
-                command.Parameters.AddWithValue($"@{nameof(Pago.Mes)}", pago.Mes);
+                command.Parameters.AddWithValue($"@{nameof(Pago.CuotaPaga)}", pago.CuotaPaga);  // Aquí se usa la cuota seleccionada
                 command.Parameters.AddWithValue($"@{nameof(Pago.Fecha)}", pago.Fecha);
                 command.Parameters.AddWithValue($"@{nameof(Pago.Multa)}", pago.Multa);
                 command.Parameters.AddWithValue($"@{nameof(Pago.Id_Creado_Por)}", pago.Id_Creado_Por);
@@ -213,9 +174,34 @@ public class PagoRepositorio
                 command.ExecuteNonQuery();
                 connection.Close();
             }
-
         }
     }
+
+    // public void GuardarPago(Pago pago)
+    // {
+
+    //     using (var connection = new MySqlConnection(connectionString))
+    //     {
+    //         var sql = $@"INSERT INTO pago ({nameof(Pago.Id_Contrato)},{nameof(Pago.Importe)},{nameof(Pago.Mes)},{nameof(Pago.Fecha)},{nameof(Pago.Multa)},{nameof(Pago.Id_Creado_Por)},{nameof(Pago.Id_Terminado_Por)},{nameof(Pago.Estado_Pago)})
+    //         VALUES
+    //         (@{nameof(Pago.Id_Contrato)},@{nameof(Pago.Importe)},@{nameof(Pago.Mes)},@{nameof(Pago.Fecha)},@{nameof(Pago.Multa)},@{nameof(Pago.Id_Creado_Por)},@{nameof(Pago.Id_Terminado_Por)},@{nameof(Pago.Estado_Pago)})";
+    //         using (var command = new MySqlCommand(sql, connection))
+    //         {
+    //             command.Parameters.AddWithValue($"@{nameof(Pago.Id_Contrato)}", pago.Id_Contrato);
+    //             command.Parameters.AddWithValue($"@{nameof(Pago.Importe)}", pago.Importe);
+    //             command.Parameters.AddWithValue($"@{nameof(Pago.Mes)}", pago.Mes);
+    //             command.Parameters.AddWithValue($"@{nameof(Pago.Fecha)}", pago.Fecha);
+    //             command.Parameters.AddWithValue($"@{nameof(Pago.Multa)}", pago.Multa);
+    //             command.Parameters.AddWithValue($"@{nameof(Pago.Id_Creado_Por)}", pago.Id_Creado_Por);
+    //             command.Parameters.AddWithValue($"@{nameof(Pago.Id_Terminado_Por)}", pago.Id_Terminado_Por);
+    //             command.Parameters.AddWithValue($"@{nameof(Pago.Estado_Pago)}", pago.Estado_Pago);
+    //             connection.Open();
+    //             command.ExecuteNonQuery();
+    //             connection.Close();
+    //         }
+
+    //     }
+    // }
 }
 
 

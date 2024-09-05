@@ -44,7 +44,7 @@
                 <th>Ticket de Pago</th>
                 <th>Inquilino</th>
                 <th>N° de Contrato</th>
-                <th>Mes</th>
+                <th>Cuota</th>
                 <th>Importe</th>
                 <th>Multa</th>
                 <th>Total</th>
@@ -62,28 +62,7 @@
                     <td>@pago.Id_Pago</td>
                     <td>@pago.inquilino?.Apellido, @pago.inquilino?.Nombre</td>
                     <td>@pago.contrato?.Id_Contrato</td>
-                    <td>
-                        @{
-                            string mesPago;
-                            switch (pago.Mes)
-                            {
-                                case 1: mesPago = "Enero"; break;
-                                case 2: mesPago = "Febrero"; break;
-                                case 3: mesPago = "Marzo"; break;
-                                case 4: mesPago = "Abril"; break;
-                                case 5: mesPago = "Mayo"; break;
-                                case 6: mesPago = "Junio"; break;
-                                case 7: mesPago = "Julio"; break;
-                                case 8: mesPago = "Agosto"; break;
-                                case 9: mesPago = "Septiembre"; break;
-                                case 10: mesPago = "Octubre"; break;
-                                case 11: mesPago = "Noviembre"; break;
-                                case 12: mesPago = "Diciembre"; break;
-                                default: mesPago = "Mes Desconocido"; break;
-                            }
-                        }
-                        @mesPago
-                    </td>
+                    <td>@pago.CuotaPaga</td>
                     <td>$ @pago.contrato?.Monto</td>
                     <td>
                         @(pago.Multa != 0 ? $"$ {pago.Multa}" : "No")

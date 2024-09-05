@@ -5,9 +5,29 @@
     ViewData["Title"] = "Nuevo Pago";
     var contrato = ViewData["contrato"] as Contrato;
     var pagos = ViewData["pagos"] as List<InmoviliariaSarchioniAlfonzo.Models.Pago>;
-    var cuotasPagadas = pagos?.Select(p => p.CuotaPaga).ToHashSet() ?? new HashSet<int>(); // Usar HashSet para eficiencia
+    var cuotasPagadas = pagos?.Select(p => p.CuotaPaga).ToHashSet() ?? new HashSet<int>();
 
-    @* var cuotasPagadas = pagos?.Select(p => p.Mes).ToList() ?? new List<int>(); *@
+    // Calcular la cantidad de cuotas pagadas
+    int totalCuotas = contrato?.Meses ?? 0;
+    int cantidadPagadas = cuotasPagadas.Count;
+    double multa = 0;
+    double cuotapagar = contrato?.Monto ?? 0;
+    string tipoMulta = "";
+
+    // Calcular la multa
+    if (cantidadPagadas < totalCuotas / 2.0)
+    {
+        multa = 2 * cuotapagar;
+        tipoMulta = "Multa correspondiente a 2 cuotas.";
+    }
+    else
+    {
+        multa = cuotapagar;
+        tipoMulta = "Multa correspondiente a 1 cuota.";
+    }
+
+
+    double totalAPagar = cuotapagar + multa;
 }
 
 <link rel="stylesheet" href="~/fondo/pago.css" />
@@ -24,9 +44,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             }
+
             <form asp-action="GuardarPago" method="post">
                 <input type="hidden" asp-for="Id_Contrato" value="@contrato?.Id_Contrato" />
-                <input type="hidden" asp-for="Multa" value="0" />
+                <input type="hidden" asp-for="Multa" value="@multa" />
                 <input type="hidden" asp-for="Id_Creado_Por" value="1" />
                 <input type="hidden" asp-for="Id_Terminado_Por" value="1" />
                 <input type="hidden" asp-for="Estado_Pago" value="1" />
@@ -37,33 +58,24 @@
                     <label class="control-label">N° de Contrato</label>
                     <input type="text" class="form-control" value="@contrato?.Id_Contrato" readonly />
                 </div>
-
                 <div class="form-group">
                     <label class="control-label">Inquilino</label>
                     <input type="text" class="form-control"
-                        value="@contrato?.inquilino?.Apellido, @contrato?.inquilino?.Nombre" readonly />
+                        value="@($"{contrato?.inquilino?.Apellido}, {contrato?.inquilino?.Nombre}")" readonly />
                 </div>
                 <div class="form-group">
                     <label class="control-label">Monto</label>
                     <input type="text" class="form-control" value="@($"${contrato?.Monto:N2}")" readonly />
                 </div>
                 <div class="form-group">
-                    <label class="control-label">Cuota</label>
-                    <select class="form-control" name="CuotaPaga">
-                        <option value="" disabled selected>Seleccione cuota</option>
-                        @for (int cuota = 1; cuota <= contrato?.Meses; cuota++)
-                        {
-                            // Verificar si la cuota ya ha sido pagada
-                            if (!cuotasPagadas.Contains(cuota))
-                            {
-                                <option value="@cuota">Cuota @cuota</option>
-                            }
-                        }
-                    </select>
+                    <label class="control-label">Multa</label>
+                    <input type="text" class="form-control" value="@($"${multa:N2}")" readonly />
+                    <small class="text-danger">@tipoMulta</small>
                 </div>
+
                 <div class="form-group">
-                    <label class="control-label">Fecha Actual</label>
-                    <input type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly />
+                    <label class="control-label">Total a Pagar</label>
+                    <input type="text" class="form-control" value="@($"${totalAPagar:N2}")" readonly />
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary mt-3">Guardar Pago</button>
@@ -73,4 +85,5 @@
         </div>
     </div>
 </div>
+
 <script src="~/js/site.js"></script>
