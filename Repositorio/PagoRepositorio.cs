@@ -46,7 +46,12 @@ public class PagoRepositorio
                 JOIN 
                     Contrato ON Pago.{nameof(Pago.Id_Contrato)} = Contrato.{nameof(Contrato.Id_Contrato)}
                 JOIN 
-                    Inquilino ON Contrato.{nameof(Contrato.Id_Inquilino)} = Inquilino.{nameof(Inquilino.Id_Inquilino)}";
+                    Inquilino ON Contrato.{nameof(Contrato.Id_Inquilino)} = Inquilino.{nameof(Inquilino.Id_Inquilino)}
+                ORDER BY 
+                    Pago.{nameof(Pago.Id_Contrato)}, 
+                    Pago.{nameof(Pago.CuotaPaga)}, 
+                    Inquilino.{nameof(Inquilino.Apellido)}, 
+                    Inquilino.{nameof(Inquilino.Nombre)}";
 
             using (var command = new MySqlCommand(sql, connection))
             {

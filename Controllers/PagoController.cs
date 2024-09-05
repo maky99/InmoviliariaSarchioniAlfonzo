@@ -68,17 +68,5 @@ public class PagoController : Controller
         return View("NuevoPago", pago);
     }
 
-    //estoy mandando el pago y los contratos 
-    // public IActionResult NuevoPagoMulta(int id)
-    // {
-    //     var contrato = cr.ObtenerDetalle(id);
-    //     var pagos = pa.ObtenerPagosPorContrato(id);
-    //     ViewData["pagos"] = pagos;
-    //     ViewData["contrato"] = contrato;
-
-    //     return View("NuevoPagoMulta");
-    // }
-
-
 
 }
