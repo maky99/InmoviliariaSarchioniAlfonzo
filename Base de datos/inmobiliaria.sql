@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 27-08-2024 a las 23:33:06
+-- Tiempo de generación: 05-09-2024 a las 20:06:05
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -32,14 +32,31 @@ CREATE TABLE `contrato` (
   `Id_Inmueble` int(11) DEFAULT NULL,
   `Id_Propietario` int(11) DEFAULT NULL,
   `Id_Inquilino` int(11) DEFAULT NULL,
-  `Fecha_Inicio` date DEFAULT NULL,
-  `Fecha_Finalizacion` date DEFAULT NULL,
-  `Monto` double DEFAULT NULL,
+  `Fecha_Inicio` date NOT NULL,
+  `Meses` int(255) NOT NULL,
+  `Fecha_Finalizacion` date NOT NULL,
+  `Monto` double NOT NULL,
   `Finalizacion_Anticipada` date DEFAULT NULL,
   `Id_Creado_Por` int(50) NOT NULL,
-  `Id_Terminado_Por` int(50) NOT NULL,
-  `Estado_Contrato` int(11) DEFAULT NULL
+  `Id_Terminado_Por` int(50) DEFAULT NULL,
+  `Estado_Contrato` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `contrato`
+--
+
+INSERT INTO `contrato` (`Id_Contrato`, `Id_Inmueble`, `Id_Propietario`, `Id_Inquilino`, `Fecha_Inicio`, `Meses`, `Fecha_Finalizacion`, `Monto`, `Finalizacion_Anticipada`, `Id_Creado_Por`, `Id_Terminado_Por`, `Estado_Contrato`) VALUES
+(1, 1, 5, 8, '2024-03-01', 9, '2025-08-01', 5000, '2024-08-31', 1, 0, 0),
+(2, 4, 6, 8, '2024-08-01', 6, '2024-08-31', 123456, '2024-09-20', 1, 0, 0),
+(3, 5, 5, 5, '2024-08-01', 5, '2024-08-31', 1212, '0001-01-01', 1, 0, 0),
+(4, 1, 1, 8, '2024-08-01', 3, '2024-12-01', 12000, '2026-12-24', 0, 0, 0),
+(5, 1, 1, 8, '2024-09-01', 4, '2024-12-31', 21200, '2025-01-01', 1, 0, 0),
+(6, 1, 1, 8, '2024-09-01', 2, '2024-10-31', 543000, '0001-01-01', 1, 0, 0),
+(7, 1, 1, 8, '2024-09-01', 9, '2025-05-31', 691000, '0001-01-01', 1, 0, 1),
+(8, 5, 5, 8, '2024-09-01', 5, '2025-01-31', 456789, '0001-01-01', 1, 0, 0),
+(9, 3, 3, 5, '2024-09-01', 18, '2026-03-03', 132456, '2025-12-01', 1, 0, 0),
+(10, 9, 5, 5, '2024-01-01', 16, '2025-05-01', 999999, '0001-01-01', 1, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -49,14 +66,14 @@ CREATE TABLE `contrato` (
 
 CREATE TABLE `inmueble` (
   `Id_Inmueble` int(11) NOT NULL,
-  `Id_Propietario` int(11) DEFAULT NULL,
+  `Id_Propietario` int(11) NOT NULL,
   `Direccion` varchar(255) DEFAULT NULL,
   `Uso` varchar(50) DEFAULT NULL,
   `Ambientes` int(11) DEFAULT NULL,
   `Latitud` varchar(255) DEFAULT NULL,
   `Longitud` varchar(255) DEFAULT NULL,
   `Tamano` double DEFAULT NULL,
-  `Id_Tipo_Inmueble` int(11) DEFAULT NULL,
+  `Id_Tipo_Inmueble` int(11) NOT NULL,
   `Servicios` varchar(255) DEFAULT NULL,
   `Bano` int(11) DEFAULT NULL,
   `Cochera` int(11) DEFAULT NULL,
@@ -71,11 +88,15 @@ CREATE TABLE `inmueble` (
 --
 
 INSERT INTO `inmueble` (`Id_Inmueble`, `Id_Propietario`, `Direccion`, `Uso`, `Ambientes`, `Latitud`, `Longitud`, `Tamano`, `Id_Tipo_Inmueble`, `Servicios`, `Bano`, `Cochera`, `Patio`, `Precio`, `Condicion`, `Estado_Inmueble`) VALUES
-(1, 1, '123 Main St', 'Residencial', 2, '-34.603722', '-58.381592', 120.5, 8, 'Agua, Electricidad', 2, 1, 1, 250000, 'Venta', 1),
-(2, 2, '456 Oak Ave', 'Comercial', 8, '-34.608418', '-58.370036', 350, 2, 'Agua, Electricidad, Gas', 4, 2, 0, 1200000, 'Venta', 1),
-(3, 3, '789 Pine Rd', 'Residencial', 3, '-34.611778', '-58.417309', 90, 1, 'Agua, Electricidad', 1, 0, 1, 150000, 'Alquiler', 1),
-(4, 4, '101 Maple Ln', 'Comercial', 5, '-34.615852', '-58.377232', 200, 3, 'Agua, Electricidad, Teléfono', 3, 1, 0, 500000, 'Alquiler', 0),
-(5, 5, '202 Birch Blvd', 'Residencial', 6, '-34.620522', '-58.384473', 180, 1, 'Agua, Electricidad, Gas, Internet', 3, 2, 1, 750000, 'Alquiler', 0);
+(1, 1, '123 Main St', 'Residencial', 2, '-34.603722', '-58.381592', 120.5, 5, 'Agua, Electricidad', 2, 1, 1, 250000, 'Venta', 1),
+(2, 2, '456 Oak Ave', 'Comercial', 8, '-34.608418', '-58.370036', 350, 6, 'Agua, Electricidad, Gas', 4, 2, 0, 1200000, 'Venta', 1),
+(3, 3, '789 Pine Rd', 'Residencial', 3, '-34.611778', '-58.417309', 90, 2, 'Agua, Electricidad', 1, 0, 1, 150000, 'Alquiler', 1),
+(4, 4, '101 Maple Ln', 'Comercial', 5, '-34.615852', '-58.377232', 200, 3, 'Agua, Electricidad, Teléfono', 3, 1, 0, 500000, 'Alquiler', 1),
+(5, 5, '202 Birch Blvd', 'Residencial', 1, '-34.620522', '-58.384473', 180, 1, 'Agua, Electricidad, Gas, Internet', 3, 1, 2, 750000, 'Alquiler', 1),
+(9, 5, 'San Martin 123', 'departamento', 23, '-33.298908', '-66.303229', 80, 5, 'Agua, Electricidad', 2, 2, 2, 123456, 'Venta', 0),
+(10, 6, 'Mitre 567', 'departamento', 2, '-33.296643', '-66.303229', 123, 8, 'Agua, Electricidad', 2, 2, 2, 98200, 'Venta', 1),
+(11, 5, 'Pje Pepe 76', 'Comercial', 2, '-33.298908', '-66.303229', 63, 4, 'Agua, Electricidad', 1, 1, 1, 168232, 'Venta', 1),
+(12, 10, 'Ayacucho 893', 'Residencial', 1, '-33.298908', '-66.315071', 142, 8, 'Agua, Electricidad', 1, 1, 1, 109374, 'Venta', 1);
 
 -- --------------------------------------------------------
 
@@ -120,13 +141,32 @@ CREATE TABLE `pago` (
   `Id_Pago` int(11) NOT NULL,
   `Id_Contrato` int(11) DEFAULT NULL,
   `Importe` double DEFAULT NULL,
-  `Mes` int(11) DEFAULT NULL,
+  `CuotaPaga` int(11) NOT NULL,
   `Fecha` date DEFAULT NULL,
   `Multa` double DEFAULT NULL,
   `Id_Creado_Por` int(50) NOT NULL,
-  `Id_Terminado_Por` int(50) NOT NULL,
+  `Id_Terminado_Por` int(50) DEFAULT NULL,
   `Estado_Pago` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `pago`
+--
+
+INSERT INTO `pago` (`Id_Pago`, `Id_Contrato`, `Importe`, `CuotaPaga`, `Fecha`, `Multa`, `Id_Creado_Por`, `Id_Terminado_Por`, `Estado_Pago`) VALUES
+(31, 3, 1212, 1, '2024-09-05', 0, 1, 1, 1),
+(32, 6, 543000, 2, '2024-09-05', 0, 1, 1, 1),
+(33, 3, 1212, 5, '2024-09-05', 0, 1, 1, 1),
+(34, 3, 1212, 3, '2024-09-05', 0, 1, 1, 1),
+(36, 3, 1212, 2, '2024-09-05', 0, 1, 1, 1),
+(37, 3, 1212, 4, '2024-09-05', 0, 1, 1, 1),
+(38, 6, 543000, 1, '2024-09-05', 0, 1, 1, 1),
+(39, 8, 456789, 1, '2024-09-05', 0, 1, 1, 1),
+(40, 8, 456789, 2, '2024-09-05', 0, 1, 1, 1),
+(41, 8, 456789, 3, '2024-09-05', 0, 1, 1, 1),
+(42, 7, 691000, 1, '2024-09-05', 0, 1, 1, 1),
+(43, 8, 456789, 5, '2024-09-05', 0, 1, 1, 1),
+(44, 8, 456789, 4, '2024-09-05', 0, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -151,15 +191,15 @@ CREATE TABLE `propietario` (
 
 INSERT INTO `propietario` (`Id_Propietario`, `Dni`, `Apellido`, `Nombre`, `Direccion`, `Telefono`, `Email`, `Estado_Propietario`) VALUES
 (1, 12345678, 'González', 'María', 'Calle Falsa 123', '1234-5678', 'maria.gonzalez@example.com', 1),
-(2, 23456789, 'Pérez', 'Juan', 'Av. Siempre Viva 742', '2345-6789', 'juan.perez@example.com', 0),
+(2, 23456789, 'Pérez', 'Juan', 'Av. Siempre Viva 742', '23456789', 'juan.perez@example.com', 1),
 (3, 34567890, 'Rodríguez', 'Ana', 'Calle 9 de Julio 456', '3456-7890', 'ana.rodriguez@example.com', 1),
-(4, 45678901, 'López', 'Carlos', 'Boulevard San Martín 789', '4567-8901', 'carlos.lopez@example.com', 0),
+(4, 45678901, 'López', 'Carlos', 'Boulevard San Martín 789', '45678901', 'carlos.lopez@example.com', 1),
 (5, 56789012, 'Fernández', 'Laura', 'Pasaje Rivadavia 321', '5678-9012', 'laura.fernandez@example.com', 1),
 (6, 67890123, 'García', 'Pedro', 'Avenida Belgrano 654', '6789-0123', 'pedro.garcia@example.com', 1),
-(7, 78901234, 'Martínez', 'Lucía', 'Calle Mitre 987', '7890-1234', 'lucia.martinez@example.com', 0),
-(8, 89012345, 'Sánchez', 'Jorge', 'Ruta 8 km 45', '8901-2345', 'jorge.sanchez@example.com', 1),
+(7, 78901234, 'Martínez', 'Lucía', 'Calle Mitre 987', '78901234', 'lucia.martinez@example.com', 1),
+(8, 89012345, 'Sánchez', 'Jorge', 'Ruta 8 km 45', '8901-2345', 'jorge.sanchez@example.com', 0),
 (9, 90123456, 'Ramírez', 'Sofía', 'Calle Alberdi 112', '9012-3456', 'sofia.ramirez@example.com', 0),
-(10, 1234567, 'Torres', 'Fernando', 'Avenida Libertador 200', '0123-4567', 'fernando.torres@example.com', 1);
+(10, 1234567, 'Torres', 'Fernando', 'Avenida Libertador 200', '0123-4567', 'fernando.torres@example.com', 0);
 
 -- --------------------------------------------------------
 
@@ -264,13 +304,13 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `contrato`
 --
 ALTER TABLE `contrato`
-  MODIFY `Id_Contrato` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id_Contrato` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `inmueble`
 --
 ALTER TABLE `inmueble`
-  MODIFY `Id_Inmueble` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `Id_Inmueble` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `inquilino`
@@ -282,7 +322,7 @@ ALTER TABLE `inquilino`
 -- AUTO_INCREMENT de la tabla `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `Id_Pago` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id_Pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT de la tabla `propietario`
