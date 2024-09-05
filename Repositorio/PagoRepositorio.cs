@@ -104,6 +104,7 @@ public class PagoRepositorio
     }
 
     //listar pagos de un contrato especifico 
+
     public IList<Pago> ObtenerPagosPorContrato(int idContrato)
     {
         List<Pago> pagos = new List<Pago>();
@@ -122,7 +123,8 @@ public class PagoRepositorio
             Pago.{nameof(Pago.Id_Terminado_Por)},
             Pago.{nameof(Pago.Estado_Pago)}
         FROM Pago
-        WHERE Pago.{nameof(Pago.Id_Contrato)} = @IdContrato";
+        WHERE Pago.{nameof(Pago.Id_Contrato)} = @IdContrato
+        AND Pago.{nameof(Pago.Estado_Pago)} != 0";  // Excluye pagos con estado 0
 
             using (var command = new MySqlCommand(sql, connection))
             {
@@ -135,15 +137,15 @@ public class PagoRepositorio
                     {
                         pagos.Add(new Pago
                         {
-                            Id_Pago = reader.GetInt32("Id_Pago"),
-                            Id_Contrato = reader.GetInt32("Id_Contrato"),
-                            Importe = reader.GetDouble("Importe"),
-                            CuotaPaga = reader.GetInt32("CuotaPaga"),
-                            Fecha = reader.GetDateTime("Fecha"),
-                            Multa = reader.GetDouble("Multa"),
-                            Id_Creado_Por = reader.GetInt32("Id_Creado_Por"),
-                            Id_Terminado_Por = reader.GetInt32("Id_Terminado_Por"),
-                            Estado_Pago = reader.GetInt32("Estado_Pago")
+                            Id_Pago = reader.GetInt32(nameof(Pago.Id_Pago)),
+                            Id_Contrato = reader.GetInt32(nameof(Pago.Id_Contrato)),
+                            Importe = reader.GetDouble(nameof(Pago.Importe)),
+                            CuotaPaga = reader.GetInt32(nameof(Pago.CuotaPaga)),
+                            Fecha = reader.GetDateTime(nameof(Pago.Fecha)),
+                            Multa = reader.GetDouble(nameof(Pago.Multa)),
+                            Id_Creado_Por = reader.GetInt32(nameof(Pago.Id_Creado_Por)),
+                            Id_Terminado_Por = reader.GetInt32(nameof(Pago.Id_Terminado_Por)),
+                            Estado_Pago = reader.GetInt32(nameof(Pago.Estado_Pago))
                         });
                     }
                 }
@@ -151,10 +153,6 @@ public class PagoRepositorio
         }
         return pagos;
     }
-
-
-
-
 
     // //metodo para guardar pago 
 
@@ -226,6 +224,28 @@ public class PagoRepositorio
         return pago;
     }
 
+    //metodo para anular pago 
+    public void AnularPago(int id, int idTerminadoPor)
+    {
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = $@"
+            UPDATE {nameof(Pago)}
+            SET {nameof(Pago.Estado_Pago)} = 0,
+                {nameof(Pago.Id_Terminado_Por)} = @Id_Terminado_Por
+            WHERE {nameof(Pago.Id_Pago)} = @Id_Pago";
+
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue($"@{nameof(Pago.Id_Pago)}", id);
+                command.Parameters.AddWithValue($"@{nameof(Pago.Id_Terminado_Por)}", idTerminadoPor);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+    }
 
 
 

@@ -4,6 +4,11 @@
     ViewBag.Title = "Detalles del Pago";
     var contrato = ViewData["contrato"] as InmoviliariaSarchioniAlfonzo.Models.Contrato;
     var pago = ViewData["pago"] as InmoviliariaSarchioniAlfonzo.Models.Pago;
+    //para sacar el total
+    var importe = pago?.Importe.ToString("N2");
+    var multa = pago?.Multa.ToString("N2");
+    var total = (pago?.Importe ?? 0) + (pago?.Multa ?? 0);
+    var totalListo = total.ToString("N2");
 }
 
 <link rel="stylesheet" href="~/fondo/pago.css" />
@@ -47,15 +52,15 @@
                 </tr>
                 <tr>
                     <th>Importe</th>
-                    <td>$@pago?.Importe</td>
+                    <td>$@pago?.Importe.ToString("N2")</td>
                 </tr>
                 <tr>
                     <th>Multa</th>
-                    <td>$@pago?.Multa</td>
+                    <td>$@pago?.Multa.ToString("N2")</td>
                 </tr>
                 <tr>
                     <th>Total</th>
-                    <td>$@(pago?.Importe + pago?.Multa)</td>
+                    <td>$@totalListo</td>
                 </tr>
                 <tr>
                     <th>Fecha de Pago</th>
@@ -63,7 +68,7 @@
                 </tr>
                 <tr>
                     <th>Estado Pago</th>
-                    <td>@(pago?.Estado_Pago == 1 ? "Pagado" : "Pendiente")</td>
+                    <td>@(pago?.Estado_Pago == 1 ? "Pagado" : "Anulado")</td>
                 </tr>
             </table>
         </div>

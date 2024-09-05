@@ -65,10 +65,28 @@
                     <label class="control-label">Fecha Actual</label>
                     <input type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly />
                 </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary mt-3">Guardar Pago</button>
-                    <a asp-action="ListContVigentes" class="btn btn-secondary mt-3">Cancelar</a>
-                </div>
+                @{
+                    var quienLlamo = ViewData["QuienLlamo"] as string;
+                }
+                @if (quienLlamo == "pagar")
+                {
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary mt-3">Guardar Pago de pago</button>
+                        <input type="hidden" name="PreviousUrl" value="@TempData["PreviousUrl"]" />
+                        <input type="hidden" name="source" value="" id="source" />
+                        <a asp-action="ListContVigentes" class="btn btn-secondary mt-3">Cancelar de pago</a>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary mt-3">Guardar Pago de contrato</button>
+                        <input type="hidden" name="source" value="pagarContrato" id="source" />
+                        <input type="hidden" name="PreviousUrl" value="@TempData["PreviousUrl"]" />
+                        <a asp-action="ListContVigentes" class="btn btn-secondary mt-3">Cancelar de contrato </a>
+                    </div>
+                }
             </form>
         </div>
     </div>

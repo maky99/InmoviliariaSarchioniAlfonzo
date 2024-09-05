@@ -427,7 +427,7 @@ public class ContratoRepositorio
             Contrato.{nameof(Contrato.Id_Creado_Por)},
             Contrato.{nameof(Contrato.Id_Terminado_Por)}, 
             Contrato.{nameof(Contrato.Estado_Contrato)},
-            COUNT(Pago.{nameof(Pago.Id_Pago)}) AS CuotasPagadas
+            COUNT(CASE WHEN Pago.{nameof(Pago.Estado_Pago)} != 0 THEN Pago.{nameof(Pago.Id_Pago)} END) AS CuotasPagadas
         FROM Contrato 
         JOIN Inmueble ON Contrato.{nameof(Contrato.Id_Inmueble)} = Inmueble.{nameof(Inmueble.Id_Inmueble)}
         LEFT JOIN Tipo_Inmueble ON Inmueble.{nameof(Inmueble.Id_Tipo_Inmueble)} = Tipo_Inmueble.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)}

@@ -26,14 +26,16 @@ public class PagoController : Controller
         var contratos = cr.ContratoVigente();
         return View("ListContraVgernteAPago", contratos);
     }
-    public IActionResult NuevoPago(int id, string source)
+    public IActionResult NuevoPago(int id, string source, string previousUrl)
     {
         var contrato = cr.ObtenerDetalle(id);
         var pagos = pa.ObtenerPagosPorContrato(id);
         ViewData["pagos"] = pagos;
         ViewData["contrato"] = contrato;
-        if (source == "pagar")
+        if (source == "pagar" || source == "pagarContrato")
         {
+            ViewData["QuienLlamo"] = source;
+            TempData["PreviousUrl"] = previousUrl;
             return View("NuevoPago");
         }
         else
@@ -42,7 +44,7 @@ public class PagoController : Controller
         }
     }
     [HttpPost]
-    public IActionResult GuardarPago(Pago pago)
+    public IActionResult GuardarPago(Pago pago, string previousUrl, string source)
     {
         if (ModelState.IsValid)
         {
@@ -58,16 +60,30 @@ public class PagoController : Controller
                 TempData["NotificationMessage"] = "Pago guardado exitosamente. Has pagado la última cuota.";
             }
             else
+
+            if (source == "pagarContrato")
             {
                 TempData["SuccessMessage"] = "Pago guardado exitosamente.";
+                string redirectUrl = !string.IsNullOrEmpty(previousUrl) ? previousUrl : "/";
+                return Redirect(redirectUrl);
+
+            }
+            else
+            {
+                TempData["SuccessMessage"] = "Pago guardado exitosamente.";
+                return RedirectToAction("ListContVigentes");
+
             }
 
-            return RedirectToAction("ListContVigentes");
+
+
         }
 
         TempData["ErrorMessage"] = "Error al guardar el pago.";
         return View("NuevoPago", pago);
     }
+
+
     [HttpPost]
     public IActionResult GuardarPagoAnulado(Pago pago)
     {
@@ -92,6 +108,13 @@ public class PagoController : Controller
         var contrato = cr.ObtenerTodosContrato(idcontrato);
         ViewData["contrato"] = contrato;
         return View("DetallePago");
+    }
+
+    public IActionResult AnularPago(int id, int id_Usuario)
+    {
+        pa.AnularPago(id, id_Usuario);
+
+        return RedirectToAction("ListPagos");
 
     }
 

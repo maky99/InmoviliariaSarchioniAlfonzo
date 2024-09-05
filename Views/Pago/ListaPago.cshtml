@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Lista de Pagos";
+
 }
 
 
@@ -63,20 +64,21 @@
                     <td>@pago.inquilino?.Apellido, @pago.inquilino?.Nombre</td>
                     <td>@pago.contrato?.Id_Contrato</td>
                     <td>@pago.CuotaPaga</td>
-                    <td>$ @pago.contrato?.Monto</td>
+                    <td>$ @pago.contrato?.Monto.ToString("N2")</td>
                     <td>
-                        @(pago.Multa != 0 ? $"$ {pago.Multa}" : "No")
+                        @(pago.Multa != 0 ? $"$ {pago.Multa.ToString("N2")}" : "No")
                     </td>
-                    <td>$
+                    <td>
                         @{
-                            var monto = pago.contrato?.Monto;
+                            var importe = pago.contrato?.Monto ?? 0; // Asigna un valor predeterminado en caso de que sea nulo
                             var multa = pago.Multa;
-                            var total = monto + multa;
 
-                            // Mostrar el total en formato de dólares
-                            @total
+                            var total = importe + multa;
+                            var totalFormateado = total.ToString("N2");
                         }
+                        $@totalFormateado
                     </td>
+
                     <td>@pago.Fecha.ToString("dd/MM/yyyy")</td>
 
                     @* <td>@pago.Id_Creado_Por</td>
@@ -98,8 +100,8 @@
                             title="Ver comprobante">
                             <i class="fa-solid fa-receipt"></i>
                         </a>
-                        <a href="@Url.Action("AnularPago", new { id = pago.Id_Pago })"
-                            onclick="return confirm('¿Estás seguro de que deseas anular PAGO del contrato @pago.Id_Contrato?')"
+                        <a href="@Url.Action("AnularPago", new { id = pago.Id_Pago, id_Usuario=2 })"
+                            onclick="return confirm('¿Estás seguro de que deseas anular la cuota @pago.CuotaPaga del inquilino @pago.inquilino?.Apellido, @pago.inquilino?.Nombre?')"
                             class="btn btn-danger" title="Anular Pago">
                             <i class="fa-solid fa-ban"></i>
                         </a>
