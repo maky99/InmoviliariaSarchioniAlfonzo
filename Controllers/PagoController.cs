@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using InmoviliariaSarchioniAlfonzo.Models;
+using System.Runtime.Intrinsics.X86;
 namespace InmoviliariaSarchioniAlfonzo.Controllers;
 
 public class PagoController : Controller
@@ -67,6 +68,33 @@ public class PagoController : Controller
         TempData["ErrorMessage"] = "Error al guardar el pago.";
         return View("NuevoPago", pago);
     }
+    [HttpPost]
+    public IActionResult GuardarPagoAnulado(Pago pago)
+    {
+        if (ModelState.IsValid)
+        {
+            pa.GuardarPago(pago);
+            var contrato = cr.ObtenerDetalle(pago.Id_Contrato);
+            contrato.Estado_Contrato = 0;
+            contrato.Finalizacion_Anticipada = pago.Fecha;
+            cr.ActualizarContratoFecha(contrato);
+            TempData["NotificationMessage"] = "Pago guardado exitosamente. Y se ha finalizado el contrato.";
+        }
+
+        return RedirectToAction("ListContVigentes");
+
+    }
+    public IActionResult DetallePago(int id)
+    {
+        var pago = pa.DetallePago(id);
+        ViewData["pago"] = pago;
+        var idcontrato = pago.Id_Contrato;
+        var contrato = cr.ObtenerTodosContrato(idcontrato);
+        ViewData["contrato"] = contrato;
+        return View("DetallePago");
+
+    }
+
 
 
 }

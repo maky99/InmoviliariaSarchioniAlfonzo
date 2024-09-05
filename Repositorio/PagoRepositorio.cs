@@ -181,33 +181,59 @@ public class PagoRepositorio
             }
         }
     }
+    public Pago DetallePago(int id)
+    {
+        Pago pago = new Pago();
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = @$"
+        SELECT 
+            Pago.{nameof(Pago.Id_Pago)},
+            Pago.{nameof(Pago.Id_Contrato)},
+            Pago.{nameof(Pago.Importe)},
+            Pago.{nameof(Pago.CuotaPaga)},
+            Pago.{nameof(Pago.Fecha)},
+            Pago.{nameof(Pago.Multa)},
+            Pago.{nameof(Pago.Id_Creado_Por)},
+            Pago.{nameof(Pago.Id_Terminado_Por)},
+            Pago.{nameof(Pago.Estado_Pago)}
+        FROM Pago
+        WHERE Pago.{nameof(Pago.Id_Pago)} = @Id_Pago";
 
-    // public void GuardarPago(Pago pago)
-    // {
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@Id_Pago", id);
+                connection.Open();
 
-    //     using (var connection = new MySqlConnection(connectionString))
-    //     {
-    //         var sql = $@"INSERT INTO pago ({nameof(Pago.Id_Contrato)},{nameof(Pago.Importe)},{nameof(Pago.Mes)},{nameof(Pago.Fecha)},{nameof(Pago.Multa)},{nameof(Pago.Id_Creado_Por)},{nameof(Pago.Id_Terminado_Por)},{nameof(Pago.Estado_Pago)})
-    //         VALUES
-    //         (@{nameof(Pago.Id_Contrato)},@{nameof(Pago.Importe)},@{nameof(Pago.Mes)},@{nameof(Pago.Fecha)},@{nameof(Pago.Multa)},@{nameof(Pago.Id_Creado_Por)},@{nameof(Pago.Id_Terminado_Por)},@{nameof(Pago.Estado_Pago)})";
-    //         using (var command = new MySqlCommand(sql, connection))
-    //         {
-    //             command.Parameters.AddWithValue($"@{nameof(Pago.Id_Contrato)}", pago.Id_Contrato);
-    //             command.Parameters.AddWithValue($"@{nameof(Pago.Importe)}", pago.Importe);
-    //             command.Parameters.AddWithValue($"@{nameof(Pago.Mes)}", pago.Mes);
-    //             command.Parameters.AddWithValue($"@{nameof(Pago.Fecha)}", pago.Fecha);
-    //             command.Parameters.AddWithValue($"@{nameof(Pago.Multa)}", pago.Multa);
-    //             command.Parameters.AddWithValue($"@{nameof(Pago.Id_Creado_Por)}", pago.Id_Creado_Por);
-    //             command.Parameters.AddWithValue($"@{nameof(Pago.Id_Terminado_Por)}", pago.Id_Terminado_Por);
-    //             command.Parameters.AddWithValue($"@{nameof(Pago.Estado_Pago)}", pago.Estado_Pago);
-    //             connection.Open();
-    //             command.ExecuteNonQuery();
-    //             connection.Close();
-    //         }
+                using (var reader = command.ExecuteReader())
+                {
+                    if (reader.Read()) // Usamos if en lugar de while porque esperamos solo un resultado
+                    {
+                        pago.Id_Pago = reader.GetInt32("Id_Pago");
+                        pago.Id_Contrato = reader.GetInt32("Id_Contrato");
+                        pago.Importe = reader.GetDouble("Importe");
+                        pago.CuotaPaga = reader.GetInt32("CuotaPaga");
+                        pago.Fecha = reader.GetDateTime("Fecha");
+                        pago.Multa = reader.GetDouble("Multa");
+                        pago.Id_Creado_Por = reader.GetInt32("Id_Creado_Por");
+                        pago.Id_Terminado_Por = reader.GetInt32("Id_Terminado_Por");
+                        pago.Estado_Pago = reader.GetInt32("Estado_Pago");
+                    }
+                }
+            }
+        }
 
-    //     }
-    // }
+        return pago;
+    }
+
+
+
+
 }
+
+
+
+
 
 
 
