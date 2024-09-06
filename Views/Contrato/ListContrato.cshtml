@@ -106,8 +106,11 @@
                             class="btn btn-success" title="Pagar">
                             <i class="fa-brands fa-cc-visa"></i>
                         </a>
-
-
+                        <!-- Enlace para editar -->
+                        <a href="@Url.Action("DetallePagContrato", "Pago", new { id = item.Id_Contrato, source = "pagarContrato", previousUrl = Context.Request.Path })"
+                            class="btn btn-secondary" title="Ver pagos">
+                            <i class="fa-solid fa-receipt"></i>
+                        </a>
                         <!-- Enlace para editar -->
                         <a href="@Url.Action("EditarContrato", new { id = item.Id_Contrato })" class="btn btn-primary"
                             title="Editar información">

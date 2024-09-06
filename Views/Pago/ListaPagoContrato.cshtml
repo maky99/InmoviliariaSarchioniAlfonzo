@@ -2,35 +2,18 @@
 
 @{
     ViewData["Title"] = "Lista de Pagos";
-    var quienLlamo = ViewData["QuienLlamo"] as string;
+
 }
 
 
 <link rel="stylesheet" href="~/fondo/pago.css" />
 
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show temp-message" role="alert">
-        @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
 
 <div class="text-center">
     <h1 class="display-3">Pagos</h1>
     <div class="mb-3">
-        @if (quienLlamo == "pagarContrato")
-        {
-            <a asp-action="ListContrato" asp-controller="Contrato" class="btn btn-primary" title="Volver Contrato">
-                <i class="fa-solid fa-receipt"></i> Volver
-            </a>
-
-        }
-        else
-        {
-            <a asp-action="ListContVigentes" class="btn btn-success" title="Recibo de Pago">
-                <i class="fa-solid fa-receipt"></i> Pagos</a>
-        }
+        <a asp-action="ListContVigentes" class="btn btn-success" title="Recibo de Pago">
+            <i class="fa-solid fa-receipt"></i> Pagos</a>
     </div>
     @{
         var advertencia = TempData["Advertencia"] as string;
@@ -76,9 +59,7 @@
         <tbody>
             @foreach (var pago in Model)
             {
-                var rowClass = pago.Estado_Pago == 0 ? "inactivo" : "";
-
-                <tr class="@rowClass">
+                <tr>
                     <td>@pago.Id_Pago</td>
                     <td>@pago.inquilino?.Apellido, @pago.inquilino?.Nombre</td>
                     <td>@pago.contrato?.Id_Contrato</td>
@@ -115,26 +96,15 @@
 
 
                     <td>
-                        <a href="@Url.Action("DetallePago", new { id = pago.Id_Pago,source="pagarContrato", previousUrl = Context.Request.Path })"
-                            class="btn btn-primary" title="Ver comprobante">
+                        <a asp-action="DetallePago" asp-route-id="@pago.Id_Pago" class="btn btn-primary"
+                            title="Ver comprobante">
                             <i class="fa-solid fa-receipt"></i>
                         </a>
-                        @if (quienLlamo == "pagarContrato")
-                        {
-                            <a href="@Url.Action("AnularPago", new { id = pago.Id_Pago, id_Usuario=2,source = "pagarContrato",id_Contrato = pago.Id_Contrato , previousUrl = Context.Request.Path })"
-                                onclick="return confirm('¿Estás seguro de que deseas anular la cuota @pago.CuotaPaga del inquilino @pago.inquilino?.Apellido, @pago.inquilino?.Nombre?')"
-                                class="btn btn-danger" title="Anular Pago">
-                                <i class="fa-solid fa-ban"></i>
-                            </a>
-                        }
-                        else
-                        {
-                            <a href="@Url.Action("AnularPago", new { id = pago.Id_Pago, id_Usuario=2, previousUrl = Context.Request.Path })"
-                                onclick="return confirm('¿Estás seguro de que deseas anular la cuota @pago.CuotaPaga del inquilino @pago.inquilino?.Apellido, @pago.inquilino?.Nombre?')"
-                                class="btn btn-danger" title="Anular Pago">
-                                <i class="fa-solid fa-ban"></i>
-                            </a>
-                        }
+                        <a href="@Url.Action("AnularPago", new { id = pago.Id_Pago, id_Usuario=2 })"
+                            onclick="return confirm('¿Estás seguro de que deseas anular la cuota @pago.CuotaPaga del inquilino @pago.inquilino?.Apellido, @pago.inquilino?.Nombre?')"
+                            class="btn btn-danger" title="Anular Pago">
+                            <i class="fa-solid fa-ban"></i>
+                        </a>
                     </td>
                 </tr>
             }

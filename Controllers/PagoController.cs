@@ -66,19 +66,13 @@ public class PagoController : Controller
                 TempData["SuccessMessage"] = "Pago guardado exitosamente.";
                 string redirectUrl = !string.IsNullOrEmpty(previousUrl) ? previousUrl : "/";
                 return Redirect(redirectUrl);
-
             }
             else
             {
                 TempData["SuccessMessage"] = "Pago guardado exitosamente.";
                 return RedirectToAction("ListContVigentes");
-
             }
-
-
-
         }
-
         TempData["ErrorMessage"] = "Error al guardar el pago.";
         return View("NuevoPago", pago);
     }
@@ -100,20 +94,35 @@ public class PagoController : Controller
         return RedirectToAction("ListContVigentes");
 
     }
-    public IActionResult DetallePago(int id)
+    public IActionResult DetallePago(int id, string previousUrl, string source)
     {
         var pago = pa.DetallePago(id);
         ViewData["pago"] = pago;
         var idcontrato = pago.Id_Contrato;
         var contrato = cr.ObtenerTodosContrato(idcontrato);
         ViewData["contrato"] = contrato;
+        ViewData["QuienLlamo"] = source;
+        TempData["PreviousUrl"] = previousUrl;
         return View("DetallePago");
     }
+    public IActionResult DetallePagContrato(int id, string previousUrl, string source)
+    {
 
-    public IActionResult AnularPago(int id, int id_Usuario)
+        var pago = pa.VerPagosContrato(id);
+        ViewData["QuienLlamo"] = source;
+        TempData["PreviousUrl"] = previousUrl;
+        return View("ListaPago", pago);
+    }
+
+    public IActionResult AnularPago(int id, int id_Usuario, string previousUrl, string source, int id_Contrato)
     {
         pa.AnularPago(id, id_Usuario);
+        TempData["SuccessMessage"] = "Se anulo Correctamente";
+        if (source == "pagarContrato")
+        {
+            return RedirectToAction("DetallePagContrato", new { id = id_Contrato, previousUrl = previousUrl, source = source });
 
+        }
         return RedirectToAction("ListPagos");
 
     }

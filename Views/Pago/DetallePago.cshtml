@@ -9,6 +9,7 @@
     var multa = pago?.Multa.ToString("N2");
     var total = (pago?.Importe ?? 0) + (pago?.Multa ?? 0);
     var totalListo = total.ToString("N2");
+    var quienLlamo = ViewData["QuienLlamo"] as string;
 }
 
 <link rel="stylesheet" href="~/fondo/pago.css" />
@@ -76,11 +77,11 @@
         <div class="col-md-8 col-lg-10 p-4 rounded shadow-sm">
             @if (TempData["PreviousUrl"] != null)
             {
-                <a href="@TempData["PreviousUrl"]" class="btn btn-primary">Volver</a>
+                <a href="@TempData["PreviousUrl"]?source=pagarContrato" class=" btn btn-primary">Volver</a>
             }
             else
             {
-                <a href="@Url.Action("ListPagos", "Pago")" class="btn btn-primary">Volver</a>
+                <a href="@Url.Action("ListPagos", "Pago")" class="btn btn-primary">Volver quien soy</a>
             }
         </div>
     </div>

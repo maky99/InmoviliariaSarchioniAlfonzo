@@ -72,11 +72,10 @@
                 {
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary mt-3">Guardar Pago de pago</button>
+                        <input type="hidden" name="source" value="pa" id="source" />
                         <input type="hidden" name="PreviousUrl" value="@TempData["PreviousUrl"]" />
-                        <input type="hidden" name="source" value="" id="source" />
                         <a asp-action="ListContVigentes" class="btn btn-secondary mt-3">Cancelar de pago</a>
                     </div>
-
                 }
                 else
                 {

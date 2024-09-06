@@ -74,7 +74,7 @@
                     <td>@contrato?.MesesPagos / @contrato?.Meses </td>
                     <td>
                         <!-- Enlace para pagar -->
-                        <a href="@Url.Action("NuevoPago", new { id = contrato?.Id_Contrato ,source = "pagar"})"
+                        <a href="@Url.Action("NuevoPago", new { id = contrato?.Id_Contrato ,source = "pagar",previousUrl = Context.Request.Path })"
                             class="btn btn-primary" title="Pagar">
                             <i class="fa-brands fa-cc-visa"></i> Pagar
                         </a>
