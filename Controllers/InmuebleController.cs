@@ -10,6 +10,7 @@ public class InmuebleController : Controller
     private InmuebleRepositorio ir = new InmuebleRepositorio();
     private Tipo_InmuebleRepositorio ti = new Tipo_InmuebleRepositorio();
     private PropietarioRepositorio po = new PropietarioRepositorio();
+    private ContratoRepositorio co = new ContratoRepositorio();
 
 
     public InmuebleController(ILogger<InmuebleController> logger)
@@ -117,6 +118,62 @@ public class InmuebleController : Controller
             return Redirect(redirectUrl);
         }
         return RedirectToAction(nameof(ListInmueble));
+    }
+    public IActionResult BuscarInmueble()
+    {
+
+        var inmueble = ir.ObtenerInmuebles();
+        ViewData["inmueble"] = inmueble;
+
+        var tiposInmuebles = ti.TipoInmuActivo();
+        ViewData["tipoInmueble"] = tiposInmuebles;
+
+        return View("BuscarInmueble");
+    }
+
+    public IActionResult Buscador(int Id_Tipo_Inmueble, int Ambientes, double PrecioMin, double PrecioMax, DateTime? FechaInicio, DateTime? FechaFin)
+    {
+        // Obtener todos los inmuebles
+        var inmuebles = ir.ObtenerInmuebles();
+        var contratosVigentes = co.ContratoVigente();
+        var inmueblesConContrato = contratosVigentes.Select(c => c.Id_Inmueble).ToList();
+
+
+        // Filtrar inmuebles para excluir aquellos con contrato vigente
+        inmuebles = inmuebles.Where(i => !inmueblesConContrato.Contains(i.Id_Inmueble)).ToList();
+
+        // Aplicar filtros
+        if (Id_Tipo_Inmueble > 0)
+        {
+            inmuebles = inmuebles.Where(i => i.tipo?.Id_Tipo_Inmueble == Id_Tipo_Inmueble).ToList();
+        }
+
+        if (Ambientes > 0)
+        {
+            inmuebles = inmuebles.Where(i => i.Ambientes == Ambientes).ToList();
+        }
+        if (PrecioMin > 0)
+        {
+            inmuebles = inmuebles.Where(i => i.Precio >= PrecioMin).ToList();
+        }
+        if (PrecioMax > 0)
+        {
+            inmuebles = inmuebles.Where(i => i.Precio <= PrecioMax).ToList();
+        }
+        if (FechaInicio.HasValue)
+        {
+            // Ajusta el filtro según el campo de fecha en tu modelo
+            inmuebles = inmuebles.Where(i => i.FechaInicioAlquiler < FechaInicio.Value).ToList();
+        }
+
+        if (FechaFin.HasValue)
+        {
+            // Ajusta el filtro según el campo de fecha en tu modelo
+            inmuebles = inmuebles.Where(i => i.FechaFinAlquiler > FechaFin.Value).ToList();
+        }
+
+
+        return View("ListInmuebleBusqueda", inmuebles);
     }
 
 

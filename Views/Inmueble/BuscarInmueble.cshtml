@@ -1,0 +1,109 @@
+@model InmoviliariaSarchioniAlfonzo.Models.Inmueble
+
+@{
+    ViewData["Title"] = "Buscar Inmueble";
+}
+
+<link rel="stylesheet" href="~/fondo/inmueble.css" />
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <h2 class="text-center">@ViewData["Title"]</h2>
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger temp-message">
+                    @TempData["ErrorMessage"]
+                </div>
+            }
+
+            <form asp-action="Buscador" method="get">
+                <input type="hidden" asp-for="Estado_Inmueble" value="1" />
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Id_Tipo_Inmueble" class="control-label">Tipo de Inmueble</label>
+                            <select asp-for="Id_Tipo_Inmueble" class="form-control">
+                                <option value="" disabled selected>Seleccione un Tipo</option>
+                                @if (ViewData["tipoInmueble"] is List<Tipo_Inmueble> tipoInmu)
+                                {
+                                    foreach (var tipoInmueble in tipoInmu)
+                                    {
+                                        <option value="@tipoInmueble.Id_Tipo_Inmueble">@tipoInmueble.Tipo</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="Id_Tipo_Inmueble" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Ambientes" class="control-label">Ambientes</label>
+                            <select asp-for="Ambientes" class="form-control">
+                                <option value="" disabled selected>Seleccione ambientes</option>
+                                @if (ViewData["inmueble"] is List<Inmueble> Inmu)
+                                {
+                                    foreach (var ambientes in Inmu.Select(i => i.Ambientes).Distinct().OrderBy(a => a))
+                                    {
+                                        <option value="@ambientes">@ambientes</option>
+                                    }
+                                }
+                            </select>
+                            <span asp-validation-for="Ambientes" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="PrecioMin" class="control-label">Precio Min</label>
+                            <input asp-for="PrecioMin" class="form-control" type="number" step="0.01" />
+                            <span asp-validation-for="PrecioMin" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="PrecioMax" class="control-label">Precio Max</label>
+                            <input asp-for="PrecioMax" class="form-control" type="number" step="0.01" />
+                            <span asp-validation-for="PrecioMax" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="FechaInicio" class="control-label">Fecha de Inicio de Alquiler</label>
+                            <input type="date" id="FechaInicio" name="FechaInicio" class="form-control"
+                                min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Dias" class="control-label">Días</label>
+                            <input asp-for="Dias" id="Dias" class="form-control" type="number" step="1" />
+                            <span asp-validation-for="Dias" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="FechaFin" class="control-label">Fecha de Fin de Alquiler</label>
+                            <input type="date" id="FechaFin" name="FechaFin" class="form-control"
+                                min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary mt-3">Buscar</button>
+                    <a asp-action="ListInmueble" class="btn btn-secondary mt-3">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/site.js"></script>

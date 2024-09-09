@@ -39,3 +39,41 @@ function filtrarTabla() {
 
     }
 }
+//para calcular la fecha de inicio y de fin en el buscador 
+
+// Obtener los elementos
+const fechaInicio = document.getElementById('FechaInicio');
+const dias = document.getElementById('Dias');
+const fechaFin = document.getElementById('FechaFin');
+
+// Actualizar la fecha de fin cuando se ingresa la fecha de inicio y los días
+dias.addEventListener('input', function () {
+    if (fechaInicio.value && dias.value) {
+        const fechaInicioDate = new Date(fechaInicio.value);
+        const diasValue = parseInt(dias.value);
+
+        // Calcular la fecha de fin sumando los días a la fecha de inicio
+        fechaInicioDate.setDate(fechaInicioDate.getDate() + diasValue);
+
+        // Formatear la fecha de fin en formato yyyy-mm-dd
+        const year = fechaInicioDate.getFullYear();
+        const month = String(fechaInicioDate.getMonth() + 1).padStart(2, '0');
+        const day = String(fechaInicioDate.getDate()).padStart(2, '0');
+
+        fechaFin.value = `${year}-${month}-${day}`;
+    }
+});
+
+// Actualizar los días cuando se ingresa la fecha de inicio y la fecha de fin
+fechaFin.addEventListener('input', function () {
+    if (fechaInicio.value && fechaFin.value) {
+        const fechaInicioDate = new Date(fechaInicio.value);
+        const fechaFinDate = new Date(fechaFin.value);
+
+        // Calcular la diferencia de días
+        const diferenciaDias = Math.ceil((fechaFinDate - fechaInicioDate) / (1000 * 60 * 60 * 24));
+
+        dias.value = diferenciaDias;
+    }
+});
+

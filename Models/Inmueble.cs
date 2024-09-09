@@ -19,10 +19,15 @@ public class Inmueble
     public int Patio { get; set; }
     public double Precio { get; set; }
     public string? Condicion { get; set; }
-
     public int Estado_Inmueble { get; set; }
     public Tipo_Inmueble? tipo { get; set; }
+
     public Propietario? propietario { get; set; }
+    public int Dias { get; set; }
+    public double PrecioMin { get; set; }
+    public double PrecioMax { get; set; }
+    public DateTime FechaInicioAlquiler { get; set; }
+    public DateTime FechaFinAlquiler { get; set; }
 
 }
 
