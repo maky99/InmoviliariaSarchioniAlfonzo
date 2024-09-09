@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-09-2024 a las 20:06:05
+-- Tiempo de generación: 09-09-2024 a las 04:16:46
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Versión de PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -239,10 +239,21 @@ CREATE TABLE `usuario` (
   `Nombre` varchar(255) DEFAULT NULL,
   `Dni` int(11) DEFAULT NULL,
   `Telefono` varchar(255) DEFAULT NULL,
-  `Rol` varchar(50) DEFAULT NULL,
-  `Avatar` int(11) DEFAULT NULL,
+  `Rol` int(50) DEFAULT 1,
+  `Email` varchar(255) NOT NULL,
+  `Password` varchar(255) NOT NULL,
+  `Avatar` varchar(255) DEFAULT NULL,
   `Estado_Usuario` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `usuario`
+--
+
+INSERT INTO `usuario` (`Id_Usuario`, `Apellido`, `Nombre`, `Dni`, `Telefono`, `Rol`, `Email`, `Password`, `Avatar`, `Estado_Usuario`) VALUES
+(1, 'aguero', 'oscar', 12345, '12345', 2, 'o@o.com', '3A0G2+zJ3luLnlC44+Xe5HGw/9RWJNoyF2XZACvev20=', NULL, 1),
+(2, 'lopes', 'ricardo', 123455, '123434565', 1, 'a@a.com', '3A0G2+zJ3luLnlC44+Xe5HGw/9RWJNoyF2XZACvev20=', '/Uploads\\avatar_2.PNG', 1),
+(3, 'a', 'a', 1223344, '1233454', 1, 'b@b', '3A0G2+zJ3luLnlC44+Xe5HGw/9RWJNoyF2XZACvev20=', '/Uploads\\avatar_3.PNG', 1);
 
 --
 -- Índices para tablas volcadas
@@ -340,7 +351,7 @@ ALTER TABLE `tipo_inmueble`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `Id_Usuario` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id_Usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Restricciones para tablas volcadas

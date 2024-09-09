@@ -1,0 +1,104 @@
+﻿@model IEnumerable<InmoviliariaSarchioniAlfonzo.Models.Usuario>
+
+@{
+    ViewData["Title"] = "Lista de Usuarios";
+    var rnd = new Random();
+}
+
+<link rel="stylesheet" href="~/fondo/inquilino.css" />
+
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show temp-message" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+<div class="text-center">
+    <h1 class="display-3">Usuarios</h1>
+
+    <div class="mb-3">
+        <a asp-action="CrearUsuario" class="btn btn-success" title="Cargar Nuevo Usuario">
+            <i class="fa-solid fa-user-plus"></i> Nuevo
+        </a>
+    </div>
+    <div class="mb-3">
+        <!-- Campo de búsqueda -->
+        <input type="text" id="inputBusqueda" placeholder="Buscar..." onkeyup="filtrarTabla()">
+    </div>
+    <table class="table" style="color: rgb(13, 12, 14); background-color: white;">
+        <thead>
+            <tr>
+                <th>DNI</th>
+                <th>Apellido</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th>Estado</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var rowClass = item.Estado_Usuario == 0 ? "inactivo" : "";
+                <tr class="@rowClass">
+                    <td>@item.Dni</td>
+                    <td>@item.Apellido</td>
+                    <td>@item.Nombre</td>
+                    <td>@item.Telefono</td>
+                    <td>@item.Email</td>
+                    <td>
+                        @if (!String.IsNullOrEmpty(item.Avatar))
+                        {
+                            var x = item.Avatar + "?" + rnd.Next();
+                            <img width="32" src="@x" />
+                        }
+                        else
+                        {
+                            <span>Sin foto</span>
+                        }
+                    </td>
+
+                    <td>
+                        @switch (item.Estado_Usuario)
+                        {
+                            case 0:
+                                <span>Inactivo</span>
+                                break;
+                            case 1:
+                                <span>Activo</span>
+                                break;
+                            case 2:
+                                <span>Inactivo/Moroso</span>
+                                break;
+                            case 3:
+                                <span>Inactivo/Desalojado</span>
+                                break;
+                        }
+                    </td>
+                    <td>
+                        <!-- Enlace para editar -->
+                        <a href="@Url.Action("EditarUsuario", "Usuario", new { id = item.Id_Usuario })"
+                            class="btn btn-primary" title="Editar información">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </a>
+
+                        <!-- Enlace para desactivar -->
+                        <a href="@Url.Action("CambEstadoInquilino", new { id = item.Id_Usuario })"
+                            onclick="return confirm('¿Estás seguro de que deseas desactivar a @item.Apellido @item.Nombre?')"
+                            class="btn btn-danger" title="Desactivar Inquilino">
+                            <i class="fa-solid fa-user-minus"></i>
+                            @* <i class="fa-solid fa-trash"></i> *@
+                        </a>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script src="~/js/site.js"></script>

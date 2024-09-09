@@ -1,0 +1,115 @@
+﻿@model InmoviliariaSarchioniAlfonzo.Models.Usuario
+@{
+    ViewData["Title"] = "Editar";
+}
+<link rel="stylesheet" href="~/fondo/propietario.css" />
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <h2> Propietario</h2>
+                @{
+                    var advertencia = TempData["Advertencia"] as string;
+                    var error = TempData["Error"] as string;
+                }
+
+                @if (!string.IsNullOrEmpty(advertencia))
+                {
+                    <div class="alert alert-warning temp-message">
+                        @advertencia
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(error))
+                {
+                    <div class="alert alert-danger temp-message">
+                        @error
+
+                    </div>
+                }
+            <form asp-action="Guardar" enctype="multipart/form-data">
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+                <!-- Campo Id -->
+                <div>
+
+                    <input asp-for="Id_Usuario" type="hidden" /> <!-- readonly si no se debe editar -->
+
+                </div>
+                <div class="form-group">
+                    <label asp-for="Dni" class="control-label">DNI</label>
+                    <input asp-for="Dni" class="form-control" />
+                    <span asp-validation-for="Dni" class="text-danger"></span>
+
+                </div>
+                <div class="form-group">
+                    <label asp-for="Apellido" class="control-label">Apellido</label>
+                    <input asp-for="Apellido" class="form-control" />
+                    <span asp-validation-for="Apellido" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Nombre" class="control-label">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Telefono" class="control-label">Teléfono</label>
+                    <input asp-for="Telefono" class="form-control" />
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label">Email</label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+           
+             
+                        <div class="form-group">
+                            <label class="control-label">Rol</label>
+                            <select class="form-control" name="Rol">
+                                @foreach (var kvp in (IDictionary<int, string>)ViewBag.Roles)
+                                {
+                                    <option value="@kvp.Key">@kvp.Value</option>
+                                }
+                            </select>
+                            <span asp-validation-for="Rol" class="text-danger"></span>
+                        </div>
+                <div class="form-group">
+                    <label asp-for="Estado_Usuario" class="control-label">Estado</label>
+                    <select asp-for="Estado_Usuario" class="form-control">
+                        <option value="1">Activo</option>
+                        <option value="0">Inactivo</option>
+                    </select>
+                    <span asp-validation-for="Estado_Usuario" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Guardar cambios</button>
+                <a asp-action="listUsuario" class="btn btn-secondary mt-3">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+            // Seleccionar todos los elementos de mensaje
+            var messages = document.querySelectorAll(".temp-message");
+
+            // Ocultar los mensajes después de 5 segundos
+            setTimeout(function () {
+                messages.forEach(function (message) {
+                    message.style.display = "none"; // Ocultar con display: none;
+
+                });
+            }, 5000); // 5000 ms = 5 segundos
+        });
+</script>
+
+
+
+
+}
