@@ -1,0 +1,144 @@
+@model InmoviliariaSarchioniAlfonzo.Models.Contrato
+
+@{
+    ViewData["Title"] = "Nuevo Contrato";
+    var elinmueble = (Inmueble)ViewData["Inmueble"];
+
+}
+
+<link rel="stylesheet" href="~/fondo/contrato.css" />
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <h2 class="text-center">@ViewData["Title"]</h2>
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger temp-message" role="alert">
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <form asp-action="Guardar" method="post">
+                <input type="hidden" asp-for="Id_Contrato" />
+                <input asp-for="Estado_Contrato" type="hidden" value="1" />
+                <input asp-for="Finalizacion_Anticipada" type="hidden" value="0001-01-01" />
+                <input asp-for="Id_Terminado_Por" type="hidden" value="0" />
+
+                <!-- Inmueble Section -->
+                <div class="form-group">
+                    <label asp-for="Id_Inmueble" class="control-label">Inmueble</label>
+                    @if (ViewData["Inmueble"] is Inmueble inmueble)
+                    {
+                        <!-- Mostrar el inmueble como texto formateado -->
+                        <input type="text" class="form-control" value="@inmueble.Direccion" disabled />
+                        <!-- Input oculto para el ID del inmueble -->
+                        <input type="hidden" asp-for="Id_Inmueble" value="@inmueble.Id_Inmueble" />
+                    }
+                    <span asp-validation-for="Id_Inmueble" class="text-danger"></span>
+                </div>
+
+                <!-- Propietario Section -->
+                <div class="form-group">
+                    <label class="control-label">Propietario</label>
+                    <input type="text" id="propietario-info" class="form-control"
+                        value="@elinmueble?.propietario?.Apellido, @elinmueble?.propietario?.Nombre" readonly />
+                    <input type="hidden" asp-for="Id_Propietario" id="Id_Propietario"
+                        value="@elinmueble?.Id_Propietario" />
+                    <span asp-validation-for="Id_Propietario" class="text-danger"></span>
+                </div>
+
+                <!-- Inquilino Section -->
+                <div class="form-group">
+                    <label asp-for="Id_Inquilino" class="control-label">Inquilino</label>
+                    <select asp-for="Id_Inquilino" class="form-control">
+                        <option value="" disabled selected>Seleccione un inquilino</option>
+                        @if (ViewData["inquilino"] is List<Inquilino> inquilinos)
+                        {
+                            foreach (var inquilino in inquilinos)
+                            {
+                                <option value="@inquilino.Id_Inquilino">@inquilino.Apellido @inquilino.Nombre</option>
+                            }
+                        }
+                    </select>
+                    <span asp-validation-for="Id_Inquilino" class="text-danger"></span>
+                </div>
+
+                <!-- Fecha Inicio Section -->
+                <div class="form-group">
+                    <label asp-for="Fecha_Inicio" class="control-label">Fecha Inicio</label>
+                    <input asp-for="Fecha_Inicio" class="form-control" type="date" id="fechaInicio" />
+                    <span asp-validation-for="Fecha_Inicio" class="text-danger"></span>
+                </div>
+
+                <!-- Meses Section -->
+                <div class="form-group">
+                    <label asp-for="Meses" class="control-label">Meses</label>
+                    <input asp-for="Meses" class="form-control" type="number" min="1" id="meses"
+                        onchange="calcularFechaFinal()" />
+                    <span asp-validation-for="Meses" class="text-danger"></span>
+                </div>
+
+                <!-- Fecha Finalización Section -->
+                <div class="form-group">
+                    <label asp-for="Fecha_Finalizacion" class="control-label">Fecha Finalización</label>
+                    <input asp-for="Fecha_Finalizacion" class="form-control" id="fechaFinalizacion" type="date"
+                        readonly />
+                    <span asp-validation-for="Fecha_Finalizacion" class="text-danger"></span>
+                </div>
+
+                <!-- Monto Section -->
+                <div class="form-group">
+                    <label asp-for="Monto" class="control-label">Monto</label>
+                    <input asp-for="Monto" class="form-control" type="number" />
+                    <span asp-validation-for="Monto" class="text-danger"></span>
+                </div>
+
+                <!-- Id Creado Por Section -->
+                <div class="form-group">
+                    <label asp-for="Id_Creado_Por" class="control-label">Id Creado Por</label>
+                    <input asp-for="Id_Creado_Por" class="form-control" type="text" />
+                    <span asp-validation-for="Id_Creado_Por" class="text-danger"></span>
+                </div>
+
+                <!-- Buttons Section -->
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary mt-3">Guardar</button>
+                    <a asp-action="ListContrato" class="btn btn-secondary mt-3">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/site.js"></script>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        // Función para calcular la fecha de finalización
+        function calcularFechaFinal() {
+            var fechaInicio = document.getElementById('fechaInicio').value;
+            var meses = document.getElementById('meses').value;
+
+            if (fechaInicio && meses) {
+                var fecha = new Date(fechaInicio);
+                fecha.setMonth(fecha.getMonth() + parseInt(meses));
+
+                var dia = fecha.getDate();
+                var mes = fecha.getMonth() + 1; // Los meses en JavaScript son base 0
+                var año = fecha.getFullYear();
+
+                // Formato YYYY-MM-DD
+                var fechaFinal = año + '-' + (mes < 10 ? '0' : '') + mes + '-' + (dia < 10 ? '0' : '') + dia;
+
+                document.getElementById('fechaFinalizacion').value = fechaFinal;
+            }
+        }
+    </script>
+}

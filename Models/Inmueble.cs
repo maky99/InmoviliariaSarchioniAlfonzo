@@ -23,7 +23,7 @@ public class Inmueble
     public Tipo_Inmueble? tipo { get; set; }
 
     public Propietario? propietario { get; set; }
-    public int Dias { get; set; }
+    public int Mes { get; set; }
     public double PrecioMin { get; set; }
     public double PrecioMax { get; set; }
     public DateTime FechaInicioAlquiler { get; set; }

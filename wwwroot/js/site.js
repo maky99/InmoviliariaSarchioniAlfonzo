@@ -40,20 +40,19 @@ function filtrarTabla() {
     }
 }
 //para calcular la fecha de inicio y de fin en el buscador 
-
 // Obtener los elementos
 const fechaInicio = document.getElementById('FechaInicio');
-const dias = document.getElementById('Dias');
+const meses = document.getElementById('Meses');
 const fechaFin = document.getElementById('FechaFin');
 
-// Actualizar la fecha de fin cuando se ingresa la fecha de inicio y los días
-dias.addEventListener('input', function () {
-    if (fechaInicio.value && dias.value) {
+// Actualizar la fecha de fin cuando se ingresa la fecha de inicio y los meses
+meses.addEventListener('input', function () {
+    if (fechaInicio.value && meses.value) {
         const fechaInicioDate = new Date(fechaInicio.value);
-        const diasValue = parseInt(dias.value);
+        const mesesValue = parseInt(meses.value);
 
-        // Calcular la fecha de fin sumando los días a la fecha de inicio
-        fechaInicioDate.setDate(fechaInicioDate.getDate() + diasValue);
+        // Calcular la fecha de fin sumando los meses a la fecha de inicio
+        fechaInicioDate.setMonth(fechaInicioDate.getMonth() + mesesValue);
 
         // Formatear la fecha de fin en formato yyyy-mm-dd
         const year = fechaInicioDate.getFullYear();
@@ -64,16 +63,23 @@ dias.addEventListener('input', function () {
     }
 });
 
-// Actualizar los días cuando se ingresa la fecha de inicio y la fecha de fin
+// Actualizar los meses cuando se ingresa la fecha de inicio y la fecha de fin
 fechaFin.addEventListener('input', function () {
     if (fechaInicio.value && fechaFin.value) {
         const fechaInicioDate = new Date(fechaInicio.value);
         const fechaFinDate = new Date(fechaFin.value);
 
-        // Calcular la diferencia de días
-        const diferenciaDias = Math.ceil((fechaFinDate - fechaInicioDate) / (1000 * 60 * 60 * 24));
+        // Calcular la diferencia en meses
+        let diferenciaMeses = (fechaFinDate.getFullYear() - fechaInicioDate.getFullYear()) * 12;
+        diferenciaMeses += fechaFinDate.getMonth() - fechaInicioDate.getMonth();
 
-        dias.value = diferenciaDias;
+        // Ajustar si la fecha de fin es antes del día de la fecha de inicio
+        if (fechaFinDate.getDate() < fechaInicioDate.getDate()) {
+            diferenciaMeses--;
+        }
+
+        meses.value = diferenciaMeses;
     }
 });
+
 

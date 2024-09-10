@@ -124,5 +124,18 @@ public class ContratoController : Controller
         return View("DetalleContrato", Contrato);
 
     }
+    public IActionResult CrearContrato(int id)
+    {
+        var inmueble = ir.ObtenerInmueblePorId(id);
+
+        var tiposInmuebles = ti.TipoInmu();
+        ViewData["inmueble"] = inmueble;
+        var propietarios = po.ObtenerPropietarios();
+        ViewData["propietario"] = propietarios;
+        var inquilino = inq.OptenerInquilinosActivos();
+        ViewData["inquilino"] = inquilino;
+
+        return View("NuevoContratoDirecto");
+    }
 
 }
