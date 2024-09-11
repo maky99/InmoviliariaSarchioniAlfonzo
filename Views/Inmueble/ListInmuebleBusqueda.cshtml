@@ -80,7 +80,7 @@
                     @* <td>@item.Bano</td> *@
                     @* <td>@item.Cochera</td> *@
                     @* <td>@item.Patio</td> *@
-                    <td>@item.Precio</td>
+                    <td>@item.Precio.ToString("C2", new System.Globalization.CultureInfo("es-AR"))</td>
                     <td>@item.Condicion</td>
                     @* <td>
                 @if (item.Estado_Inmueble == 1)
