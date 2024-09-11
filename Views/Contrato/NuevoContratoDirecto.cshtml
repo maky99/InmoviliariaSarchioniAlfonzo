@@ -1,7 +1,7 @@
 @model InmoviliariaSarchioniAlfonzo.Models.Contrato
 
 @{
-    ViewData["Title"] = "Nuevo Contrato";
+    ViewData["Title"] = "Nuevo Contrato Directo";
     var elinmueble = (Inmueble)ViewData["Inmueble"];
 
 }
@@ -50,16 +50,22 @@
                     <span asp-validation-for="Id_Propietario" class="text-danger"></span>
                 </div>
 
-                <!-- Inquilino Section -->
+                <div class="form-group">
+                    <label for="dni-inquilino">Buscar Inquilino por DNI</label>
+                    <input type="text" id="dni-inquilino" class="form-control"
+                        placeholder="Ingrese el DNI del inquilino" oninput="buscarInquilino()">
+                </div>
+
                 <div class="form-group">
                     <label asp-for="Id_Inquilino" class="control-label">Inquilino</label>
-                    <select asp-for="Id_Inquilino" class="form-control">
+                    <select asp-for="Id_Inquilino" id="inquilino-select" class="form-control">
                         <option value="" disabled selected>Seleccione un inquilino</option>
                         @if (ViewData["inquilino"] is List<Inquilino> inquilinos)
                         {
                             foreach (var inquilino in inquilinos)
                             {
-                                <option value="@inquilino.Id_Inquilino">@inquilino.Apellido @inquilino.Nombre</option>
+                                <option value="@inquilino.Id_Inquilino" data-dni="@inquilino.Dni">@inquilino.Apellido
+                                    @inquilino.Nombre</option>
                             }
                         }
                     </select>
@@ -92,10 +98,11 @@
                 <!-- Monto Section -->
                 <div class="form-group">
                     <label asp-for="Monto" class="control-label">Monto</label>
-                    <input asp-for="Monto" class="form-control" type="number" />
+                    <input class="form-control" type="text"
+                        value="$@string.Format(System.Globalization.CultureInfo.GetCultureInfo("es-AR"), "{0:N2}", elinmueble?.Precio)"
+                        readonly />
                     <span asp-validation-for="Monto" class="text-danger"></span>
                 </div>
-
                 <!-- Id Creado Por Section -->
                 <div class="form-group">
                     <label asp-for="Id_Creado_Por" class="control-label">Id Creado Por</label>
@@ -140,5 +147,23 @@
                 document.getElementById('fechaFinalizacion').value = fechaFinal;
             }
         }
+
+        function buscarInquilino() {
+            var dni = document.getElementById('dni-inquilino').value.toLowerCase();
+            var opciones = document.getElementById('inquilino-select').options;
+
+            for (var i = 0; i < opciones.length; i++) {
+                var opcion = opciones[i];
+                var dniInquilino = opcion.getAttribute('data-dni');
+
+                if (dniInquilino && dniInquilino.startsWith(dni)) {
+                    opcion.style.display = '';
+                } else {
+                    opcion.style.display = 'none';
+                }
+            }
+        }
+
+
     </script>
 }

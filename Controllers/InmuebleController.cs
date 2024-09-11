@@ -171,9 +171,19 @@ public class InmuebleController : Controller
             // Ajusta el filtro según el campo de fecha en tu modelo
             inmuebles = inmuebles.Where(i => i.FechaFinAlquiler > FechaFin.Value).ToList();
         }
+        // Verificar si no hay resultados
+        if (!inmuebles.Any())
+        {
+            // Usar TempData para enviar el mensaje a la vista
+            TempData["ErrorMessage"] = "No se encontraron resultados. Intenta con otros filtros.";
 
+            // Redirigir a la vista de búsqueda
+            return RedirectToAction("BuscarInmueble");
+        }
 
+        // Si hay resultados, mostrar la vista de lista de inmuebles filtrados
         return View("ListInmuebleBusqueda", inmuebles);
+
     }
 
 
