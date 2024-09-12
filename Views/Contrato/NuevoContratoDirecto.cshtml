@@ -26,6 +26,8 @@
                 <input asp-for="Estado_Contrato" type="hidden" value="1" />
                 <input asp-for="Finalizacion_Anticipada" type="hidden" value="0001-01-01" />
                 <input asp-for="Id_Terminado_Por" type="hidden" value="0" />
+                <input asp-for="Monto" type="hidden" value="@elinmueble?.Precio" />
+
 
                 <!-- Inmueble Section -->
                 <div class="form-group">
@@ -94,15 +96,21 @@
                         readonly />
                     <span asp-validation-for="Fecha_Finalizacion" class="text-danger"></span>
                 </div>
-
                 <!-- Monto Section -->
                 <div class="form-group">
-                    <label asp-for="Monto" class="control-label">Monto</label>
+                    <label class="control-label">Monto</label>
                     <input class="form-control" type="text"
                         value="$@string.Format(System.Globalization.CultureInfo.GetCultureInfo("es-AR"), "{0:N2}", elinmueble?.Precio)"
                         readonly />
-                    <span asp-validation-for="Monto" class="text-danger"></span>
                 </div>
+
+                @* <div class="form-group">
+                <label asp-for="Monto" class="control-label">Monto</label>
+                <input class="form-control" type="text"
+                value="$@string.Format(System.Globalization.CultureInfo.GetCultureInfo("es-AR"), "{0:N2}",
+                elinmueble?.Precio)" readonly />
+                <span asp-validation-for="Monto" class="text-danger"></span>
+                </div> *@
                 <!-- Id Creado Por Section -->
                 <div class="form-group">
                     <label asp-for="Id_Creado_Por" class="control-label">Id Creado Por</label>
