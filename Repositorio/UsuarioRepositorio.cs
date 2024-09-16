@@ -340,6 +340,35 @@ public int Baja(int id)
         return res;
     } 
 
+public Usuario ModificarPerfil(Usuario usuario){
+
+    using (MySqlConnection connection = new MySqlConnection(connectionString))  
+    {
+        var sql = @$" UPDATE usuario SET {nameof(Usuario.Nombre)} = @Nombre,
+         {nameof(Usuario.Apellido)} = @Apellido , {nameof(Usuario.Email)} = @Email
+         WHERE {nameof(Usuario.Id_Usuario)} = @Id_Usuario;";
+        using (MySqlCommand command = new MySqlCommand(sql, connection))
+        {
+            
+            command.Parameters.AddWithValue("@Nombre", usuario.Nombre);
+            command.Parameters.AddWithValue("@Apellido", usuario.Apellido);
+            command.Parameters.AddWithValue("@Email", usuario.Email);
+            command.Parameters.AddWithValue("@Id_Usuario", usuario.Id_Usuario);
+            
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
+        }
+        
+
+        }
+
+    return usuario;
+}
+
+
+
+
 }
 
 

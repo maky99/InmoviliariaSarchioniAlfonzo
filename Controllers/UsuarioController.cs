@@ -140,10 +140,6 @@ public class UsuarioController : Controller
 	}
 
 
-
-
-
-
 	[HttpPost]
 	[Authorize]
 	public ActionResult cambioAvatarPost(Usuario usuario)
@@ -235,6 +231,27 @@ public class UsuarioController : Controller
 
 		usRe.Baja(id);
         return RedirectToAction(nameof(ListUsuario));
+    }
+
+    [Authorize]
+    public ActionResult ModificaPerfil(Usuario usuario)
+    {
+     
+        UsuarioRepositorio usuRepo = new UsuarioRepositorio();
+
+		usuRepo.ModificarPerfil(usuario);
+        
+        return RedirectToAction("Perfil", new { id = usuario.Id_Usuario });
+    }
+
+    [HttpGet]
+    [Authorize]
+    public ActionResult Perfil(int id)
+    {
+        var id_usuario = Convert.ToInt32(((User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid).Value)));
+        ViewBag.Roles = Usuario.ObtenerRoles();
+
+        return View(usuarioRepo.UsuariosPorId(id));
     }
 
 }
