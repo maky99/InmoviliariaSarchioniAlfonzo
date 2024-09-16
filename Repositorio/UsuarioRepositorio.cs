@@ -41,7 +41,6 @@ public class UsuarioRepositorio
         return res;
     }
 
-
     public int ModificarUsuario(Usuario usuario)
     {
         int res = -1;
@@ -63,6 +62,29 @@ public class UsuarioRepositorio
                 command.Parameters.AddWithValue("Rol", usuario.Rol);
                 command.Parameters.AddWithValue("Dni", usuario.Dni);
                 command.Parameters.AddWithValue("Telefono", usuario.Telefono);
+                connection.Open();
+                res = command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
+        return res;
+    }
+    public int ModificarAvatarUsuario(Usuario usuario)
+    {
+        int res = -1;
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            string sql = @"UPDATE usuario
+					SET  Avatar=@avatar
+					WHERE Id_Usuario = @id_usuario;";
+
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@id_usuario", usuario.Id_Usuario);
+              
+                command.Parameters.AddWithValue("Avatar", usuario.Avatar);
+             
                 connection.Open();
                 res = command.ExecuteNonQuery();
                 connection.Close();
@@ -135,42 +157,47 @@ public class UsuarioRepositorio
     }
 
 
-    public Usuario UsuariosPorId(int id)
+  public Usuario UsuariosPorId(int id)
+{
+    var usuario = new Usuario();
+    using (var connection = new MySqlConnection(connectionString))
     {
-        var usuario = new Usuario();
-        using (var connection = new MySqlConnection(connectionString))
-        {
-            var sql = @$"Select {nameof(Usuario.Id_Usuario)}, {nameof(Usuario.Dni)}, {nameof(Usuario.Apellido)}, {nameof(Usuario.Nombre)}, {nameof(Usuario.Telefono)}, {nameof(Usuario.Email)}, {nameof(Usuario.Rol)}, {nameof(Usuario.Avatar)}, {nameof(Usuario.Estado_Usuario)} 
+        var sql = @$"SELECT {nameof(Usuario.Id_Usuario)}, {nameof(Usuario.Dni)}, {nameof(Usuario.Apellido)}, {nameof(Usuario.Nombre)}, {nameof(Usuario.Telefono)}, {nameof(Usuario.Email)}, {nameof(Usuario.Rol)}, {nameof(Usuario.Avatar)}, {nameof(Usuario.Estado_Usuario)} 
                      FROM usuario 
                      WHERE {nameof(Usuario.Id_Usuario)} = '{id}'
                      ";
-            using (var command = new MySqlCommand(sql, connection))
-            {
-                connection.Open();
-                using (var reader = command.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        usuario = (new Usuario
-                        {
-                            Id_Usuario = reader.GetInt32("Id_Usuario"),
-                            Dni = reader.GetInt32("Dni"),
-                            Apellido = reader.GetString("Apellido"),
-                            Nombre = reader.GetString("Nombre"),
-                            Telefono = reader.GetString("Telefono"),
-                            Email = reader.GetString("Email"),
-                            Rol = reader.GetInt32("Rol"),
-                            Avatar = reader["Avatar"] != DBNull.Value ? reader.GetString(reader.GetOrdinal("Avatar")) : "",
-                            Estado_Usuario = reader.GetInt32("Estado_Usuario")
 
-                        });
-                    }
-                    connection.Close();
+        using (var command = new MySqlCommand(sql, connection))
+        {
+           
+            connection.Open();
+            
+            using (var reader = command.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    usuario = new Usuario
+                    {
+                        Id_Usuario = reader.GetInt32("Id_Usuario"),
+                        Dni = reader.GetInt32("Dni"),
+                        Apellido = reader.GetString("Apellido"),
+                        Nombre = reader.GetString("Nombre"),
+                        Telefono = reader.GetString("Telefono"),
+                        Email = reader.GetString("Email"),
+                        Rol = reader.GetInt32("Rol"),
+                        // Manejo adecuado de valores nulos en la columna Avatar
+                        Avatar = !reader.IsDBNull(reader.GetOrdinal("Avatar")) 
+                                 ? reader.GetString(reader.GetOrdinal("Avatar")) 
+                                 : string.Empty,
+                        Estado_Usuario = reader.GetInt32("Estado_Usuario")
+                    };
                 }
             }
         }
-        return usuario;
     }
+    return usuario;
+}
+
 
     public Usuario ObtenerPorEmail(string email)
     {
@@ -242,8 +269,76 @@ public class UsuarioRepositorio
 
     }
 
+public int esIgualPassword(int id, string Password)
+    {
+        var res = -1;
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            var sql = @$"SELECT {nameof(Usuario.Password)}
+             FROM usuario WHERE
+             {nameof(Usuario.Id_Usuario)} = @IdUsuario
+              AND {nameof(Usuario.Password)} = @Password;";
+            using (MySqlCommand command = new MySqlCommand(sql, connection))
+            {
+                command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@IdUsuario", id);
+                command.Parameters.AddWithValue("@Password", Password);
+                connection.Open();
+                var reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    res=1;
+
+                }
+                connection.Close();
+            }
+        }
+
+        return res;
+		
+		
+    }
 
 
+    public int updateClave(int id, string Password)
+    {
+        var res = -1;
+    
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            var sql = @$"UPDATE usuario SET {nameof(Usuario.Password)} = @Password WHERE {nameof(Usuario.Id_Usuario)} = @Id_Usuario";
+            using (MySqlCommand command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@Id_Usuario", id);
+                command.Parameters.AddWithValue("@Password", Password);
+                connection.Open();
+                res = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+            }
+        }
+        return res;
+    }
+public int Baja(int id)
+    {
+        var res = -1;
+        using (MySqlConnection connection = new MySqlConnection(connectionString))
+        {
+            var sql = @$"UPDATE usuario
+            SET {nameof(Usuario.Estado_Usuario)} = 0
+            WHERE {nameof(Usuario.Id_Usuario)} =@{nameof(Usuario.Id_Usuario)}";
+
+            
+
+            using (MySqlCommand command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue($"@{nameof(Usuario.Id_Usuario)}", id);
+                connection.Open();
+                res = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+            }
+        }
+        return res;
+    } 
 
 }
 

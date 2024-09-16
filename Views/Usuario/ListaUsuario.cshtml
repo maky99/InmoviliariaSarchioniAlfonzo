@@ -88,9 +88,9 @@
                         </a>
 
                         <!-- Enlace para desactivar -->
-                        <a href="@Url.Action("CambEstadoInquilino", new { id = item.Id_Usuario })"
+                        <a href="@Url.Action("baja", new { id = item.Id_Usuario })"
                             onclick="return confirm('¿Estás seguro de que deseas desactivar a @item.Apellido @item.Nombre?')"
-                            class="btn btn-danger" title="Desactivar Inquilino">
+                            class="btn btn-danger" title="Desactivar Usuario">
                             <i class="fa-solid fa-user-minus"></i>
                             @* <i class="fa-solid fa-trash"></i> *@
                         </a>

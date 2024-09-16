@@ -24,6 +24,7 @@ public class UsuarioController : Controller
 	}
 	UsuarioRepositorio usuarioRepo = new UsuarioRepositorio();
 
+
 	[Authorize]
 	public IActionResult ListUsuario()
 	{
@@ -121,6 +122,120 @@ public class UsuarioController : Controller
 	}
 
 
+	[HttpGet]
+	[Authorize]
+	public ActionResult CambioAvatar(int id)
+	{
+		var usuario = usuarioRepo.UsuariosPorId(id);
+		// Obtener el ID del usuario autenticado
+		var usuarioId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.PrimarySid));
+		// Verificar si el usuario autenticado coincide con el ID del perfil solicitado
+		if (usuarioId == id)
+		{
+
+			RedirectToAction(nameof(ListUsuario));
+		}
+
+		return View(usuarioRepo.UsuariosPorId(id));
+	}
+
+
+
+
+
+
+	[HttpPost]
+	[Authorize]
+	public ActionResult cambioAvatarPost(Usuario usuario)
+	{
+
+		// Obtener el ID del usuario autenticado
+		var usuarioId = Convert.ToInt32(User.FindFirstValue(ClaimTypes.PrimarySid));
+
+		if (usuario.AvatarFile != null && usuario.Id_Usuario > 0)
+		{
+			string wwwPath = environment.WebRootPath;
+			string path = Path.Combine(wwwPath, "Uploads");
+			if (!Directory.Exists(path))
+			{
+				Directory.CreateDirectory(path);
+			}
+			//Path.GetFileName(u.AvatarFile.FileName);//este nombre se puede repetir
+			string fileName = "avatar_" + usuario.Id_Usuario + Path.GetExtension(usuario.AvatarFile.FileName);
+			string pathCompleto = Path.Combine(path, fileName);
+			usuario.Avatar = Path.Combine("/Uploads", fileName);
+			// Esta operación guarda la foto en memoria en la ruta que necesitamos
+			using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
+			{
+				usuario.AvatarFile.CopyTo(stream);
+			}
+			usuarioRepo.ModificarAvatarUsuario(usuario);
+		}
+		return RedirectToAction(nameof(ListUsuario));
+
+	}
+
+	[Authorize]
+	public ActionResult CambioPassword()
+	{
+		//audit
+		return View();
+	}
+
+	[HttpPost]
+	[Authorize]
+	public ActionResult CambioPassword(string PasswordAnterior, string PasswordNueva)
+	{
+		var IdClaim = (User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid).Value);
+		UsuarioRepositorio repoUsu = new UsuarioRepositorio();
+		var Mensaje = "";
+
+		string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+							password: PasswordAnterior,
+							salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+							prf: KeyDerivationPrf.HMACSHA1,
+							iterationCount: 1000,
+							numBytesRequested: 256 / 8));
+
+		PasswordAnterior = hashed;
+
+		var resultado = repoUsu.esIgualPassword(Convert.ToInt32(IdClaim), hashed);
+		if (resultado == 1)
+		{
+
+			string PasswordNuevaHash = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+								password: PasswordNueva,
+								salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+								prf: KeyDerivationPrf.HMACSHA1,
+								iterationCount: 1000,
+								numBytesRequested: 256 / 8));
+
+			PasswordNueva = PasswordNuevaHash;
+
+
+			repoUsu.updateClave(Convert.ToInt32(IdClaim), PasswordNuevaHash);
+
+			Mensaje = "EL CAMBIO SE REALIZÓ CORRECTAMENTE";
+		}
+		else
+		{
+			Mensaje = "PASSWORD INCORRECTA, INTENTE DE NUEVO";
+		}
+		ViewBag.Mensaje = Mensaje;
+		return View();
+
+
+	}
+
+ [Authorize(Policy = "Administrador")]
+ public IActionResult Baja(int id)
+    {
+        
+        UsuarioRepositorio usRe = new UsuarioRepositorio();
+
+		usRe.Baja(id);
+        return RedirectToAction(nameof(ListUsuario));
+    }
 
 }
 
