@@ -190,32 +190,16 @@ public class ContratoRepositorio
             var sql = @$"
     UPDATE Contrato
     SET
-        {nameof(Contrato.Id_Inmueble)} = @Id_Inmueble,
-        {nameof(Contrato.Id_Propietario)} = @Id_Propietario,
-        {nameof(Contrato.Id_Inquilino)} = @Id_Inquilino,
-        {nameof(Contrato.Fecha_Inicio)} = @Fecha_Inicio,
-        {nameof(Contrato.Fecha_Finalizacion)} = @Fecha_Finalizacion,
-        {nameof(Contrato.Monto)} = @Monto,
-        {nameof(Contrato.Finalizacion_Anticipada)} = @Finalizacion_Anticipada,
-        {nameof(Contrato.Id_Creado_Por)} = @Id_Creado_Por,
-        {nameof(Contrato.Id_Terminado_Por)} = @Id_Terminado_Por,
-        {nameof(Contrato.Estado_Contrato)} = @Estado_Contrato
+        {nameof(Contrato.Meses)} = @Meses,
+        {nameof(Contrato.Fecha_Finalizacion)} = @Fecha_Finalizacion
     WHERE
         {nameof(Contrato.Id_Contrato)} = @Id_Contrato";
 
             using (MySqlCommand command = new MySqlCommand(sql, connection))
             {
-                command.Parameters.AddWithValue("@Id_Contrato", Contrato.Id_Contrato);
-                command.Parameters.AddWithValue("@Id_Inmueble", Contrato.Id_Inmueble);
-                command.Parameters.AddWithValue("@Id_Propietario", Contrato.Id_Propietario);
-                command.Parameters.AddWithValue("@Id_Inquilino", Contrato.Id_Inquilino);
-                command.Parameters.AddWithValue("@Fecha_Inicio", Contrato.Fecha_Inicio);
+                command.Parameters.AddWithValue("@Id_Contrato", Contrato.Id_Contrato);  // Añadir este parámetro
+                command.Parameters.AddWithValue("@Meses", Contrato.Meses);
                 command.Parameters.AddWithValue("@Fecha_Finalizacion", Contrato.Fecha_Finalizacion);
-                command.Parameters.AddWithValue("@Monto", Contrato.Monto);
-                command.Parameters.AddWithValue("@Finalizacion_Anticipada", Contrato.Finalizacion_Anticipada);
-                command.Parameters.AddWithValue("@Id_Creado_Por", Contrato.Id_Creado_Por);
-                command.Parameters.AddWithValue("@Id_Terminado_Por", Contrato.Id_Terminado_Por);
-                command.Parameters.AddWithValue("@Estado_Contrato", Contrato.Estado_Contrato);
                 connection.Open();
                 res = command.ExecuteNonQuery();
                 connection.Close();
@@ -322,8 +306,12 @@ public class ContratoRepositorio
             Contrato.{nameof(Contrato.Finalizacion_Anticipada)},
             Contrato.{nameof(Contrato.Id_Creado_Por)},
             Contrato.{nameof(Contrato.Id_Terminado_Por)}, 
-            Contrato.{nameof(Contrato.Estado_Contrato)}
+            Contrato.{nameof(Contrato.Estado_Contrato)},
+            Usuario.{nameof(Usuario.Nombre)} AS NombreUsuario,
+            Usuario.{nameof(Usuario.Apellido)} AS ApellidoUsuario,
+            Usuario.{nameof(Usuario.Email)} AS EmailUsuario
         FROM Contrato
+        JOIN Usuario ON Contrato.{nameof(Contrato.Id_Creado_Por)} = Usuario.{nameof(Usuario.Id_Usuario)}
         JOIN Inmueble ON Contrato.{nameof(Contrato.Id_Inmueble)} = Inmueble.{nameof(Inmueble.Id_Inmueble)}
         LEFT JOIN Tipo_Inmueble ON Inmueble.{nameof(Inmueble.Id_Tipo_Inmueble)} = Tipo_Inmueble.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)}
         JOIN Propietario ON Contrato.{nameof(Contrato.Id_Propietario)} = Propietario.{nameof(Propietario.Id_Propietario)}
@@ -342,7 +330,7 @@ public class ContratoRepositorio
                         contrato = new Contrato
                         {
                             Id_Contrato = reader.GetInt32("Id_Contrato"),
-                            Id_Inmueble = reader.GetInt32("Id_Inmueble_Contrato"), // Usando el alias especificado
+                            Id_Inmueble = reader.GetInt32("Id_Inmueble_Contrato"),
                             Id_Propietario = reader.GetInt32("Id_Propietario"),
                             Id_Inquilino = reader.GetInt32("Id_Inquilino"),
                             Fecha_Inicio = reader.GetDateTime("Fecha_Inicio"),
@@ -388,7 +376,13 @@ public class ContratoRepositorio
                                 Dni = reader.GetInt32("DniI"),
                                 Telefono = reader.GetString("TelefonoI"),
                                 Email = reader.GetString("EmailI")
-                            }
+                            },
+                            usuario = new Usuario
+                            {
+                                Nombre = reader.GetString("NombreUsuario"),
+                                Apellido = reader.GetString("ApellidoUsuario"),
+                                Email = reader.GetString("EmailUsuario")
+                            },
                         };
                     }
                 }
@@ -534,13 +528,15 @@ public class ContratoRepositorio
         {
             var sql = @$"UPDATE {nameof(Contrato)} 
              SET {nameof(Contrato.Estado_Contrato)} = @{nameof(Contrato.Estado_Contrato)}, 
-                 {nameof(Contrato.Finalizacion_Anticipada)} = @{nameof(Contrato.Finalizacion_Anticipada)} 
+                 {nameof(Contrato.Finalizacion_Anticipada)} = @{nameof(Contrato.Finalizacion_Anticipada)},{nameof(Contrato.Id_Terminado_Por)} = @{nameof(Contrato.Id_Terminado_Por)}  
              WHERE {nameof(Contrato.Id_Contrato)} = @{nameof(Contrato.Id_Contrato)}";
             using (var command = new MySqlCommand(sql, connection))
             {
                 command.Parameters.AddWithValue("@Estado_Contrato", contrato.Estado_Contrato);
                 command.Parameters.AddWithValue("@Finalizacion_Anticipada", contrato.Finalizacion_Anticipada);
                 command.Parameters.AddWithValue("@Id_Contrato", contrato.Id_Contrato);
+                command.Parameters.AddWithValue("@Id_Terminado_Por", contrato.Id_Terminado_Por);
+
 
                 connection.Open();
                 command.ExecuteNonQuery();

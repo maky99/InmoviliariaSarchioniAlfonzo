@@ -2,6 +2,9 @@
 
 @{
     ViewBag.Title = "Detalles del Inmueble";
+    var usuarioCrea = (Usuario)ViewData["usuarioCrea"];
+    var usuarioTermina = (Usuario)ViewData["usuarioTermina"];
+
 }
 
 <link rel="stylesheet" href="~/fondo/contrato.css" />
@@ -24,7 +27,7 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Id Contrato</td>
+                        <td>N° Contrato</td>
                         <td>@Model.Id_Contrato</td>
                     </tr>
                     <tr>
@@ -50,12 +53,21 @@
                     </tr>
 
                     <tr>
-                        <td>Id Creado Por</td>
-                        <td>@Model.Id_Creado_Por</td>
+                        <td>Creado Por</td>
+                        <td>@usuarioCrea?.Apellido, @usuarioCrea?.Nombre (@usuarioCrea?.Email)</td>
                     </tr>
                     <tr>
-                        <td>Id Terminado Por</td>
-                        <td>@Model.Id_Terminado_Por</td>
+                        <td>Terminado Por</td>
+                        <td>
+                            @if (usuarioTermina != null)
+                            {
+                                @($"{usuarioTermina.Apellido}, {usuarioTermina.Nombre} ({usuarioTermina.Email})")
+                            }
+                            else
+                            {
+                                <span>Aún no finaliza el contrato</span>
+                            }
+                        </td>
                     </tr>
                     <tr>
                         <td>Estado Contrato</td>
@@ -202,11 +214,11 @@
                     <!-- Agregar más campos de Inquilino según sea necesario -->
                 </tbody>
             </table>
-    <div class="col-md-8 col-lg-10 p-4 rounded shadow-sm">
-         
+            <div class="col-md-8 col-lg-10 p-4 rounded shadow-sm">
+
                 <a href="@Url.Action("ListContrato", "Contrato")" class="btn btn-primary">Volver</a>
-            
-        </div>
+
+            </div>
 
 
 

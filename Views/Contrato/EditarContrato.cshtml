@@ -23,61 +23,36 @@
                 <input type="hidden" asp-for="Id_Contrato" />
                 <input asp-for="Estado_Contrato" type="hidden" value="1" />
                 <input asp-for="Finalizacion_Anticipada" type="hidden" value="0001-01-01" />
-
+                <input asp-for="Id_Terminado_Por" type="hidden" value="0" />
+                <input asp-for="Monto" type="hidden" id="MontoHidden" />
+                <input asp-for="Id_Creado_Por" type="hidden" value="@Model.Id_Creado_Por" />
 
                 <div class="form-group">
-                    <label asp-for="Id_Inmueble" class="control-label">Inmueble</label>
-                    <select asp-for="Id_Inmueble" class="form-control" id="inmueble-select">
-                        <option value="@Model.Id_Inmueble">@Model.inmueble?.Direccion</option>
-                        @if (ViewData["Inmueble"] is List<Inmueble> Inmu)
-                        {
-                            foreach (var Inmueble in Inmu)
-                            {
-                                <option value="@Inmueble.Id_Inmueble" data-propietario-id="@Inmueble.Id_Propietario"
-                                    data-propietario-nombre="@Inmueble.propietario?.Nombre"
-                                    data-propietario-apellido="@Inmueble.propietario?.Apellido">
-                                    @Inmueble.Direccion
-                                </option>
-
-                            }
-                        }
-                    </select>
-                    <span asp-validation-for="Id_Inmueble" class="text-danger"></span>
+                    <label class="control-label">Inmueble</label>
+                    <input class="form-control" type="text" value="@Model.inmueble?.Direccion" readonly />
                 </div>
 
                 <div class="form-group">
                     <label class="control-label">Propietario</label>
-                    <input type="text" id="propietario-info" class="form-control" readonly
-                        value="@Model.propietario?.Nombre @Model.propietario?.Apellido" />
-                    <input type="hidden" asp-for="Id_Propietario" id="Id_Propietario" value="@Model.Id_Propietario" />
-                    <span asp-validation-for="Id_Propietario" class="text-danger"></span>
+                    <input class="form-control" type="text"
+                        value="@($"{Model.propietario?.Apellido} {Model.propietario?.Nombre}")" readonly />
                 </div>
 
                 <div class="form-group">
                     <label asp-for="Id_Inquilino" class="control-label">Inquilino</label>
-                    <select asp-for="Id_Inquilino" class="form-control">
-                        <option value="" disabled>Seleccione un inquilino</option>
-                        @if (ViewData["inquilino"] is List<Inquilino> inquilinos)
-                        {
-                            foreach (var inquilino in inquilinos)
-                            {
-                                <option value="@inquilino.Id_Inquilino">@inquilino.Apellido @inquilino.Nombre</option>
-                            }
-                        }
-                    </select>
-                    <span asp-validation-for="Id_Inquilino" class="text-danger"></span>
+                    <input class="form-control" type="text"
+                        value="@($"{Model.inquilino?.Apellido} {Model.inquilino?.Nombre}")" readonly />
                 </div>
 
                 <div class="form-group">
                     <label asp-for="Fecha_Inicio" class="control-label">Fecha Inicio</label>
-                    <input asp-for="Fecha_Inicio" class="form-control" type="date" />
-                    <span asp-validation-for="Fecha_Inicio" class="text-danger"></span>
+                    <input class="form-control" type="text" value="@Model.Fecha_Inicio.ToString("dd/MM/yyyy")"
+                        id="fechaInicio" readonly />
                 </div>
 
                 <div class="form-group">
                     <label asp-for="Meses" class="control-label">Meses</label>
-                    <input asp-for="Meses" class="form-control" type="number" min="1" id="meses"
-                        onchange="calcularFechaFinal()" />
+                    <input asp-for="Meses" class="form-control" type="number" min="1" id="meses" />
                     <span asp-validation-for="Meses" class="text-danger"></span>
                 </div>
 
@@ -90,38 +65,14 @@
 
                 <div class="form-group">
                     <label asp-for="Monto" class="control-label">Monto</label>
-                    <input asp-for="Monto" class="form-control" type="number" />
-                    <span asp-validation-for="Monto" class="text-danger"></span>
+                    <input class="form-control" id="Monto" value="@($"${Model.Monto.ToString("N2")}")" readonly />
                 </div>
 
                 @* <div class="form-group">
-                <label asp-for="Finalizacion_Anticipada" class="control-label">Finalización Anticipada</label>
-                <input asp-for="Finalizacion_Anticipada" class="form-control" type="text" />
-                <span asp-validation-for="Finalizacion_Anticipada" class="text-danger"></span>
+                <label asp-for="Id_Creado_Por" class="control-label">Creado Por</label>
+                <input asp-for="Id_Creado_Por" class="form-control" type="text" value="@($"{Model.Id_Creado_Por}")"
+                readonly />
                 </div> *@
-
-                <div class="form-group">
-                    <label asp-for="Id_Creado_Por" class="control-label">Id Creado Por</label>
-                    <input asp-for="Id_Creado_Por" class="form-control" type="text" />
-                    <span asp-validation-for="Id_Creado_Por" class="text-danger"></span>
-                </div>
-
-                <div class="form-group">
-                    <label asp-for="Id_Terminado_Por" class="control-label">Id Terminado Por</label>
-                    <input asp-for="Id_Terminado_Por" class="form-control" type="number" step="0.01"
-                        value="@Model.Id_Terminado_Por.ToString()" />
-                    <span asp-validation-for="Id_Terminado_Por" class="text-danger"></span>
-                </div>
-
-
-                <div class="form-group">
-                    <label asp-for="Estado_Contrato" class="control-label">Estado del Contrato</label>
-                    <select asp-for="Estado_Contrato" class="form-control">
-                        <option value="0">Inactivo</option>
-                        <option value="1">Activo</option>
-                    </select>
-                    <span asp-validation-for="Estado_Contrato" class="text-danger"></span>
-                </div>
 
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary mt-3">Guardar</button>
@@ -133,58 +84,39 @@
 </div>
 
 <script src="~/js/site.js"></script>
-
-
-
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
     <script>
-        document.getElementById('inmueble-select').addEventListener('change', function () {
-            var selectedOption = this.options[this.selectedIndex];
-            var propietarioNombre = selectedOption.getAttribute('data-propietario-nombre');
-            var propietarioApellido = selectedOption.getAttribute('data-propietario-apellido');
-            var propietarioId = selectedOption.getAttribute('data-propietario-id');
-
-            // Verificar si los valores del propietario son nulos
-            if (propietarioNombre === null || propietarioApellido === null) {
-                // Restaurar los valores originales si son nulos
-                document.getElementById('propietario-info').value = initialPropietarioNombre;
-                document.getElementById('Id_Propietario').value = initialPropietarioId;
-            } else {
-                // Mostrar la información del propietario seleccionada
-                document.getElementById('propietario-info').value = propietarioApellido + ' ' + propietarioNombre;
-                // Asignar el ID del propietario al input oculto
-                document.getElementById('Id_Propietario').value = propietarioId;
-            }
-        });
-
-        // Función para calcular la fecha de finalización
-        function calcularFechaFinal() {
-            var fechaInicio = document.getElementById('fechaInicio').value;
-            var meses = document.getElementById('meses').value;
-
-            if (fechaInicio && meses) {
-                var fecha = new Date(fechaInicio);
-                fecha.setMonth(fecha.getMonth() + parseInt(meses));
-
-                var dia = fecha.getDate();
-                var mes = fecha.getMonth() + 1;
-                var año = fecha.getFullYear();
-
-                var fechaFinal = año + '-' + (mes < 10 ? '0' : '') + mes + '-' + (dia < 10 ? '0' : '') + dia;
-
-                document.getElementById('fechaFinalizacion').value = fechaFinal;
-            }
-        }
-
-        // Inicializar el valor del campo Id_Terminado_Por
         document.addEventListener('DOMContentLoaded', function () {
-            var idTerminadoPor = document.getElementById('Id_Terminado_Por').value;
-            if (idTerminadoPor) {
-                document.getElementById('Id_Terminado_Por').value = idTerminadoPor;
+            function calcularFechaFinal() {
+                const fechaInicioStr = document.getElementById('fechaInicio').value;
+                const meses = document.getElementById('meses').value;
+
+                if (fechaInicioStr && meses) {
+                    // Crear una nueva fecha desde la cadena en formato YYYY-MM-DD
+                    const [day, month, year] = fechaInicioStr.split('/');
+                    let fecha = new Date(year, month - 1, day); // Meses en JS son base 0
+
+                    // Sumar los meses
+                    fecha.setMonth(fecha.getMonth() + parseInt(meses));
+
+                    // Ajustar la fecha si el día cambia al sumar meses
+                    if (fecha.getDate() !== parseInt(day)) {
+                        fecha.setDate(0); // Volver al último día del mes anterior si es necesario
+                    }
+
+                    // Formatear la fecha final para asegurarse de que siempre sea YYYY-MM-DD
+                    const dia = fecha.getDate();
+                    const mes = fecha.getMonth() + 1; // Base 0 en JS
+                    const año = fecha.getFullYear();
+
+                    // Formato final en YYYY-MM-DD
+                    const fechaFinal = `${año}-${mes < 10 ? '0' : ''}${mes}-${dia < 10 ? '0' : ''}${dia}`;
+                    document.getElementById('fechaFinalizacion').value = fechaFinal;
+                }
             }
+
+            document.getElementById('meses').addEventListener('change', calcularFechaFinal);
         });
+
     </script>
 }

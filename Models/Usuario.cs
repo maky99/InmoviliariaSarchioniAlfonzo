@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Configuration;
 namespace InmoviliariaSarchioniAlfonzo.Models;
-        
-	public enum enRoles
+
+public enum enRoles
 {
     Administrador = 1,
     Empleado = 2,
@@ -56,10 +56,10 @@ public class Usuario
         }
         return roles;
     }
-  public override string ToString()
+    public override string ToString()
     {
-        return $"{Apellido}, {Nombre}-({Id_Usuario})";
+        return $"{Apellido},{Nombre}-({Id_Usuario})";
     }
-  
+
 
 }

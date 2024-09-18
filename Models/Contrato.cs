@@ -42,6 +42,7 @@ public class Contrato
    [Required(ErrorMessage = "El campo es obligatorio.")]
    public Inquilino? inquilino { get; set; }
    public int MesesPagos { get; set; }
+   public Usuario? usuario { get; set; }
 
 
 

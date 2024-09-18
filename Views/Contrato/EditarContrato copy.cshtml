@@ -1,11 +1,8 @@
-@using System.Security.Claims
 @model InmoviliariaSarchioniAlfonzo.Models.Contrato
 
 @{
-    ViewData["Title"] = "Nuevo Contrato";
-    var idusuario = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid);
-    var Id = idusuario?.Value;
-
+    ViewData["Title"] = "Editar Contrato";
+    var usuario = (Usuario)ViewData["usuario"];
 }
 
 <link rel="stylesheet" href="~/fondo/contrato.css" />
@@ -20,7 +17,6 @@
                 <div class="alert alert-danger temp-message" role="alert">
                     @TempData["ErrorMessage"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-
                 </div>
             }
 
@@ -28,41 +24,40 @@
                 <input type="hidden" asp-for="Id_Contrato" />
                 <input asp-for="Estado_Contrato" type="hidden" value="1" />
                 <input asp-for="Finalizacion_Anticipada" type="hidden" value="0001-01-01" />
-                <input asp-for="Id_Terminado_Por" type="hidden" value="0" />
-                <input asp-for="Monto" type="hidden" id="MontoHidden" />
-                <input asp-for="Id_Creado_Por" type="hidden" value="@Id" />
+
 
                 <div class="form-group">
-                    <label class="control-label">Inmueble</label>
-
+                    <label asp-for="Id_Inmueble" class="control-label">Inmueble</label>
                     <select asp-for="Id_Inmueble" class="form-control" id="inmueble-select">
-                        <option value="" disabled selected>Seleccione un Inmueble</option>
-                        @if (ViewData["inmueble"] is List<Inmueble> Inmu)
+                        <option value="@Model.Id_Inmueble">@Model.inmueble?.Direccion</option>
+                        @if (ViewData["Inmueble"] is List<Inmueble> Inmu)
                         {
                             foreach (var Inmueble in Inmu)
                             {
                                 <option value="@Inmueble.Id_Inmueble" data-propietario-id="@Inmueble.Id_Propietario"
                                     data-propietario-nombre="@Inmueble.propietario?.Nombre"
-                                    data-propietario-apellido="@Inmueble.propietario?.Apellido" data-monto="@Inmueble.Precio">
-                                    <!-- Agregar atributo para el monto -->
+                                    data-propietario-apellido="@Inmueble.propietario?.Apellido">
                                     @Inmueble.Direccion
                                 </option>
+
                             }
                         }
                     </select>
+                    <span asp-validation-for="Id_Inmueble" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label class="control-label">Propietario</label>
-                    <input type="text" id="propietario-info" class="form-control" readonly />
-                    <input type="hidden" asp-for="Id_Propietario" id="Id_Propietario" />
+                    <input type="text" id="propietario-info" class="form-control" readonly
+                        value="@Model.propietario?.Nombre @Model.propietario?.Apellido" />
+                    <input type="hidden" asp-for="Id_Propietario" id="Id_Propietario" value="@Model.Id_Propietario" />
                     <span asp-validation-for="Id_Propietario" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label asp-for="Id_Inquilino" class="control-label">Inquilino</label>
                     <select asp-for="Id_Inquilino" class="form-control">
-                        <option value="" disabled selected>Seleccione un inquilino</option>
+                        <option value="" disabled>Seleccione un inquilino</option>
                         @if (ViewData["inquilino"] is List<Inquilino> inquilinos)
                         {
                             foreach (var inquilino in inquilinos)
@@ -76,7 +71,7 @@
 
                 <div class="form-group">
                     <label asp-for="Fecha_Inicio" class="control-label">Fecha Inicio</label>
-                    <input asp-for="Fecha_Inicio" class="form-control" type="date" id="fechaInicio" />
+                    <input asp-for="Fecha_Inicio" class="form-control" type="date" />
                     <span asp-validation-for="Fecha_Inicio" class="text-danger"></span>
                 </div>
 
@@ -93,11 +88,27 @@
                         readonly />
                     <span asp-validation-for="Fecha_Finalizacion" class="text-danger"></span>
                 </div>
+
                 <div class="form-group">
                     <label asp-for="Monto" class="control-label">Monto</label>
-                    <input id="Monto" class="form-control" readonly />
+                    <input asp-for="Monto" class="form-control" type="number" />
                     <span asp-validation-for="Monto" class="text-danger"></span>
                 </div>
+
+                <div class="form-group">
+                    <label asp-for="Id_Creado_Por" class="control-label">Creado Por</label>
+                    <input asp-for="Id_Creado_Por" class="form-control" type="text"
+                        value="@($"{usuario?.Apellido}, {usuario?.Nombre}")" readonly />
+                </div>
+
+                @* <div class="form-group">
+                <label asp-for="Estado_Contrato" class="control-label">Estado del Contrato</label>
+                <select asp-for="Estado_Contrato" class="form-control">
+                <option value="0">Inactivo</option>
+                <option value="1">Activo</option>
+                </select>
+                <span asp-validation-for="Estado_Contrato" class="text-danger"></span>
+                </div> *@
 
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary mt-3">Guardar</button>
@@ -107,33 +118,33 @@
         </div>
     </div>
 </div>
+
 <script src="~/js/site.js"></script>
 
 
 
 @section Scripts {
-
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-
     <script>
         document.getElementById('inmueble-select').addEventListener('change', function () {
             var selectedOption = this.options[this.selectedIndex];
             var propietarioNombre = selectedOption.getAttribute('data-propietario-nombre');
             var propietarioApellido = selectedOption.getAttribute('data-propietario-apellido');
             var propietarioId = selectedOption.getAttribute('data-propietario-id');
-            var monto = parseFloat(selectedOption.getAttribute('data-monto'));// Agregar el atributo para el monto
 
-            // Mostrar la información del propietario
-            document.getElementById('propietario-info').value = propietarioApellido + ' ' + propietarioNombre;
-            // Asignar el ID del propietario al input oculto
-            document.getElementById('Id_Propietario').value = propietarioId;
-            // Asignar el monto al campo Monto
-            var montoForma = monto.toLocaleString('es-AR', { style: 'currency', currency: 'ARS' });
-            document.getElementById('MontoHidden').value = monto;
-
-            document.getElementById('Monto').value = montoForma;
+            // Verificar si los valores del propietario son nulos
+            if (propietarioNombre === null || propietarioApellido === null) {
+                // Restaurar los valores originales si son nulos
+                document.getElementById('propietario-info').value = initialPropietarioNombre;
+                document.getElementById('Id_Propietario').value = initialPropietarioId;
+            } else {
+                // Mostrar la información del propietario seleccionada
+                document.getElementById('propietario-info').value = propietarioApellido + ' ' + propietarioNombre;
+                // Asignar el ID del propietario al input oculto
+                document.getElementById('Id_Propietario').value = propietarioId;
+            }
         });
 
         // Función para calcular la fecha de finalización
@@ -155,6 +166,12 @@
             }
         }
 
-
+        // Inicializar el valor del campo Id_Terminado_Por
+        document.addEventListener('DOMContentLoaded', function () {
+            var idTerminadoPor = document.getElementById('Id_Terminado_Por').value;
+            if (idTerminadoPor) {
+                document.getElementById('Id_Terminado_Por').value = idTerminadoPor;
+            }
+        });
     </script>
 }

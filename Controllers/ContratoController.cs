@@ -15,6 +15,8 @@ public class ContratoController : Controller
     private PropietarioRepositorio po = new PropietarioRepositorio();
 
     private InquilinoRepositorio inq = new InquilinoRepositorio();
+    private UsuarioRepositorio usuarioRepo = new UsuarioRepositorio();
+
 
 
     public ContratoController(ILogger<ContratoController> logger)
@@ -46,7 +48,6 @@ public class ContratoController : Controller
 
             return View("NuevoContrato");
         }
-
         else
         {
             var Contrato = co.ObtenerContratoActivo(id);
@@ -56,15 +57,6 @@ public class ContratoController : Controller
 
                 return RedirectToAction(nameof(ListContrato));
             }
-            var tiposInmuebles = ti.TipoInmuActivo();
-            ViewData["tipoInmueble"] = tiposInmuebles;
-            var Inmuebles = ir.ObtenerInmueblesConPropietario();
-            ViewData["Inmueble"] = Inmuebles;
-            var propietario = po.ObtenerPropietariosActivos();
-            ViewData["propietario"] = propietario;
-            var inquilino = inq.OptenerInquilinosActivos();
-            ViewData["inquilino"] = inquilino;
-
             return View(Contrato);
         }
     }
@@ -120,7 +112,13 @@ public class ContratoController : Controller
 
     {
         var Contrato = co.ObtenerDetalle(id);
-
+        var usuarioCrea = usuarioRepo.UsuariosPorId(Contrato.Id_Creado_Por);
+        ViewData["usuarioCrea"] = usuarioCrea;
+        if (Contrato.Id_Terminado_Por != 0)
+        {
+            var usuarioTermina = usuarioRepo.UsuariosPorId(Contrato.Id_Terminado_Por);
+            ViewData["usuarioTermina"] = usuarioTermina;
+        }
         return View("DetalleContrato", Contrato);
 
     }

@@ -83,9 +83,11 @@ public class PagoController : Controller
     {
         if (ModelState.IsValid)
         {
+
             pa.GuardarPago(pago);
             var contrato = cr.ObtenerDetalle(pago.Id_Contrato);
             contrato.Estado_Contrato = 0;
+            contrato.Id_Terminado_Por = pago.Id_Creado_Por;
             contrato.Finalizacion_Anticipada = pago.Fecha;
             cr.ActualizarContratoFecha(contrato);
             TempData["NotificationMessage"] = "Pago guardado exitosamente. Y se ha finalizado el contrato.";
