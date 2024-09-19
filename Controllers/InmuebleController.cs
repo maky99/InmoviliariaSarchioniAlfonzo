@@ -138,7 +138,6 @@ public class InmuebleController : Controller
         var contratosVigentes = co.ContratoVigente();
         var inmueblesConContrato = contratosVigentes.Select(c => c.Id_Inmueble).ToList();
 
-
         // Filtrar inmuebles para excluir aquellos con contrato vigente
         inmuebles = inmuebles.Where(i => !inmueblesConContrato.Contains(i.Id_Inmueble)).ToList();
         // Filtrar por estado de inmueble (solo inmuebles activos)

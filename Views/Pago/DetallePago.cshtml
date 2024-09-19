@@ -4,6 +4,8 @@
     ViewBag.Title = "Detalles del Pago";
     var contrato = ViewData["contrato"] as InmoviliariaSarchioniAlfonzo.Models.Contrato;
     var pago = ViewData["pago"] as InmoviliariaSarchioniAlfonzo.Models.Pago;
+    var usuarioCrea = (Usuario)ViewData["usuarioCrea"];
+    var usuarioTermina = (Usuario)ViewData["usuarioTermina"];
     //para sacar el total
     var importe = pago?.Importe.ToString("N2");
     var multa = pago?.Multa.ToString("N2");
@@ -71,6 +73,29 @@
                     <th>Estado Pago</th>
                     <td>@(pago?.Estado_Pago == 1 ? "Pagado" : "Anulado")</td>
                 </tr>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <tr>
+                        <th>Creado Por</th>
+                        <td>@usuarioCrea?.Apellido, @usuarioCrea?.Nombre (@usuarioCrea?.Email)</td>
+                    </tr>
+                    @if (pago?.Estado_Pago == 0)
+                    {
+                        <tr>
+                            <th>Anulado Por</th>
+                            <td>
+                                @if (usuarioTermina != null)
+                                {
+                                    @($"{usuarioTermina.Apellido}, {usuarioTermina.Nombre} ({usuarioTermina.Email})")
+                                }
+                                else
+                                {
+                                    <span></span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
             </table>
         </div>
 

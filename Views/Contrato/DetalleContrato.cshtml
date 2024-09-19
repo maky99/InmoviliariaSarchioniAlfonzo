@@ -51,24 +51,26 @@
                         <td>@(Model.Finalizacion_Anticipada != DateTime.MinValue ?
                                 Model.Finalizacion_Anticipada.ToString("dd/MM/yyyy") : "No Aplica")</td>
                     </tr>
-
-                    <tr>
-                        <td>Creado Por</td>
-                        <td>@usuarioCrea?.Apellido, @usuarioCrea?.Nombre (@usuarioCrea?.Email)</td>
-                    </tr>
-                    <tr>
-                        <td>Terminado Por</td>
-                        <td>
-                            @if (usuarioTermina != null)
-                            {
-                                @($"{usuarioTermina.Apellido}, {usuarioTermina.Nombre} ({usuarioTermina.Email})")
-                            }
-                            else
-                            {
-                                <span>Aún no finaliza el contrato</span>
-                            }
-                        </td>
-                    </tr>
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <tr>
+                            <td>Creado Por</td>
+                            <td>@usuarioCrea?.Apellido, @usuarioCrea?.Nombre (@usuarioCrea?.Email)</td>
+                        </tr>
+                        <tr>
+                            <td>Terminado Por</td>
+                            <td>
+                                @if (usuarioTermina != null)
+                                {
+                                    @($"{usuarioTermina.Apellido}, {usuarioTermina.Nombre} ({usuarioTermina.Email})")
+                                }
+                                else
+                                {
+                                    <span>Aún no finaliza el contrato</span>
+                                }
+                            </td>
+                        </tr>
+                    }
                     <tr>
                         <td>Estado Contrato</td>
                         <td>@(Model.Estado_Contrato == 1 ? "Activo" : "Inactivo")</td>
@@ -94,7 +96,7 @@
                         <td>@Model.inmueble?.Uso</td>
                     </tr>
                     <tr>
-                        <th>Coordenadas</th>
+                        <td>Coordenadas</td>
                         <td>@Model.inmueble?.Latitud /
                             @Model.inmueble?.Longitud
                             <a href="https://www.google.com/maps/?q=@Model.inmueble?.Latitud,@Model.inmueble?.Longitud"

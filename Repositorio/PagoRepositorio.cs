@@ -47,11 +47,8 @@ public class PagoRepositorio
                     Contrato ON Pago.{nameof(Pago.Id_Contrato)} = Contrato.{nameof(Contrato.Id_Contrato)}
                 JOIN 
                     Inquilino ON Contrato.{nameof(Contrato.Id_Inquilino)} = Inquilino.{nameof(Inquilino.Id_Inquilino)}
-                ORDER BY 
-                    Pago.{nameof(Pago.Id_Contrato)}, 
-                    Pago.{nameof(Pago.CuotaPaga)}, 
-                    Inquilino.{nameof(Inquilino.Apellido)}, 
-                    Inquilino.{nameof(Inquilino.Nombre)}";
+                ORDER BY
+                    Pago.{nameof(Pago.Id_Pago)} DESC";
 
             using (var command = new MySqlCommand(sql, connection))
             {
@@ -350,6 +347,9 @@ public class PagoRepositorio
         }
     }
 
+
+
+
     public IList<Pago> ObtenerPagosActivosSinMulta()
     {
         List<Pago> pagos = new List<Pago>();
@@ -399,6 +399,121 @@ public class PagoRepositorio
         return pagos;
     }
 
+    public IList<Pago> ObtenerPagosOrdxInqui()
+    {
+        List<Pago> pagos = new List<Pago>();
+
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = @$"SELECT 
+                    Pago.{nameof(Pago.Id_Pago)},
+                    Pago.{nameof(Pago.Id_Contrato)},
+                    Pago.{nameof(Pago.Importe)},
+                    Pago.{nameof(Pago.CuotaPaga)},
+                    Pago.{nameof(Pago.Fecha)},
+                    Pago.{nameof(Pago.Multa)},
+                    Pago.{nameof(Pago.Id_Creado_Por)},
+                    Pago.{nameof(Pago.Id_Terminado_Por)},
+                    Pago.{nameof(Pago.Estado_Pago)},
+                    Inquilino.{nameof(Inquilino.Id_Inquilino)},
+                    Inquilino.{nameof(Inquilino.Dni)},
+                    Inquilino.{nameof(Inquilino.Apellido)},
+                    Inquilino.{nameof(Inquilino.Nombre)},
+                    Inquilino.{nameof(Inquilino.Telefono)},
+                    Inquilino.{nameof(Inquilino.Email)},
+                    Inquilino.{nameof(Inquilino.Estado_Inquilino)},
+                    Contrato.{nameof(Contrato.Id_Contrato)} AS Contrato_Id_Contrato,
+                    Contrato.{nameof(Contrato.Id_Inmueble)},
+                    Contrato.{nameof(Contrato.Id_Propietario)},
+                    Contrato.{nameof(Contrato.Id_Inquilino)} AS Contrato_Id_Inquilino,
+                    Contrato.{nameof(Contrato.Fecha_Inicio)},
+                    Contrato.{nameof(Contrato.Meses)},
+                    Contrato.{nameof(Contrato.Fecha_Finalizacion)},
+                    Contrato.{nameof(Contrato.Monto)},
+                    Contrato.{nameof(Contrato.Finalizacion_Anticipada)},
+                    Contrato.{nameof(Contrato.Estado_Contrato)}
+                FROM 
+                    Pago
+                JOIN 
+                    Contrato ON Pago.{nameof(Pago.Id_Contrato)} = Contrato.{nameof(Contrato.Id_Contrato)}
+                JOIN 
+                    Inquilino ON Contrato.{nameof(Contrato.Id_Inquilino)} = Inquilino.{nameof(Inquilino.Id_Inquilino)}
+                ORDER BY 
+                    Pago.{nameof(Pago.Id_Contrato)}, 
+                    Pago.{nameof(Pago.CuotaPaga)}, 
+                    Inquilino.{nameof(Inquilino.Apellido)}, 
+                    Inquilino.{nameof(Inquilino.Nombre)}";
+
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        pagos.Add(new Pago
+                        {
+                            Id_Pago = reader.GetInt32("Id_Pago"),
+                            Id_Contrato = reader.GetInt32("Id_Contrato"),
+                            Importe = reader.GetDouble("Importe"),
+                            CuotaPaga = reader.GetInt32("CuotaPaga"),
+                            Fecha = reader.GetDateTime("Fecha"),
+                            Multa = reader.GetDouble("Multa"),
+                            Id_Creado_Por = reader.GetInt32("Id_Creado_Por"),
+                            Id_Terminado_Por = reader.GetInt32("Id_Terminado_Por"),
+                            Estado_Pago = reader.GetInt32("Estado_Pago"),
+                            inquilino = new Inquilino
+                            {
+                                Id_Inquilino = reader.GetInt32("Id_Inquilino"),
+                                Dni = reader.GetInt32("Dni"),
+                                Apellido = reader.GetString("Apellido"),
+                                Nombre = reader.GetString("Nombre"),
+                                Telefono = reader.GetString("Telefono"),
+                                Email = reader.GetString("Email"),
+                                Estado_Inquilino = reader.GetInt32("Estado_Inquilino")
+                            },
+                            contrato = new Contrato
+                            {
+                                Id_Contrato = reader.GetInt32("Contrato_Id_Contrato"),
+                                Id_Inmueble = reader.GetInt32("Id_Inmueble"),
+                                Id_Propietario = reader.GetInt32("Id_Propietario"),
+                                Id_Inquilino = reader.GetInt32("Contrato_Id_Inquilino"),
+                                Fecha_Inicio = reader.GetDateTime("Fecha_Inicio"),
+                                Meses = reader.GetInt32("Meses"),
+                                Fecha_Finalizacion = reader.GetDateTime("Fecha_Finalizacion"),
+                                Monto = reader.GetDouble("Monto"),
+                                Finalizacion_Anticipada = reader.GetDateTime("Finalizacion_Anticipada"),
+                                Estado_Contrato = reader.GetInt32("Estado_Contrato")
+                            }
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+        }
+        return pagos;
+    }
+
+    //cuento las cuotas pagas de un contrato
+    public int CuotaPagosRestantesPorContrato(int id_Contrato)
+    {
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = $@"
+        SELECT COUNT(*)
+        FROM {nameof(Pago)}
+        WHERE {nameof(Pago.Id_Contrato)} = @Id_Contrato
+        AND {nameof(Pago.Estado_Pago)} = 1";
+
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue($"@{nameof(Pago.Id_Contrato)}", id_Contrato);
+
+                connection.Open();
+                return Convert.ToInt32(command.ExecuteScalar());
+            }
+        }
+    }
 
 }
 

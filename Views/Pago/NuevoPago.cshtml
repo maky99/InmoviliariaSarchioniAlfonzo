@@ -28,7 +28,7 @@
                 <input type="hidden" asp-for="Id_Contrato" value="@contrato?.Id_Contrato" />
                 <input type="hidden" asp-for="Multa" value="0" />
                 <input type="hidden" asp-for="Id_Creado_Por" value="1" />
-                <input type="hidden" asp-for="Id_Terminado_Por" value="1" />
+                <input type="hidden" asp-for="Id_Terminado_Por" value="0" />
                 <input type="hidden" asp-for="Estado_Pago" value="1" />
                 <input type="hidden" asp-for="Importe" value="@contrato?.Monto" />
                 <input type="hidden" asp-for="Fecha" value="@DateTime.Now.ToString("yyyy-MM-dd")" />

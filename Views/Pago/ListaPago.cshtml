@@ -1,8 +1,12 @@
-﻿@model IEnumerable<InmoviliariaSarchioniAlfonzo.Models.Pago>
+﻿@using System.Security.Claims
+@model IEnumerable<InmoviliariaSarchioniAlfonzo.Models.Pago>
 
 @{
     ViewData["Title"] = "Lista de Pagos";
     var quienLlamo = ViewData["QuienLlamo"] as string;
+    var idusuario = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid);
+    var Id = idusuario?.Value;
+
 }
 
 
@@ -28,8 +32,10 @@
         }
         else
         {
-            <a asp-action="ListContVigentes" class="btn btn-success" title="Recibo de Pago">
+            <a asp-action="ListContVigentes" class="btn btn-success me-2" title="Recibo de Pago">
                 <i class="fa-solid fa-receipt"></i> Pagos</a>
+            <a asp-action="ListPagosOrdexInqu" class="btn btn-info" title="Ordena por N° de contrato">
+                <i class="fa-solid fa-arrow-down-short-wide"></i> N° Contrato</a>
         }
     </div>
     @{
@@ -116,14 +122,14 @@
 
                     <td>
                         <a href="@Url.Action("DetallePago", new { id = pago.Id_Pago,source="pagarContrato", previousUrl = Context.Request.Path })"
-                            class="btn btn-primary" title="Ver comprobante">
+                            class="btn btn-primary me-2" title="Ver comprobante">
                             <i class="fa-solid fa-receipt"></i>
                         </a>
                         @if (User.IsInRole("Administrador"))
                         {
                             @if (quienLlamo == "pagarContrato")
                             {
-                                <a href="@Url.Action("AnularPago", new { id = pago.Id_Pago, id_Usuario=2,source = "pagarContrato",id_Contrato = pago.Id_Contrato , previousUrl = Context.Request.Path })"
+                                <a href="@Url.Action("AnularPago", new { id = pago.Id_Pago, id_Usuario=@Id,source = "pagarContrato",id_Contrato = pago.Id_Contrato , previousUrl = Context.Request.Path })"
                                     onclick="return confirm('¿Estás seguro de que deseas anular la cuota @pago.CuotaPaga del inquilino @pago.inquilino?.Apellido, @pago.inquilino?.Nombre?')"
                                     class="btn btn-danger" title="Anular Pago">
                                     <i class="fa-solid fa-ban"></i>
@@ -131,7 +137,7 @@
                             }
                             else
                             {
-                                <a href="@Url.Action("AnularPago", new { id = pago.Id_Pago, id_Usuario=2, previousUrl = Context.Request.Path })"
+                                <a href="@Url.Action("AnularPago", new { id = pago.Id_Pago, id_Usuario=@Id, id_Contrato = pago.Id_Contrato,previousUrl = Context.Request.Path })"
                                     onclick="return confirm('¿Estás seguro de que deseas anular la cuota @pago.CuotaPaga del inquilino @pago.inquilino?.Apellido, @pago.inquilino?.Nombre?')"
                                     class="btn btn-danger" title="Anular Pago">
                                     <i class="fa-solid fa-ban"></i>
