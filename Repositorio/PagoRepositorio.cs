@@ -350,7 +350,54 @@ public class PagoRepositorio
         }
     }
 
+    public IList<Pago> ObtenerPagosActivosSinMulta()
+    {
+        List<Pago> pagos = new List<Pago>();
 
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = @$"SELECT 
+                Pago.{nameof(Pago.Id_Pago)},
+                Pago.{nameof(Pago.Id_Contrato)},
+                Pago.{nameof(Pago.Importe)},
+                Pago.{nameof(Pago.CuotaPaga)},
+                Pago.{nameof(Pago.Fecha)},
+                Pago.{nameof(Pago.Multa)},
+                Pago.{nameof(Pago.Id_Creado_Por)},
+                Pago.{nameof(Pago.Id_Terminado_Por)},
+                Pago.{nameof(Pago.Estado_Pago)}
+            FROM 
+                Pago
+            WHERE 
+                Pago.{nameof(Pago.Estado_Pago)} = 1 AND 
+                Pago.{nameof(Pago.Multa)} = 0";
+
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        pagos.Add(new Pago
+                        {
+                            Id_Pago = reader.GetInt32(nameof(Pago.Id_Pago)),
+                            Id_Contrato = reader.GetInt32(nameof(Pago.Id_Contrato)),
+                            Importe = reader.GetDouble(nameof(Pago.Importe)),
+                            CuotaPaga = reader.GetInt32(nameof(Pago.CuotaPaga)),
+                            Fecha = reader.GetDateTime(nameof(Pago.Fecha)),
+                            Multa = reader.GetDouble(nameof(Pago.Multa)),
+                            Id_Creado_Por = reader.GetInt32(nameof(Pago.Id_Creado_Por)),
+                            Id_Terminado_Por = reader.GetInt32(nameof(Pago.Id_Terminado_Por)),
+                            Estado_Pago = reader.GetInt32(nameof(Pago.Estado_Pago))
+                        });
+                    }
+                    connection.Close();
+                }
+            }
+        }
+        return pagos;
+    }
 
 
 }

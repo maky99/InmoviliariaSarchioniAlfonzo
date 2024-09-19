@@ -16,6 +16,7 @@ public class ContratoController : Controller
 
     private InquilinoRepositorio inq = new InquilinoRepositorio();
     private UsuarioRepositorio usuarioRepo = new UsuarioRepositorio();
+    private PagoRepositorio pa = new PagoRepositorio();
 
 
 
@@ -135,5 +136,37 @@ public class ContratoController : Controller
 
         return View("NuevoContratoDirecto");
     }
+    public IActionResult FiltroContrato()
+    {
+        return View("FiltarContrato", new List<Contrato>());
+    }
+    public IActionResult BuscarContra(int Meses)
+    {
+        var contratosVigentes = co.ContratoVigente();
+        var pagos = pa.ObtenerPagosActivosSinMulta();
+        var contratosFiltrados = contratosVigentes
+            .Where(contrato =>
+            {
+                var cuotasPagadas = pagos.Count(p => p.Id_Contrato == contrato.Id_Contrato);
+                var mesesRestantes = contrato.Meses - cuotasPagadas;
+                return mesesRestantes == Meses;
+            })
+            .ToList();
+        if (contratosFiltrados.Count == 0)
+        {
+            TempData["ErrorMessage"] = $"No hay contratos que finalicen en {Meses} meses.";
+        }
+        if (contratosFiltrados.Count == 1)
+        {
+            TempData["SuccessMessage"] = $"Contrato que finaliza en {Meses} mese.";
+        }
+        if (contratosFiltrados.Count > 1)
+        {
+            TempData["SuccessMessage"] = $"Contratos que finalizan en {Meses} meses.";
+        }
+
+        return View("FiltarContrato", contratosFiltrados);
+    }
+
 
 }
