@@ -25,29 +25,29 @@ public class UsuarioController : Controller
 	UsuarioRepositorio usuarioRepo = new UsuarioRepositorio();
 
 
-[Authorize]
-public IActionResult ListUsuario()
-{
-    // Obtener el rol del usuario desde las claims
-    var roleClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+	[Authorize]
+	public IActionResult ListUsuario()
+	{
+		// Obtener el rol del usuario desde las claims
+		var roleClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 
-    // Si el rol es "Empleado", redirigir al Index del HomeController
-    if (roleClaim == "Empleado")
-    {
-        return RedirectToAction(nameof(HomeController.Index), "Home");
-    }
+		// Si el rol es "Empleado", redirigir al Index del HomeController
+		if (roleClaim == "Empleado")
+		{
+			return RedirectToAction(nameof(HomeController.Index), "Home");
+		}
 
-    // Si es "Administrador", mostrar la lista de usuarios
-    if (roleClaim == "Administrador")
-    {
-        var lista = usuarioRepo.OptenerUsuarios();
-        return View("ListaUsuario", lista);
-    }
+		// Si es "Administrador", mostrar la lista de usuarios
+		if (roleClaim == "Administrador")
+		{
+			var lista = usuarioRepo.OptenerUsuarios();
+			return View("ListaUsuario", lista);
+		}
 
-    // En caso de roles no definidos, redirigir al Index por defecto
-    return RedirectToAction(nameof(HomeController.Index), "Home");
-}
-	
+		// En caso de roles no definidos, redirigir al Index por defecto
+		return RedirectToAction(nameof(HomeController.Index), "Home");
+	}
+
 
 
 
@@ -240,36 +240,36 @@ public IActionResult ListUsuario()
 
 	}
 
- [Authorize(Policy = "Administrador")]
- public IActionResult Baja(int id)
-    {
-        
-        UsuarioRepositorio usRe = new UsuarioRepositorio();
+	[Authorize(Policy = "Administrador")]
+	public IActionResult Baja(int id)
+	{
+
+		UsuarioRepositorio usRe = new UsuarioRepositorio();
 
 		usRe.Baja(id);
-        return RedirectToAction(nameof(ListUsuario));
-    }
+		return RedirectToAction(nameof(ListUsuario));
+	}
 
-    [Authorize]
-    public ActionResult ModificaPerfil(Usuario usuario)
-    {
-     
-        UsuarioRepositorio usuRepo = new UsuarioRepositorio();
+	[Authorize]
+	public ActionResult ModificaPerfil(Usuario usuario)
+	{
+
+		UsuarioRepositorio usuRepo = new UsuarioRepositorio();
 
 		usuRepo.ModificarPerfil(usuario);
-        
-        return RedirectToAction("Perfil", new { id = usuario.Id_Usuario });
-    }
 
-    [HttpGet]
-    [Authorize]
-    public ActionResult Perfil(int id)
-    {
-        var id_usuario = Convert.ToInt32(((User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid).Value)));
-        ViewBag.Roles = Usuario.ObtenerRoles();
+		return RedirectToAction("Perfil", new { id = usuario.Id_Usuario });
+	}
 
-        return View(usuarioRepo.UsuariosPorId(id));
-    }
+	[HttpGet]
+	[Authorize]
+	public ActionResult Perfil(int id)
+	{
+		var id_usuario = Convert.ToInt32(((User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid).Value)));
+		ViewBag.Roles = Usuario.ObtenerRoles();
+
+		return View(usuarioRepo.UsuariosPorId(id));
+	}
 
 }
 
