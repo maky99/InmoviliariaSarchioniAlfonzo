@@ -100,43 +100,55 @@ public class UsuarioController : Controller
 
 	}
 	[Authorize]
-	[HttpPost]
-	public IActionResult CreateUsuario(Usuario usuario)
-	{
+[HttpPost]
+public IActionResult CreateUsuario(Usuario usuario)
+{
+    // Generar el hash de la contraseña
+    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                    password: usuario.Password,
+                    salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                    prf: KeyDerivationPrf.HMACSHA1,
+                    iterationCount: 1000,
+                    numBytesRequested: 256 / 8));
 
-		string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-						password: usuario.Password,
-						salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
-						prf: KeyDerivationPrf.HMACSHA1,
-						iterationCount: 1000,
-						numBytesRequested: 256 / 8));
+    usuario.Password = hashed;
 
-		usuario.Password = hashed;
-		var nbreRnd = Guid.NewGuid();//posible nombre aleatorio
-		int res = usuarioRepo.AltaUsuario(usuario);
+    // Insertar usuario en la base de datos
+    int res = usuarioRepo.AltaUsuario(usuario);
 
-		if (usuario.AvatarFile != null && usuario.Id_Usuario > 0)
-		{
-			string wwwPath = environment.WebRootPath;
-			string path = Path.Combine(wwwPath, "Uploads");
-			if (!Directory.Exists(path))
-			{
-				Directory.CreateDirectory(path);
-			}
-			//Path.GetFileName(u.AvatarFile.FileName);//este nombre se puede repetir
-			string fileName = "avatar_" + usuario.Id_Usuario + Path.GetExtension(usuario.AvatarFile.FileName);
-			string pathCompleto = Path.Combine(path, fileName);
-			usuario.Avatar = Path.Combine("/Uploads", fileName);
-			// Esta operación guarda la foto en memoria en la ruta que necesitamos
-			using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
-			{
-				usuario.AvatarFile.CopyTo(stream);
-			}
-			usuarioRepo.ModificarUsuario(usuario);
-		}
-		return RedirectToAction(nameof(ListUsuario));
+    // Preparar ruta de carga
+    string wwwPath = environment.WebRootPath;
+    string path = Path.Combine(wwwPath, "Uploads");
+    if (!Directory.Exists(path))
+    {
+        Directory.CreateDirectory(path);
+    }
 
-	}
+    if (usuario.AvatarFile != null && usuario.Id_Usuario > 0)
+    {
+        // Si se ha cargado un avatar, guardar el archivo
+        string fileName = "avatar_" + usuario.Id_Usuario + Path.GetExtension(usuario.AvatarFile.FileName);
+        string pathCompleto = Path.Combine(path, fileName);
+        usuario.Avatar = Path.Combine("/Uploads", fileName);
+
+        // Guardar el archivo en la carpeta Uploads
+        using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
+        {
+            usuario.AvatarFile.CopyTo(stream);
+        }
+    }
+    else
+    {
+        // Si no se carga un avatar, asignar el avatar predeterminado "avatar_0"
+        usuario.Avatar = Path.Combine("/Uploads", "avatar.png");
+    }
+
+    // Actualizar el usuario con la ruta del avatar
+    usuarioRepo.ModificarUsuario(usuario);
+
+    return RedirectToAction(nameof(ListUsuario));
+}
+
 
 
 	[HttpGet]
@@ -182,8 +194,13 @@ public class UsuarioController : Controller
 			{
 				usuario.AvatarFile.CopyTo(stream);
 			}
-			usuarioRepo.ModificarAvatarUsuario(usuario);
-		}
+			
+		}else
+    {
+        // Si no se carga un avatar, asignar el avatar predeterminado "avatar_0"
+        usuario.Avatar = Path.Combine("/Uploads", "avatar.png");
+    }
+	usuarioRepo.ModificarAvatarUsuario(usuario);
 		return RedirectToAction(nameof(ListUsuario));
 
 	}
