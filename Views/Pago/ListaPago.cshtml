@@ -119,21 +119,24 @@
                             class="btn btn-primary" title="Ver comprobante">
                             <i class="fa-solid fa-receipt"></i>
                         </a>
-                        @if (quienLlamo == "pagarContrato")
+                        @if (User.IsInRole("Administrador"))
                         {
-                            <a href="@Url.Action("AnularPago", new { id = pago.Id_Pago, id_Usuario=2,source = "pagarContrato",id_Contrato = pago.Id_Contrato , previousUrl = Context.Request.Path })"
-                                onclick="return confirm('¿Estás seguro de que deseas anular la cuota @pago.CuotaPaga del inquilino @pago.inquilino?.Apellido, @pago.inquilino?.Nombre?')"
-                                class="btn btn-danger" title="Anular Pago">
-                                <i class="fa-solid fa-ban"></i>
-                            </a>
-                        }
-                        else
-                        {
-                            <a href="@Url.Action("AnularPago", new { id = pago.Id_Pago, id_Usuario=2, previousUrl = Context.Request.Path })"
-                                onclick="return confirm('¿Estás seguro de que deseas anular la cuota @pago.CuotaPaga del inquilino @pago.inquilino?.Apellido, @pago.inquilino?.Nombre?')"
-                                class="btn btn-danger" title="Anular Pago">
-                                <i class="fa-solid fa-ban"></i>
-                            </a>
+                            @if (quienLlamo == "pagarContrato")
+                            {
+                                <a href="@Url.Action("AnularPago", new { id = pago.Id_Pago, id_Usuario=2,source = "pagarContrato",id_Contrato = pago.Id_Contrato , previousUrl = Context.Request.Path })"
+                                    onclick="return confirm('¿Estás seguro de que deseas anular la cuota @pago.CuotaPaga del inquilino @pago.inquilino?.Apellido, @pago.inquilino?.Nombre?')"
+                                    class="btn btn-danger" title="Anular Pago">
+                                    <i class="fa-solid fa-ban"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("AnularPago", new { id = pago.Id_Pago, id_Usuario=2, previousUrl = Context.Request.Path })"
+                                    onclick="return confirm('¿Estás seguro de que deseas anular la cuota @pago.CuotaPaga del inquilino @pago.inquilino?.Apellido, @pago.inquilino?.Nombre?')"
+                                    class="btn btn-danger" title="Anular Pago">
+                                    <i class="fa-solid fa-ban"></i>
+                                </a>
+                            }
                         }
                     </td>
                 </tr>

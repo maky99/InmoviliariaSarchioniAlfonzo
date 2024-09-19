@@ -97,14 +97,14 @@
                     <td>
                         <!-- Enlace para editar -->
                         <a href="@Url.Action("EditarInmueble", new { id = item.Id_Inmueble,source = "inmueble" })"
-                            class="btn btn-primary title=" Editar información">
+                            class="btn btn-primary me-2" title="Editar información">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
 
                         <!-- Enlace para desactivar -->
                         <a href="@Url.Action("DetalleInmueble", new { id = item.Id_Inmueble,source = "inmueble"  })"
-                            title="Informacion del Inmueble">
-                            <i class="fa-solid fa-circle-info"></i>
+                            class="btn btn-warning me-2" title="Informacion del Inmueble">
+                            <i class="fa-solid fa-info"></i>
                         </a>
                     </td>
                 </tr>

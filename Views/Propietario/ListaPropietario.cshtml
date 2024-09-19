@@ -83,22 +83,24 @@
                     <td>
                         <!-- Enlace para editar -->
                         <a href="@Url.Action("EditarPropietario", "Propietario", new { id = item.Id_Propietario })"
-                            class="btn btn-primary" title="Editar información">
+                            class="btn btn-primary me-2" title="Editar información">
                             <i class="fa-solid fa-pen-to-square"></i> </a>
 
                         <!-- Enlace para ver las propiedades -->
 
                         <a href="@Url.Action("ListInmueblePropietario", "Propietario", new { id = item.Id_Propietario })"
-                            class="btn btn-success" title="Lista propiedades">
+                            class="btn btn-success me-2" title="Lista propiedades">
                             <i class="fa-solid fa-house"></i>
                         </a>
-
-                        <!-- Enlace para eliminar -->
-                        <a href="EliminarPropietario/@item.Id_Propietario"
-                            onclick="return confirm('¿Estás seguro de que deseas eliminar a @item.Apellido @item.Nombre?')"
-                            class="btn btn-danger" title="Desactivar Propietario">
-                            <i class="fa-solid fa-user-minus"></i>
-                        </a>
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <!-- Enlace para eliminar -->
+                            <a href="EliminarPropietario/@item.Id_Propietario"
+                                onclick="return confirm('¿Estás seguro de que deseas eliminar a @item.Apellido @item.Nombre?')"
+                                class="btn btn-danger me-2" title="Desactivar Propietario">
+                                <i class="fa-solid fa-user-minus"></i>
+                            </a>
+                        }
                     </td>
                 </tr>
             }

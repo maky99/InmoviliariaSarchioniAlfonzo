@@ -93,15 +93,15 @@
                 @* </td> *@
                     <td>
                         <!-- Enlace para editar -->
-                        <a asp-controller="Inmueble" asp-action="EditarInmueble" class="btn btn-primary"
+                        <a asp-controller="Inmueble" asp-action="EditarInmueble" class="btn btn-primary me-2"
                             asp-route-id="@item.Id_Inmueble" asp-route-source="propietario" title="Editar información">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
 
                         <!-- Enlace para ver el detalle -->
                         <a asp-controller="Inmueble" asp-action="DetalleInmueble" asp-route-id="@item.Id_Inmueble"
-                            asp-route-source="propietario" title="Información del Inmueble">
-                            <i class="fa-solid fa-circle-info"></i>
+                            class="btn btn-warning me-2" asp-route-source="propietario" title="Información del Inmueble">
+                            <i class="fa-solid fa-info"></i>
                         </a>
                     </td>
                 </tr>

@@ -37,14 +37,21 @@
                     <input asp-for="Email" class="form-control" />
                     <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Estado_Inquilino" class="control-label">Estado</label>
-                    <select asp-for="Estado_Inquilino" class="form-control">
-                        <option value="1">Activo</option>
-                        <option value="0">Inactivo</option>
-                    </select>
-                    <span asp-validation-for="Estado_Inquilino" class="text-danger"></span>
-                </div>
+                @if (User.IsInRole("Administrador"))
+                {
+                    <div class="form-group">
+                        <label asp-for="Estado_Inquilino" class="control-label">Estado</label>
+                        <select asp-for="Estado_Inquilino" class="form-control">
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                        <span asp-validation-for="Estado_Inquilino" class="text-danger"></span>
+                    </div>
+                }
+                else
+                {
+                    <input type="hidden" asp-for="Estado_Inquilino" />
+                }
 
                 <button type="submit" class="btn btn-primary mt-3">Guardar cambios</button>
                 <a asp-action="listInquilino" class="btn btn-secondary mt-3">Cancelar</a>

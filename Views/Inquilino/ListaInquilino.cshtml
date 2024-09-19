@@ -70,17 +70,19 @@
                     <td>
                         <!-- Enlace para editar -->
                         <a href="@Url.Action("EditarInquilino", "Inquilino", new { id = item.Id_Inquilino })"
-                            class="btn btn-primary" title="Editar información">
+                            class="btn btn-primary me-2" title="Editar información">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
-
-                        <!-- Enlace para desactivar -->
-                        <a href="@Url.Action("CambEstadoInquilino", new { id = item.Id_Inquilino })"
-                            onclick="return confirm('¿Estás seguro de que deseas desactivar a @item.Apellido @item.Nombre?')"
-                            class="btn btn-danger" title="Desactivar Inquilino">
-                            <i class="fa-solid fa-user-minus"></i>
-                            @* <i class="fa-solid fa-trash"></i> *@
-                        </a>
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <!-- Enlace para desactivar -->
+                            <a href="@Url.Action("CambEstadoInquilino", new { id = item.Id_Inquilino })"
+                                onclick="return confirm('¿Estás seguro de que deseas desactivar a @item.Apellido @item.Nombre?')"
+                                class="btn btn-danger me-2" title="Desactivar Inquilino">
+                                <i class="fa-solid fa-user-minus"></i>
+                                @* <i class="fa-solid fa-trash"></i> *@
+                            </a>
+                        }
 
                     </td>
                 </tr>
