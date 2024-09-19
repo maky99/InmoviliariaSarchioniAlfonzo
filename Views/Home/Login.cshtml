@@ -4,11 +4,28 @@
     ViewData["Title"] = "Login";
     var mensaje= ViewBag.mensaje;
 }
+<style>
+    body {
+        background-image: url('/images/casa-propia.jpeg');
+        background-size: cover;
+        background-position: center;
+    @*background-repeat:no-repeat;*@background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
 
+    .text-center,
+    p {
+        color: rgb(10, 9, 9);
+        text-align: center;
+        margin-top: revert-layer;
+    }
+</style>
 <div class="container mt-3">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card">
+            
                 <div class="card-body">
                     <h1 class="text-center"><b>Login</b></h1>
                     <form asp-action="Login" method="post">
@@ -33,7 +50,6 @@
                     
                     </form>
                 </div>
-            </div>
         </div>
     </div>
 </div>

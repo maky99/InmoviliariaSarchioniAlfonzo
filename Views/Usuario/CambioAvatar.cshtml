@@ -35,7 +35,7 @@
                 <div class="form-group">
                     <label>Avatar Actual</label>
                     <br />
-                    <img src="@avatarPath" alt="Avatar" class="img-thumbnail" width="150" />
+                    <img src="@avatarPath?t=@DateTime.Now.Ticks" alt="Avatar" class="img-thumbnail" width="150" />
                     <br />
                     @if (string.IsNullOrEmpty(avatarClaim))
                     {

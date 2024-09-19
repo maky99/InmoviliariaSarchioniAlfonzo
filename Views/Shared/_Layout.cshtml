@@ -91,27 +91,26 @@
                             </li>
                             <li class="nav-item ms-auto">
                                 <div class="dropdown">
-                                <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdownMenuLink"
-                                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    @if (User.Identity.IsAuthenticated)
-                                    {
-                                        var avatar = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.UserData)?.Value;
-                                        if (!string.IsNullOrEmpty(avatar))
-                                        {
-                                            <img src="@avatar" alt="Av" class="rounded-circle"
-                                                style="width: 30px; height: 30px;" />
-                                         
-                                        }
-                                        else
-                                        {
-                                            <img src="~/guest.jpg" alt="" class="rounded-circle"
-                                                style="width: 30px; height: 30px;" />
-                                     
-                                        }
-                                        <span class="ml-2">@User.Identity.Name</span>
-                                        
-                                    }
-                                </a>
+                   <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdownMenuLink"
+              role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                @if (User.Identity.IsAuthenticated)
+               {   
+                  var avatar = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.UserData)?.Value;
+                       string uniqueAvatarUrl = avatar + "?t=" + DateTime.Now.Ticks; // Añadir un timestamp para evitar cache
+        
+                      if (!string.IsNullOrEmpty(avatar))
+                       {
+                       <img src="@uniqueAvatarUrl" alt="Av" class="rounded-circle"
+                          style="width: 30px; height: 30px;" />
+                           }
+                                 else
+                            {
+                           <img src="~/guest.jpg?t=@DateTime.Now.Ticks" alt="Guest" class="rounded-circle"
+                                style="width: 30px; height: 30px;" />
+                              }
+                                   <span class="ml-2">@User.Identity.Name</span>
+                                 }
+                             </a>
                                 <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end"
                                     aria-labelledby="navbarDropdownMenuLink">
                                     @{

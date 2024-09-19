@@ -25,12 +25,29 @@ public class UsuarioController : Controller
 	UsuarioRepositorio usuarioRepo = new UsuarioRepositorio();
 
 
-	[Authorize]
-	public IActionResult ListUsuario()
-	{
-		var lista = usuarioRepo.OptenerUsuarios();
-		return View("ListaUsuario", lista);
-	}
+[Authorize]
+public IActionResult ListUsuario()
+{
+    // Obtener el rol del usuario desde las claims
+    var roleClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
+
+    // Si el rol es "Empleado", redirigir al Index del HomeController
+    if (roleClaim == "Empleado")
+    {
+        return RedirectToAction(nameof(HomeController.Index), "Home");
+    }
+
+    // Si es "Administrador", mostrar la lista de usuarios
+    if (roleClaim == "Administrador")
+    {
+        var lista = usuarioRepo.OptenerUsuarios();
+        return View("ListaUsuario", lista);
+    }
+
+    // En caso de roles no definidos, redirigir al Index por defecto
+    return RedirectToAction(nameof(HomeController.Index), "Home");
+}
+	
 
 
 
