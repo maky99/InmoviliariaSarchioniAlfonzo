@@ -71,19 +71,19 @@
                 @if (quienLlamo == "pagar")
                 {
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary mt-3">Guardar Pago de pago</button>
+                        <button type="submit" class="btn btn-primary mt-3">Guardar Pago</button>
                         <input type="hidden" name="source" value="pa" id="source" />
                         <input type="hidden" name="PreviousUrl" value="@TempData["PreviousUrl"]" />
-                        <a asp-action="ListContVigentes" class="btn btn-secondary mt-3">Cancelar de pago</a>
+                        <a asp-action="ListContVigentes" class="btn btn-secondary mt-3">Cancelar</a>
                     </div>
                 }
                 else
                 {
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary mt-3">Guardar Pago de contrato</button>
+                        <button type="submit" class="btn btn-primary mt-3">Guardar Pago</button>
                         <input type="hidden" name="source" value="pagarContrato" id="source" />
                         <input type="hidden" name="PreviousUrl" value="@TempData["PreviousUrl"]" />
-                        <a asp-action="ListContVigentes" class="btn btn-secondary mt-3">Cancelar de contrato </a>
+                        <a asp-action="ListContVigentes" class="btn btn-secondary mt-3">Cancelar </a>
                     </div>
                 }
             </form>

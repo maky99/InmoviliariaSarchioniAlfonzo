@@ -132,7 +132,7 @@ public class PagoController : Controller
     {
         pa.AnularPago(id, id_Usuario);
         var contrato = cr.ObtenerDetalle(id_Contrato);
-        var cuota = pa.CuotaPagosRestantesPorContrato(id_Contrato);//traigo la cantidad de cuotas pagas 
+        var cuota = pa.CuotaPagosRestantesPorContrato(id_Contrato);
         if (contrato.Meses > cuota && contrato.Estado_Contrato == 0)
         {
             contrato.Estado_Contrato = 1;
