@@ -94,7 +94,7 @@ FROM Inmueble
 JOIN Tipo_Inmueble ON Inmueble.{nameof(Inmueble.Id_Tipo_Inmueble)} = Tipo_Inmueble.{nameof(Tipo_Inmueble.Id_Tipo_Inmueble)}
 JOIN Propietario ON Inmueble.{nameof(Inmueble.Id_Propietario)} = Propietario.{nameof(Propietario.Id_Propietario)}
 LEFT JOIN Contrato ON Inmueble.{nameof(Inmueble.Id_Inmueble)} = Contrato.{nameof(Contrato.Id_Inmueble)}
-WHERE (Contrato.{nameof(Contrato.Estado_Contrato)} = 0 OR Contrato.{nameof(Contrato.Id_Inmueble)} IS NULL)
+WHERE (Contrato.{nameof(Contrato.Estado_Contrato)} = 0 OR Contrato.{nameof(Contrato.Id_Inmueble)} IS NULL)AND Inmueble.{nameof(Inmueble.Estado_Inmueble)}=1
     AND NOT EXISTS (
         SELECT 1
         FROM Contrato C2

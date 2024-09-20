@@ -365,7 +365,72 @@ public Usuario ModificarPerfil(Usuario usuario){
 
     return usuario;
 }
+  //metodo para controlar si el dni nuevo no esta ingresado en la base de datos 
+    public bool DniUsuarioyaExiste(int dni)
+    {
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = "SELECT COUNT(*) FROM usuario WHERE Dni = @Dni";
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@Dni", dni);
+                connection.Open();
+                var count = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+                return count > 0;
+            }
+        }
+    }
+    //metodo para comparar si el dni que se esta editando no exista 
+    public bool EsDniDelUsuarioActual(int id_usuario, int dni)
+    {
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = "SELECT COUNT(*) FROM usuario WHERE Dni = @Dni AND Id_Usuario != @Id_Usuario";
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@Dni", dni);
+                command.Parameters.AddWithValue("@Id_Usuario", id_usuario);
+                connection.Open();
+                var count = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+                return count > 0;
+            }
+        }
+    }
 
+    public bool EmailUsuarioyaExiste(string Email)
+    {
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = "SELECT COUNT(*) FROM usuario WHERE Email = @Email";
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@Email", Email);
+                connection.Open();
+                var count = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+                return count > 0;
+            }
+        }
+    }
+    //metodo para comparar si el dni que se esta editando no exista 
+    public bool EsEmailDelUsuarioActual(int id_usuario, string Email)
+    {
+        using (var connection = new MySqlConnection(connectionString))
+        {
+            var sql = "SELECT COUNT(*) FROM usuario WHERE Email = @Email AND Id_Usuario != @Id_Usuario";
+            using (var command = new MySqlCommand(sql, connection))
+            {
+                command.Parameters.AddWithValue("@Email", Email);
+                command.Parameters.AddWithValue("@Id_Usuario", id_usuario);
+                connection.Open();
+                var count = Convert.ToInt32(command.ExecuteScalar());
+                connection.Close();
+                return count > 0;
+            }
+        }
+    }
 
 
 

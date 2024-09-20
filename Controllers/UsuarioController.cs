@@ -99,10 +99,21 @@ public class UsuarioController : Controller
 		return RedirectToAction(nameof(ListUsuario));
 
 	}
-	[Authorize]
+[Authorize]
 [HttpPost]
 public IActionResult CreateUsuario(Usuario usuario)
 {
+
+	if(usuarioRepo.DniUsuarioyaExiste(usuario.Dni)){
+
+  TempData["error"] = " dni ya existe no puede introducirlo";
+                return RedirectToAction(nameof(CrearUsuario));
+
+	}else if(usuarioRepo.EmailUsuarioyaExiste(usuario.Email)){
+     TempData["error"] = " Email ya existe no puede introducirlo";
+                return RedirectToAction(nameof(CrearUsuario));
+	}else{
+
     // Generar el hash de la contraseña
     string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                     password: usuario.Password,
@@ -140,13 +151,14 @@ public IActionResult CreateUsuario(Usuario usuario)
     else
     {
         // Si no se carga un avatar, asignar el avatar predeterminado "avatar_0"
-        usuario.Avatar = Path.Combine("/Uploads", "avatar.png");
+        usuario.Avatar = Path.Combine("/Uploads", "avatar_0.JPG");
     }
 
     // Actualizar el usuario con la ruta del avatar
     usuarioRepo.ModificarUsuario(usuario);
 
     return RedirectToAction(nameof(ListUsuario));
+	}
 }
 
 
