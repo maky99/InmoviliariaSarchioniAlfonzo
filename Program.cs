@@ -1,23 +1,30 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
+using InmoviliariaSarchioniAlfonzo.Repositories; // Importa el namespace de tus repositorios
+using MySql.Data.MySqlClient; // Importa el namespace de MySQL
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Configura el repositorio de logs
+builder.Services.AddScoped<ILogRepository, LogRepository>();
+
+// Configura la autenticación y autorización
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-	.AddCookie(options =>//el sitio web valida con cookie
-	{
-		options.LoginPath = "/Usuarios/Login";
-		options.LogoutPath = "/Usuarios/Logout";
-		options.AccessDeniedPath = "/Home";
-		//options.ExpireTimeSpan = TimeSpan.FromMinutes(5);//Tiempo de expiración
-	});
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Usuarios/Login";
+        options.LogoutPath = "/Usuarios/Logout";
+        options.AccessDeniedPath = "/Home";
+        // options.ExpireTimeSpan = TimeSpan.FromMinutes(5); // Tiempo de expiración
+    });
 
 builder.Services.AddAuthorization(options =>
 {
-	options.AddPolicy("Empleado", policy => policy.RequireClaim(ClaimTypes.Role, "Administrador", "Empleado"));
-	options.AddPolicy("Administrador", policy => policy.RequireRole("Administrador"));
+    options.AddPolicy("Empleado", policy => policy.RequireClaim(ClaimTypes.Role, "Administrador", "Empleado"));
+    options.AddPolicy("Administrador", policy => policy.RequireRole("Administrador"));
 });
 
 var app = builder.Build();

@@ -2,28 +2,31 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using InmoviliariaSarchioniAlfonzo.Models;
 using System.Runtime.Intrinsics.X86;
+using InmoviliariaSarchioniAlfonzo.Repositories;
+using System;
 namespace InmoviliariaSarchioniAlfonzo.Controllers;
 
 public class PagoController : Controller
 {
     private readonly ILogger<PagoController> _logger;
-
+    private readonly ILogRepository _logRepository;
     private PagoRepositorio pa = new PagoRepositorio();
     private ContratoRepositorio cr = new ContratoRepositorio();
-    private UsuarioRepositorio usuarioRepo = new UsuarioRepositorio();
-    public PagoController(ILogger<PagoController> logger)
+
+    public PagoController(ILogger<PagoController> logger,ILogRepository logRepository)
     {
         _logger = logger;
+        _logRepository = logRepository;
     }
+
+ 
+
+
 
     public IActionResult ListPagos()
     {
+
         var pago = pa.ObtenerPagos();
-        return View("ListaPago", pago);
-    }
-    public IActionResult ListPagosOrdexInqu()
-    {
-        var pago = pa.ObtenerPagosOrdxInqui();
         return View("ListaPago", pago);
     }
     public IActionResult ListContVigentes()
@@ -33,6 +36,17 @@ public class PagoController : Controller
     }
     public IActionResult NuevoPago(int id, string source, string previousUrl)
     {
+
+  _logRepository.AddLog(new Log
+        {
+            LogLevel = "Information",
+            Message = "El usuario ha accedido a nuevo pago de id: "+ id,
+            Timestamp = DateTime.UtcNow,
+            Usuario = User.Identity.Name // Nombre del usuario autenticado
+        });
+
+
+
         var contrato = cr.ObtenerDetalle(id);
         var pagos = pa.ObtenerPagosPorContrato(id);
         ViewData["pagos"] = pagos;
@@ -51,6 +65,17 @@ public class PagoController : Controller
     [HttpPost]
     public IActionResult GuardarPago(Pago pago, string previousUrl, string source)
     {
+
+  _logRepository.AddLog(new Log
+        {
+            LogLevel = "Information",
+            Message = "El usuario ha accedido a guardar pago cuota paga:"+ pago.CuotaPaga,
+            Timestamp = DateTime.UtcNow,
+            Usuario = User.Identity.Name // Nombre del usuario autenticado
+        });
+
+
+
         if (ModelState.IsValid)
         {
             pa.GuardarPago(pago);
@@ -58,7 +83,7 @@ public class PagoController : Controller
             var contrato = cr.ObtenerDetalle(pago.Id_Contrato);
             var pagos = pa.ObtenerPagosPorContrato(pago.Id_Contrato);
 
-            if (pagos.Count == contrato.Meses)
+            if (pagos.Count >= contrato.Meses)
             {
                 contrato.Estado_Contrato = 0;
                 cr.ActualizarContrato(contrato);
@@ -78,14 +103,24 @@ public class PagoController : Controller
                 return RedirectToAction("ListContVigentes");
             }
         }
-        return RedirectToAction("ListContVigentes");
-
+        TempData["ErrorMessage"] = "Error al guardar el pago.";
+        return View("NuevoPago", pago);
     }
 
 
     [HttpPost]
     public IActionResult GuardarPagoAnulado(Pago pago)
     {
+
+  _logRepository.AddLog(new Log
+        {
+            LogLevel = "Information",
+            Message = "El usuario ha accedido a guardar pago anulado.",
+            Timestamp = DateTime.UtcNow,
+            Usuario = User.Identity.Name // Nombre del usuario autenticado
+        });
+
+
         if (ModelState.IsValid)
         {
 
@@ -107,13 +142,6 @@ public class PagoController : Controller
         ViewData["pago"] = pago;
         var idcontrato = pago.Id_Contrato;
         var contrato = cr.ObtenerTodosContrato(idcontrato);
-        var usuarioCrea = usuarioRepo.UsuariosPorId(pago.Id_Creado_Por);
-        ViewData["usuarioCrea"] = usuarioCrea;
-        if (pago.Id_Terminado_Por != 0)
-        {
-            var usuarioTermina = usuarioRepo.UsuariosPorId(pago.Id_Terminado_Por);
-            ViewData["usuarioTermina"] = usuarioTermina;
-        }
         ViewData["contrato"] = contrato;
         ViewData["QuienLlamo"] = source;
         TempData["PreviousUrl"] = previousUrl;
@@ -130,15 +158,16 @@ public class PagoController : Controller
 
     public IActionResult AnularPago(int id, int id_Usuario, string previousUrl, string source, int id_Contrato)
     {
-        pa.AnularPago(id, id_Usuario);
-        var contrato = cr.ObtenerDetalle(id_Contrato);
-        var cuota = pa.CuotaPagosRestantesPorContrato(id_Contrato);
-        if (contrato.Meses > cuota && contrato.Estado_Contrato == 0)
-        {
-            contrato.Estado_Contrato = 1;
-            cr.ActualizarContrato(contrato);
-        }
 
+  _logRepository.AddLog(new Log
+        {
+            LogLevel = "Information",
+            Message = "El usuario ha accedido a anular pago.",
+            Timestamp = DateTime.UtcNow,
+            Usuario = User.Identity.Name // Nombre del usuario autenticado
+        });
+
+        pa.AnularPago(id, id_Usuario);
         TempData["SuccessMessage"] = "Se anulo Correctamente";
         if (source == "pagarContrato")
         {

@@ -1,0 +1,25 @@
+@model IEnumerable<InmoviliariaSarchioniAlfonzo.Models.Log>
+<link rel="stylesheet" href="~/fondo/pago.css" />
+<h2>Logs del Sistema</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Nivel</th>
+            <th>Mensaje</th>
+            <th>Usuario</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var log in Model)
+        {
+            <tr>
+                <td>@log.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                <td>@log.LogLevel</td>
+                <td>@log.Message</td>
+                <td>@log.Usuario</td>
+            </tr>
+        }
+    </tbody>
+</table>

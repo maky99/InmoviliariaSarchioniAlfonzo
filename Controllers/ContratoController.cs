@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using InmoviliariaSarchioniAlfonzo.Models;
-
+using InmoviliariaSarchioniAlfonzo.Repositories;
 namespace InmoviliariaSarchioniAlfonzo.Controllers;
 
 public class ContratoController : Controller
@@ -17,12 +17,13 @@ public class ContratoController : Controller
     private InquilinoRepositorio inq = new InquilinoRepositorio();
     private UsuarioRepositorio usuarioRepo = new UsuarioRepositorio();
     private PagoRepositorio pa = new PagoRepositorio();
+ private readonly ILogRepository _logRepository;
 
 
-
-    public ContratoController(ILogger<ContratoController> logger)
+    public ContratoController(ILogger<ContratoController> logger,ILogRepository logRepository)
     {
         _logger = logger;
+          _logRepository = logRepository;
     }
 
     public IActionResult ListContrato()
@@ -69,6 +70,15 @@ public class ContratoController : Controller
 
         if (id == 0)
         {
+ _logRepository.AddLog(new Log
+        {
+            LogLevel = "Information",
+            Message = " nuevo contrato de id propietario: "+ Contrato.Id_Propietario +" " +" id inquilino :"+Contrato.Id_Inquilino,
+            Timestamp = DateTime.UtcNow,
+            Usuario = User.Identity.Name // Nombre del usuario autenticado
+        });
+
+
 
             co.Alta(Contrato);  // Crear nuevo Contrato
             TempData["Advertencia"] = " se dio de alta nuevo Contrato .";
@@ -87,8 +97,15 @@ public class ContratoController : Controller
         return RedirectToAction(nameof(ListContrato));
     }
     public IActionResult EliminarContrato(int id)
-
     {
+ _logRepository.AddLog(new Log
+        {
+            LogLevel = "Information",
+            Message = "El usuario ha accedido a eliminar contrato de id: "+ id,
+            Timestamp = DateTime.UtcNow,
+            Usuario = User.Identity.Name // Nombre del usuario autenticado
+        });
+
         var Contrato = co.ObtenerContratoActivo(id);
         var tiposInmuebles = ti.TipoInmuActivo();
         ViewData["tipoInmueble"] = tiposInmuebles;
@@ -104,6 +121,16 @@ public class ContratoController : Controller
 
     public IActionResult FinalizaFechaContrato(Contrato contrato)
     {
+
+ _logRepository.AddLog(new Log
+        {
+            LogLevel = "Information",
+            Message = "El usuario ha accedido a finalizar contrato de id: "+ contrato.Id_Contrato,
+            Timestamp = DateTime.UtcNow,
+            Usuario = User.Identity.Name // Nombre del usuario autenticado
+        });
+
+
         co.Baja(contrato);
         return RedirectToAction(nameof(ListContrato));
     }
