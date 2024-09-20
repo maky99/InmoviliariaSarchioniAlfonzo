@@ -163,3 +163,10 @@
     </div>
 </div>
 <script src="~/js/site.js"></script>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+
+}

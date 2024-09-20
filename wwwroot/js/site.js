@@ -82,4 +82,7 @@ fechaFin.addEventListener('input', function () {
     }
 });
 
+    
+await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
 

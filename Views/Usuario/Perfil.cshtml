@@ -65,3 +65,24 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+            // Seleccionar todos los elementos de mensaje
+            var messages = document.querySelectorAll(".temp-message");
+
+            // Ocultar los mensajes después de 5 segundos
+            setTimeout(function () {
+                messages.forEach(function (message) {
+                    message.style.display = "none"; // Ocultar con display: none;
+
+                });
+            }, 5000); // 5000 ms = 5 segundos
+        });
+</script>
+}
