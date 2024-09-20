@@ -100,54 +100,54 @@ public class UsuarioController : Controller
 
 	}
 	[Authorize]
-[HttpPost]
-public IActionResult CreateUsuario(Usuario usuario)
-{
-    // Generar el hash de la contraseña
-    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                    password: usuario.Password,
-                    salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
-                    prf: KeyDerivationPrf.HMACSHA1,
-                    iterationCount: 1000,
-                    numBytesRequested: 256 / 8));
+	[HttpPost]
+	public IActionResult CreateUsuario(Usuario usuario)
+	{
+		// Generar el hash de la contraseña
+		string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+						password: usuario.Password,
+						salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+						prf: KeyDerivationPrf.HMACSHA1,
+						iterationCount: 1000,
+						numBytesRequested: 256 / 8));
 
-    usuario.Password = hashed;
+		usuario.Password = hashed;
 
-    // Insertar usuario en la base de datos
-    int res = usuarioRepo.AltaUsuario(usuario);
+		// Insertar usuario en la base de datos
+		int res = usuarioRepo.AltaUsuario(usuario);
 
-    // Preparar ruta de carga
-    string wwwPath = environment.WebRootPath;
-    string path = Path.Combine(wwwPath, "Uploads");
-    if (!Directory.Exists(path))
-    {
-        Directory.CreateDirectory(path);
-    }
+		// Preparar ruta de carga
+		string wwwPath = environment.WebRootPath;
+		string path = Path.Combine(wwwPath, "Uploads");
+		if (!Directory.Exists(path))
+		{
+			Directory.CreateDirectory(path);
+		}
 
-    if (usuario.AvatarFile != null && usuario.Id_Usuario > 0)
-    {
-        // Si se ha cargado un avatar, guardar el archivo
-        string fileName = "avatar_" + usuario.Id_Usuario + Path.GetExtension(usuario.AvatarFile.FileName);
-        string pathCompleto = Path.Combine(path, fileName);
-        usuario.Avatar = Path.Combine("/Uploads", fileName);
+		if (usuario.AvatarFile != null && usuario.Id_Usuario > 0)
+		{
+			// Si se ha cargado un avatar, guardar el archivo
+			string fileName = "avatar_" + usuario.Id_Usuario + Path.GetExtension(usuario.AvatarFile.FileName);
+			string pathCompleto = Path.Combine(path, fileName);
+			usuario.Avatar = Path.Combine("/Uploads", fileName);
 
-        // Guardar el archivo en la carpeta Uploads
-        using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
-        {
-            usuario.AvatarFile.CopyTo(stream);
-        }
-    }
-    else
-    {
-        // Si no se carga un avatar, asignar el avatar predeterminado "avatar_0"
-        usuario.Avatar = Path.Combine("/Uploads", "avatar.png");
-    }
+			// Guardar el archivo en la carpeta Uploads
+			using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
+			{
+				usuario.AvatarFile.CopyTo(stream);
+			}
+		}
+		else
+		{
+			// Si no se carga un avatar, asignar el avatar predeterminado "avatar_0"
+			usuario.Avatar = Path.Combine("/Uploads", "avatar.png");
+		}
 
-    // Actualizar el usuario con la ruta del avatar
-    usuarioRepo.ModificarUsuario(usuario);
+		// Actualizar el usuario con la ruta del avatar
+		usuarioRepo.ModificarUsuario(usuario);
 
-    return RedirectToAction(nameof(ListUsuario));
-}
+		return RedirectToAction(nameof(ListUsuario));
+	}
 
 
 
@@ -194,13 +194,14 @@ public IActionResult CreateUsuario(Usuario usuario)
 			{
 				usuario.AvatarFile.CopyTo(stream);
 			}
-			
-		}else
-    {
-        // Si no se carga un avatar, asignar el avatar predeterminado "avatar_0"
-        usuario.Avatar = Path.Combine("/Uploads", "avatar.png");
-    }
-	usuarioRepo.ModificarAvatarUsuario(usuario);
+
+		}
+		else
+		{
+			// Si no se carga un avatar, asignar el avatar predeterminado "avatar_0"
+			usuario.Avatar = Path.Combine("/Uploads", "avatar.png");
+		}
+		usuarioRepo.ModificarAvatarUsuario(usuario);
 		return RedirectToAction(nameof(ListUsuario));
 
 	}
@@ -287,6 +288,38 @@ public IActionResult CreateUsuario(Usuario usuario)
 
 		return View(usuarioRepo.UsuariosPorId(id));
 	}
+
+
+
+	[Authorize(Policy = "Administrador")]
+	public IActionResult ResetearContrasena(int id)
+	{
+		// Obtener el usuario por ID
+		var usuario = usuarioRepo.UsuariosPorId(id);
+		if (usuario == null)
+		{
+			TempData["ErrorMessage"] = "Usuario no encontrado.";
+			return RedirectToAction(nameof(ListUsuario));
+		}
+
+		// Establecer nueva contraseña
+		string nuevaContrasena = "pepe";
+		string hashedPassword = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+			password: nuevaContrasena,
+			salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+			prf: KeyDerivationPrf.HMACSHA1,
+			iterationCount: 1000,
+			numBytesRequested: 256 / 8));
+
+		// Actualizar la contraseña en el repositorio
+		usuarioRepo.updateClave(id, hashedPassword);
+
+		TempData["SuccessMessage"] = "Contraseña restablecida correctamente.";
+		return RedirectToAction(nameof(ListUsuario));
+	}
+
+
+
 
 }
 

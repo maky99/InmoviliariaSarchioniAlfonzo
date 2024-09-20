@@ -73,19 +73,21 @@
                     <td>@($"${contrato?.Monto:N2}")</td>
                     <td>@contrato?.MesesPagos / @contrato?.Meses </td>
                     <td>
-                        <!-- Enlace para pagar -->
-                        <a href="@Url.Action("NuevoPago", new { id = contrato?.Id_Contrato ,source = "pagar",previousUrl = Context.Request.Path })"
-                            class="btn btn-primary me-2" title="Pagar">
-                            <i class="fa-brands fa-cc-visa"></i> Pagar
-                        </a>
-                        @if (User.IsInRole("Administrador"))
-                        {
-                            <!-- Enlace para Finalización anticipada -->
-                            <a href="@Url.Action("NuevoPago", new { id = contrato?.Id_Contrato,source = "final" })"
-                                class="btn btn-danger me-2" title="Finalizar Contrato">
-                                <i class="fa-solid fa-file-excel"></i> Finalizar Contrato
+                        <div class="d-flex justify-content-start">
+                            <!-- Enlace para pagar -->
+                            <a href="@Url.Action("NuevoPago", new { id = contrato?.Id_Contrato ,source = "pagar",previousUrl = Context.Request.Path })"
+                                class="btn btn-primary me-2" title="Pagar">
+                                <i class="fa-brands fa-cc-visa"></i> Pagar
                             </a>
-                        }
+                            @if (User.IsInRole("Administrador"))
+                            {
+                                <!-- Enlace para Finalización anticipada -->
+                                <a href="@Url.Action("NuevoPago", new { id = contrato?.Id_Contrato,source = "final" })"
+                                    class="btn btn-danger me-2" title="Finalizar Contrato">
+                                    <i class="fa-solid fa-file-excel"></i> Finalizar Contrato
+                                </a>
+                            }
+                        </div>
                     </td>
                 </tr>
             }

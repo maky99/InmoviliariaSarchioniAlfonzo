@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using InmoviliariaSarchioniAlfonzo.Models;
+using InmoviliariaSarchioniAlfonzo.Repositories;
 namespace InmoviliariaSarchioniAlfonzo.Controllers;
 
 public class InquilinoController : Controller
@@ -8,10 +9,12 @@ public class InquilinoController : Controller
     private readonly ILogger<InquilinoController> _logger;
 
     private InquilinoRepositorio ir = new InquilinoRepositorio();
+    private readonly ILogRepository _logRepository;
 
-    public InquilinoController(ILogger<InquilinoController> logger)
+    public InquilinoController(ILogger<InquilinoController> logger, ILogRepository logRepository)
     {
         _logger = logger;
+        _logRepository = logRepository;
     }
 
     public IActionResult ListInquilino()
@@ -29,8 +32,16 @@ public class InquilinoController : Controller
     {
         if (ModelState.IsValid)
         {
+
             try
             {
+                _logRepository.AddLog(new Log
+                {
+                    LogLevel = "Guardar",
+                    Message = "Alta de " + inquilino.Apellido + inquilino.Dni,
+                    Timestamp = DateTime.Now,
+                    Usuario = User.Identity.Name // Nombre del usuario autenticado
+                });
                 ir.NuevoInquilino(inquilino);
                 TempData["SuccessMessage"] = $"{inquilino.Apellido}, {inquilino.Nombre} ha sido agregado exitosamente.";
                 return RedirectToAction("ListInquilino");
@@ -56,27 +67,25 @@ public class InquilinoController : Controller
     {
         if (ModelState.IsValid)
         {
-            if (ir.EsDniDelInquilinoActual(inquilino.Id_Inquilino, inquilino.Dni))
+            try
             {
-                ModelState.AddModelError("Dni", "El DNI ingresado ya está registrado.");
+                _logRepository.AddLog(new Log
+                {
+                    LogLevel = "Edita",
+                    Message = "Edita inquilino id: " + inquilino.Id_Inquilino,
+                    Timestamp = DateTime.Now,
+                    Usuario = User.Identity.Name // Nombre del usuario autenticado
+                });
+                ir.EditarDatos(inquilino);
+                TempData["SuccessMessage"] = $"El inquilino {inquilino.Apellido} {inquilino.Nombre} ha sido editado exitosamente.";
+                return RedirectToAction("ListInquilino");
             }
-            if (ModelState.IsValid)
+            catch (InvalidOperationException ex)
             {
-                try
-                {
-                    ir.EditarDatos(inquilino);
-                    TempData["SuccessMessage"] = $"El inquilino {inquilino.Apellido} {inquilino.Nombre} ha sido editado exitosamente.";
-                    return RedirectToAction("ListInquilino");
-                }
-                catch (InvalidOperationException ex)
-                {
-                    TempData["ErrorMessage"] = ex.Message;
-                    return RedirectToAction("EditarDatos", new { id = inquilino.Id_Inquilino });
-                }
-
+                TempData["ErrorMessage"] = ex.Message;
+                return RedirectToAction("EditarDatos", new { id = inquilino.Id_Inquilino });
             }
         }
-
         // si el modelo esta mal vuelve a la vista
         return View("EditarInquilino", inquilino);
     }
@@ -84,6 +93,13 @@ public class InquilinoController : Controller
     [HttpGet]
     public IActionResult CambEstadoInquilino(int id)
     {
+        _logRepository.AddLog(new Log
+        {
+            LogLevel = "Eliminar",
+            Message = "Eliminar Inquilino de id: " + id,
+            Timestamp = DateTime.Now,
+            Usuario = User.Identity.Name // Nombre del usuario autenticado
+        });
         ir.DesactivarInquilino(id);
         TempData["SuccessMessage"] = "El inquilino ha sido desactivado exitosamente.";
         return RedirectToAction("ListInquilino");

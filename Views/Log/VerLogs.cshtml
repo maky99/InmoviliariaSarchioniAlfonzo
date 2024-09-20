@@ -1,25 +1,61 @@
 @model IEnumerable<InmoviliariaSarchioniAlfonzo.Models.Log>
-<link rel="stylesheet" href="~/fondo/pago.css" />
-<h2>Logs del Sistema</h2>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Fecha</th>
-            <th>Nivel</th>
-            <th>Mensaje</th>
-            <th>Usuario</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var log in Model)
-        {
+@{
+    ViewData["Title"] = "Auditoría del Sistema";
+}
+
+<link rel="stylesheet" href="~/fondo/auditoria.css" />
+
+
+<div class="text-center">
+    <h1 class="display-3">Auditoría del Sistema</h1>
+
+    <div class="mb-3">
+        <!-- Campo de búsqueda -->
+        <input type="text" id="inputBusqueda" placeholder="Buscar..." onkeyup="filtrarTabla()">
+    </div>
+
+    <table class="table table-bordered" style="color: rgb(13, 12, 14); background-color: white;">
+        <thead>
             <tr>
-                <td>@log.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
-                <td>@log.LogLevel</td>
-                <td>@log.Message</td>
-                <td>@log.Usuario</td>
+                @* <th>Id</th> *@
+                <th>Fecha</th>
+                <th>Acción</th>
+                <th>Mensaje</th>
+                <th>Usuario</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody id="tablaLogs">
+            @foreach (var log in Model)
+            {
+                <tr>
+                    @* <td>@log.Id</td> *@
+                    <td>@log.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                    <td>@log.LogLevel</td>
+                    <td>@log.Message</td>
+                    <td>@log.Usuario</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script src="~/js/site.js"></script>
+<script>
+    function filtrarTabla() {
+        const input = document.getElementById("inputBusqueda").value.toLowerCase();
+        const rows = document.querySelectorAll("#tablaLogs tr");
+
+        rows.forEach(row => {
+            const cells = row.getElementsByTagName("td");
+            let found = false;
+            for (let i = 0; i < cells.length; i++) {
+                if (cells[i].innerText.toLowerCase().includes(input)) {
+                    found = true;
+                    break;
+                }
+            }
+            row.style.display = found ? "" : "none";
+        });
+    }
+</script>

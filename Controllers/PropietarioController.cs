@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using InmoviliariaSarchioniAlfonzo.Models;
-
+using InmoviliariaSarchioniAlfonzo.Repositories;
 namespace InmoviliariaSarchioniAlfonzo.Controllers;
 
 public class PropietarioController : Controller
@@ -10,10 +10,13 @@ public class PropietarioController : Controller
 
     private PropietarioRepositorio po = new PropietarioRepositorio();
     private InmuebleRepositorio ir = new InmuebleRepositorio();
+    private readonly ILogRepository _logRepository;
 
-    public PropietarioController(ILogger<PropietarioController> logger)
+
+    public PropietarioController(ILogger<PropietarioController> logger, ILogRepository logRepository)
     {
         _logger = logger;
+        _logRepository = logRepository;
     }
 
     public IActionResult ListPropietario()
@@ -50,6 +53,13 @@ public class PropietarioController : Controller
             else
             {
                 po.Alta(propietario);  // Crear nuevo propietario
+                _logRepository.AddLog(new Log
+                {
+                    LogLevel = "Guardar",
+                    Message = "Alta de nuevo propietario DNI: " + propietario.Dni,
+                    Timestamp = DateTime.Now,
+                    Usuario = User.Identity.Name
+                });
                 TempData["Advertencia"] = " se dio de alta nuevo propietario .";
             }
         }
@@ -63,6 +73,13 @@ public class PropietarioController : Controller
             else
             {
                 po.EditarDatosPropietario(propietario);  // Editar propietario existente
+                _logRepository.AddLog(new Log
+                {
+                    LogLevel = "Edita",
+                    Message = "Edita propietario ID: " + propietario.Id_Propietario,
+                    Timestamp = DateTime.Now,
+                    Usuario = User.Identity.Name
+                });
                 TempData["Advertencia"] = " se edito el propietario .";
             }
         }

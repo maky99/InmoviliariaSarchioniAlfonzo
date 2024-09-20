@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using InmoviliariaSarchioniAlfonzo.Models;
+using InmoviliariaSarchioniAlfonzo.Repositories;
+
 namespace InmoviliariaSarchioniAlfonzo.Controllers;
 
 public class Tipo_InmuebleController : Controller
@@ -8,10 +10,14 @@ public class Tipo_InmuebleController : Controller
     private readonly ILogger<Tipo_InmuebleController> _logger;
 
     private Tipo_InmuebleRepositorio ti = new Tipo_InmuebleRepositorio();
+    private readonly ILogRepository _logRepository;
 
-    public Tipo_InmuebleController(ILogger<Tipo_InmuebleController> logger)
+
+    public Tipo_InmuebleController(ILogger<Tipo_InmuebleController> logger, ILogRepository logRepository)
     {
         _logger = logger;
+        _logRepository = logRepository;
+
     }
 
     public IActionResult ListTipo()
@@ -30,6 +36,13 @@ public class Tipo_InmuebleController : Controller
         {
 
             ti.NuevoTipo(tipo_inmueble);
+            _logRepository.AddLog(new Log
+            {
+                LogLevel = "Guardar",
+                Message = "Alta de tipo de inmueble: " + tipo_inmueble.Tipo,
+                Timestamp = DateTime.Now,
+                Usuario = User.Identity.Name
+            });
             TempData["SuccessMessage"] = $"{tipo_inmueble.Tipo} ha sido agregado exitosamente.";
             return RedirectToAction("ListTipo");
         }
@@ -47,6 +60,13 @@ public class Tipo_InmuebleController : Controller
         if (ModelState.IsValid)
         {
             ti.EditaDos(tipo_inmueble);
+            _logRepository.AddLog(new Log
+            {
+                LogLevel = "Edita",
+                Message = "Edita tipo de inmueble: " + tipo_inmueble.Tipo,
+                Timestamp = DateTime.Now,
+                Usuario = User.Identity.Name
+            });
             TempData["SuccessMessage"] = $"El tipo {tipo_inmueble.Tipo}, ha sido editado exitosamente.";
             return RedirectToAction("ListTipo");
         }
@@ -62,6 +82,13 @@ public class Tipo_InmuebleController : Controller
         else
         {
             ti.DesactivarTipo(id);
+            _logRepository.AddLog(new Log
+            {
+                LogLevel = "Eliminar",
+                Message = "Desactiva tipo de inmueble ID: " + id,
+                Timestamp = DateTime.Now,
+                Usuario = User.Identity.Name
+            });
             TempData["SuccessMessage"] = "El tipo ha sido desactivado exitosamente.";
         }
         return RedirectToAction("ListTipo");

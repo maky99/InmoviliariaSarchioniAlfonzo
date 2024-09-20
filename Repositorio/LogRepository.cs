@@ -22,7 +22,7 @@ namespace InmoviliariaSarchioniAlfonzo.Repositories
                     command.Parameters.AddWithValue("@Message", log.Message);
                     command.Parameters.AddWithValue("@Timestamp", log.Timestamp);
                     command.Parameters.AddWithValue("@Usuario", log.Usuario);
-                    
+
                     connection.Open();
                     command.ExecuteNonQuery();
                 }
@@ -35,7 +35,7 @@ namespace InmoviliariaSarchioniAlfonzo.Repositories
 
             using (var connection = new MySqlConnection(connectionString))
             {
-                string sql = "SELECT * FROM Logs ORDER BY Timestamp DESC;";
+                string sql = "SELECT * FROM Logs ORDER BY Id DESC;";
 
                 using (var command = new MySqlCommand(sql, connection))
                 {

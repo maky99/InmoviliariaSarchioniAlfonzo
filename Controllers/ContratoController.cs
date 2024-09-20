@@ -17,13 +17,13 @@ public class ContratoController : Controller
     private InquilinoRepositorio inq = new InquilinoRepositorio();
     private UsuarioRepositorio usuarioRepo = new UsuarioRepositorio();
     private PagoRepositorio pa = new PagoRepositorio();
- private readonly ILogRepository _logRepository;
+    private readonly ILogRepository _logRepository;
 
 
-    public ContratoController(ILogger<ContratoController> logger,ILogRepository logRepository)
+    public ContratoController(ILogger<ContratoController> logger, ILogRepository logRepository)
     {
         _logger = logger;
-          _logRepository = logRepository;
+        _logRepository = logRepository;
     }
 
     public IActionResult ListContrato()
@@ -31,14 +31,10 @@ public class ContratoController : Controller
         var lista = co.ObtenerContratos();
         return View("ListContrato", lista);
     }
-
-
-
     public IActionResult EditarContrato(int id)
     {
         if (id == 0)
         {
-
             var tiposInmuebles = ti.TipoInmuActivo();
             ViewData["tipoInmueble"] = tiposInmuebles;
             var Inmuebles = ir.ObtenerInmueblesConPropietario();
@@ -56,7 +52,6 @@ public class ContratoController : Controller
             if (Contrato.inmueble == null)
             {
                 TempData["ErrorMessage"] = "Contrato finalizado no se puede editar ";
-
                 return RedirectToAction(nameof(ListContrato));
             }
             return View(Contrato);
@@ -67,42 +62,32 @@ public class ContratoController : Controller
     {
 
         id = Contrato.Id_Contrato;
-
         if (id == 0)
         {
- _logRepository.AddLog(new Log
-        {
-            LogLevel = "Information",
-            Message = " nuevo contrato de id propietario: "+ Contrato.Id_Propietario +" " +" id inquilino :"+Contrato.Id_Inquilino,
-            Timestamp = DateTime.UtcNow,
-            Usuario = User.Identity.Name // Nombre del usuario autenticado
-        });
-
-
-
+            _logRepository.AddLog(new Log
+            {
+                LogLevel = "Guardar",
+                Message = " nuevo contrato de propietario id: " + Contrato.Id_Propietario + " " + " inquilino id:" + Contrato.Id_Inquilino,
+                Timestamp = DateTime.Now,
+                Usuario = User.Identity.Name // Nombre del usuario autenticado
+            });
             co.Alta(Contrato);  // Crear nuevo Contrato
             TempData["Advertencia"] = " se dio de alta nuevo Contrato .";
-
         }
         else
         {
-
-
             co.EditarDatosContrato(Contrato);  // Editar Contrato existente
             TempData["Advertencia"] = " se edito el Contrato .";
-
         }
-
-
         return RedirectToAction(nameof(ListContrato));
     }
     public IActionResult EliminarContrato(int id)
     {
- _logRepository.AddLog(new Log
+        _logRepository.AddLog(new Log
         {
-            LogLevel = "Information",
-            Message = "El usuario ha accedido a eliminar contrato de id: "+ id,
-            Timestamp = DateTime.UtcNow,
+            LogLevel = "Eliminar",
+            Message = "Eliminar contrato de id: " + id,
+            Timestamp = DateTime.Now,
             Usuario = User.Identity.Name // Nombre del usuario autenticado
         });
 
@@ -122,11 +107,11 @@ public class ContratoController : Controller
     public IActionResult FinalizaFechaContrato(Contrato contrato)
     {
 
- _logRepository.AddLog(new Log
+        _logRepository.AddLog(new Log
         {
-            LogLevel = "Information",
-            Message = "El usuario ha accedido a finalizar contrato de id: "+ contrato.Id_Contrato,
-            Timestamp = DateTime.UtcNow,
+            LogLevel = "Termina",
+            Message = "Finalizar contrato de id: " + contrato.Id_Contrato,
+            Timestamp = DateTime.Now,
             Usuario = User.Identity.Name // Nombre del usuario autenticado
         });
 
@@ -137,7 +122,6 @@ public class ContratoController : Controller
 
 
     public IActionResult DetalleContrato(int id)
-
     {
         var Contrato = co.ObtenerDetalle(id);
         var usuarioCrea = usuarioRepo.UsuariosPorId(Contrato.Id_Creado_Por);

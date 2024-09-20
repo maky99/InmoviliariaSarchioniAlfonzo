@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using InmoviliariaSarchioniAlfonzo.Models;
+using InmoviliariaSarchioniAlfonzo.Repositories;
 namespace InmoviliariaSarchioniAlfonzo.Controllers;
 
 public class InmuebleController : Controller
@@ -11,11 +12,14 @@ public class InmuebleController : Controller
     private Tipo_InmuebleRepositorio ti = new Tipo_InmuebleRepositorio();
     private PropietarioRepositorio po = new PropietarioRepositorio();
     private ContratoRepositorio co = new ContratoRepositorio();
+    private readonly ILogRepository _logRepository;
 
 
-    public InmuebleController(ILogger<InmuebleController> logger)
+    public InmuebleController(ILogger<InmuebleController> logger, ILogRepository logRepository)
     {
         _logger = logger;
+        _logRepository = logRepository;
+
     }
 
     public IActionResult ListInmueble()
@@ -33,7 +37,6 @@ public class InmuebleController : Controller
             ViewData["tipoInmueble"] = tiposInmuebles;
             var propietario = po.ObtenerPropietariosActivos();
             ViewData["propietario"] = propietario;
-
             return View("NuevoInmueble");
         }
         else
@@ -48,7 +51,15 @@ public class InmuebleController : Controller
     [HttpPost]
     public IActionResult GuardarInmueble(Inmueble inmueble, string source, string previousUrl)
     {
+
         ir.GuardarInmueble(inmueble);
+        _logRepository.AddLog(new Log
+        {
+            LogLevel = "Guardar",
+            Message = "Alta de inmueble ID: " + inmueble.Id_Inmueble + ", Propietario ID: " + inmueble.Id_Propietario,
+            Timestamp = DateTime.Now,
+            Usuario = User.Identity.Name
+        });
         if (source == "propietario")
         {
             string redirectUrl = !string.IsNullOrEmpty(previousUrl) ? previousUrl : "/";
@@ -100,17 +111,19 @@ public class InmuebleController : Controller
     {
         if (!ModelState.IsValid)
         {
-            var errors = ModelState.Values.SelectMany(v => v.Errors);
-            foreach (var error in errors)
-            {
-                Console.WriteLine(error.ErrorMessage); // O bien, usar cualquier método de logging.
-            }
-            // Volver a mostrar la vista con los errores de validación
-            ViewData["propietario"] = po.ObtenerPropietarios(); // Método para obtener propietarios
-            ViewData["tipoInmueble"] = ti.TipoInmu(); // Método para obtener tipos de inmueble
+
+            ViewData["propietario"] = po.ObtenerPropietarios();
+            ViewData["tipoInmueble"] = ti.TipoInmu();
             return View("EditarInmueble", inmueble);
         }
         ir.ActualizarInmueble(inmueble);
+        _logRepository.AddLog(new Log
+        {
+            LogLevel = "Edita",
+            Message = "Actualiza inmueble ID: " + inmueble.Id_Inmueble,
+            Timestamp = DateTime.Now,
+            Usuario = User.Identity.Name
+        });
         TempData["SuccessMessage"] = "Inmueble actualizado correctamente.";
         if (source == "Propietario")
         {

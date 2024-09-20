@@ -105,32 +105,36 @@
                         }
                     </td>
                     <td>
-                        <a href="@Url.Action("NuevoPago", "Pago", new { id = item.Id_Contrato, source = "pagarContrato", previousUrl = Context.Request.Path })"
-                            class="btn btn-success me-2" title="Pagar">
-                            <i class="fa-brands fa-cc-visa"></i>
-                        </a>
-                        <!-- Enlace para editar -->
-                        <a href="@Url.Action("DetallePagContrato", "Pago", new { id = item.Id_Contrato, source = "pagarContrato", previousUrl = Context.Request.Path })"
-                            class="btn btn-secondary me-2" title="Ver pagos">
-                            <i class="fa-solid fa-receipt"></i>
-                        </a>
-                        <!-- Enlace para editar -->
-                        <a href="@Url.Action("EditarContrato", new { id = item.Id_Contrato })" class="btn btn-primary me-2"
-                            title="Editar Contrato" title="Editar información">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </a>
-                        <!-- Enlace para desactivar -->
-                        <a href="@Url.Action("DetalleContrato", new { id = item.Id_Contrato })" class="btn btn-warning me-2"
-                            title="Informacion del Contrato"><i class="fa-solid fa-info"></i>
-                        </a>
-                        <!-- Enlace para eliminar -->
-                        @if (User.IsInRole("Administrador"))
-                        {
-                            <a href="EliminarContrato/@item.Id_Contrato" class="btn btn-danger me-2"
-                                title="Desactivar Contrato">
-                                <i class="fa-solid fa-trash"></i>
+                        <div class="d-flex justify-content-start">
+                            <a href="@Url.Action("NuevoPago", "Pago", new { id = item.Id_Contrato, source = "pagarContrato", previousUrl = Context.Request.Path })"
+                                class="btn btn-success me-2" title="Pagar">
+                                <i class="fa-brands fa-cc-visa"></i>
                             </a>
-                        }
+                            <!-- Enlace para editar -->
+                            <a href="@Url.Action("DetallePagContrato", "Pago", new { id = item.Id_Contrato, source = "pagarContrato", previousUrl = Context.Request.Path })"
+                                class="btn btn-secondary me-2" title="Ver pagos">
+                                <i class="fa-solid fa-receipt"></i>
+                            </a>
+                            <!-- Enlace para editar -->
+                            <a href="@Url.Action("EditarContrato", new { id = item.Id_Contrato })"
+                                class="btn btn-primary me-2" title="Editar Contrato" title="Editar información">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                            </a>
+                            <!-- Enlace para desactivar -->
+                            <a href="@Url.Action("DetalleContrato", new { id = item.Id_Contrato })"
+                                class="btn btn-warning me-2" title="Informacion del Contrato"><i
+                                    class="fa-solid fa-info"></i>
+                            </a>
+                            <!-- Enlace para eliminar -->
+                            @if (User.IsInRole("Administrador"))
+                            {
+                                <a href="EliminarContrato/@item.Id_Contrato" class="btn btn-danger me-2"
+                                    title="Desactivar Contrato">
+                                    <i class="fa-solid fa-trash"></i>
+                                </a>
+                            }
+                        </div>
+
                     </td>
                 </tr>
             }

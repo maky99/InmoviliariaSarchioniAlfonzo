@@ -13,20 +13,20 @@ public class PagoController : Controller
     private PagoRepositorio pa = new PagoRepositorio();
     private ContratoRepositorio cr = new ContratoRepositorio();
 
-    public PagoController(ILogger<PagoController> logger,ILogRepository logRepository)
+    public PagoController(ILogger<PagoController> logger, ILogRepository logRepository)
     {
         _logger = logger;
         _logRepository = logRepository;
     }
 
- 
-
-
-
     public IActionResult ListPagos()
     {
-
         var pago = pa.ObtenerPagos();
+        return View("ListaPago", pago);
+    }
+    public IActionResult ListPagosOrdexInqu()
+    {
+        var pago = pa.ObtenerPagosOrdxInqui();
         return View("ListaPago", pago);
     }
     public IActionResult ListContVigentes()
@@ -37,11 +37,11 @@ public class PagoController : Controller
     public IActionResult NuevoPago(int id, string source, string previousUrl)
     {
 
-  _logRepository.AddLog(new Log
+        _logRepository.AddLog(new Log
         {
             LogLevel = "Information",
-            Message = "El usuario ha accedido a nuevo pago de id: "+ id,
-            Timestamp = DateTime.UtcNow,
+            Message = "El usuario ha accedido a nuevo pago de id: " + id,
+            Timestamp = DateTime.Now,
             Usuario = User.Identity.Name // Nombre del usuario autenticado
         });
 
@@ -66,11 +66,11 @@ public class PagoController : Controller
     public IActionResult GuardarPago(Pago pago, string previousUrl, string source)
     {
 
-  _logRepository.AddLog(new Log
+        _logRepository.AddLog(new Log
         {
-            LogLevel = "Information",
-            Message = "El usuario ha accedido a guardar pago cuota paga:"+ pago.CuotaPaga,
-            Timestamp = DateTime.UtcNow,
+            LogLevel = "Guardar",
+            Message = "El usuario ha accedido a guardar pago cuota paga:" + pago.CuotaPaga,
+            Timestamp = DateTime.Now,
             Usuario = User.Identity.Name // Nombre del usuario autenticado
         });
 
@@ -112,11 +112,11 @@ public class PagoController : Controller
     public IActionResult GuardarPagoAnulado(Pago pago)
     {
 
-  _logRepository.AddLog(new Log
+        _logRepository.AddLog(new Log
         {
-            LogLevel = "Information",
+            LogLevel = "Guardar",
             Message = "El usuario ha accedido a guardar pago anulado.",
-            Timestamp = DateTime.UtcNow,
+            Timestamp = DateTime.Now,
             Usuario = User.Identity.Name // Nombre del usuario autenticado
         });
 
@@ -159,11 +159,11 @@ public class PagoController : Controller
     public IActionResult AnularPago(int id, int id_Usuario, string previousUrl, string source, int id_Contrato)
     {
 
-  _logRepository.AddLog(new Log
+        _logRepository.AddLog(new Log
         {
-            LogLevel = "Information",
+            LogLevel = "Anular",
             Message = "El usuario ha accedido a anular pago.",
-            Timestamp = DateTime.UtcNow,
+            Timestamp = DateTime.Now,
             Usuario = User.Identity.Name // Nombre del usuario autenticado
         });
 
