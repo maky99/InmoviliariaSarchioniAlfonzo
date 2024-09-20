@@ -73,7 +73,7 @@
         *@
         <thead>
             <tr>
-                <th>Uso</th>
+                <th>Uso / Direccion</th>
                 <th>Tipo</th>
                 <th>Nombre Pro</th>
                 <th>Nombre Inq</th>
@@ -88,7 +88,7 @@
             {
                 var rowClass = item.Estado_Contrato == 0 ? "inactivo" : "";
                 <tr class="@rowClass">
-                    <td>@item.inmueble?.Uso @item.inmueble?.Direccion</td>
+                    <td>@item.inmueble?.Uso / @item.inmueble?.Direccion</td>
                     <td>@item.tipo_inmueble?.Tipo</td>
                     <td>@item.propietario?.Nombre @item.propietario?.Apellido</td>
                     <td>@item.inquilino?.Nombre @item.inquilino?.Apellido</td>
