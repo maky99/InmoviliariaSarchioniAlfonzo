@@ -10,6 +10,7 @@ public class PropietarioController : Controller
 
     private PropietarioRepositorio po = new PropietarioRepositorio();
     private InmuebleRepositorio ir = new InmuebleRepositorio();
+    private ContratoRepositorio cr = new ContratoRepositorio();
     private readonly ILogRepository _logRepository;
 
 
@@ -91,9 +92,20 @@ public class PropietarioController : Controller
 
     public IActionResult EliminarPropietario(int id)
     {
-        po.Baja(id);
-        TempData["Advertencia"] = "El propietario se desactivo correctamente .";
+        var propiedad = ir.InformacionInmueblePropietario(id);
+        var contratosVigentes = cr.ContratoVigente();
 
+        var propiedadEnContrato = propiedad.Any(p => contratosVigentes.Any(c => c.Id_Inmueble == p.Id_Inmueble));
+        if (propiedadEnContrato)
+        {
+            // Si se encontró una propiedad en un contrato vigente
+            TempData["ErrorMessage"] = "No se puede desactivar ya que una de las propiedades tiene un contrato vigente.";
+        }
+        else
+        {
+            po.Baja(id);
+            TempData["Advertencia"] = "El propietario se desactivo correctamente .";
+        }
         return RedirectToAction(nameof(ListPropietario));
     }
 
