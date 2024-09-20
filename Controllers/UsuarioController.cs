@@ -80,23 +80,23 @@ public class UsuarioController : Controller
 	public IActionResult Guardar(Usuario usuario)
 	{
 
-		int id = usuario.Id_Usuario;
-		int dni = usuario.Dni;
+	
 
-		if (id == 0)
-		{
-			usuarioRepo.AltaUsuario(usuario);  // Crear nuevo Usuario
-			TempData["Advertencia"] = " se dio de alta nuevo Usuario .";
+	if(usuarioRepo.EsDniDelUsuarioActual(usuario.Id_Usuario,usuario.Dni)){
+         TempData["error"] = " dni ya existe no puede introducirlo";
+                return RedirectToAction("EditarUsuario", new { id = usuario.Id_Usuario });
+	}else if(usuarioRepo.EsEmailDelUsuarioActual(usuario.Id_Usuario,usuario.Email)){
+  TempData["error"] = " Email ya existe no puede introducirlo";
+                return RedirectToAction("EditarUsuario", new { id = usuario.Id_Usuario });
 
-		}
-		else
-		{
+	}else{
+
 			usuarioRepo.ModificarUsuarioSoloDatos(usuario);  // Editar Usuario existente
 			TempData["Advertencia"] = " se edito el Usuario .";
-		}
+		
+	}
 
-
-		return RedirectToAction(nameof(ListUsuario));
+		return RedirectToAction("EditarUsuario", new { id = usuario.Id_Usuario });
 
 	}
 [Authorize]
