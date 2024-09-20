@@ -9,9 +9,6 @@
 
 <link rel="stylesheet" href="~/fondo/contrato.css" />
 
-
-
-
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-10 bg-white p-4 rounded shadow-sm">
@@ -136,9 +133,12 @@
                     </tr>
                     <tr>
                         <td>Precio</td>
-                        <td>@Model.inmueble?.Precio</td>
+                        <td>$ @Model.inmueble?.Precio.ToString("N2")</td>
                     </tr>
-                    <!-- Agregar más campos de Inmueble según sea necesario -->
+                    <tr>
+                        <td>Estado Actual del Inmueble</td>
+                        <td>@(Model.inmueble?.Estado_Inmueble == 1 ? "Activo" : "Inactivo")</td>
+                    </tr>
                 </tbody>
             </table>
 

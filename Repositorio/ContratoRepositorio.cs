@@ -5,7 +5,6 @@ using InmoviliariaSarchioniAlfonzo.Models;
 public class ContratoRepositorio
 {
     readonly string connectionString = "Server=localhost; Port=3306; Database=inmobiliaria; User=root;";
-
     //metodo para listar todos los Contrato
     public IList<Contrato> ObtenerContratos()
     {
@@ -86,10 +85,7 @@ public class ContratoRepositorio
                     }
                     connection.Close();
                 }
-
             }
-
-
         }
         return Contratos;
     }

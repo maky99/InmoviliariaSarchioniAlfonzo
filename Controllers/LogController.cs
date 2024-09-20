@@ -18,7 +18,7 @@ namespace InmoviliariaSarchioniAlfonzo.Controllers
         public IActionResult VerLogs()
         {
             var logs = _logRepository.GetAllLogs();
-            return View(logs);
+            return View("VerLogs", logs);
         }
     }
 }

@@ -33,8 +33,8 @@
         <thead>
             <tr>
                 <th>DNI</th>
-                <th>Apellido</th>
-                <th>Nombre</th>
+                <th>Apellido y nombre</th>
+                <th>Rol</th>
                 <th>Teléfono</th>
                 <th>Email</th>
                 <th>Avatar</th>
@@ -48,8 +48,10 @@
                 var rowClass = item.Estado_Usuario == 0 ? "inactivo" : "";
                 <tr class="@rowClass">
                     <td>@item.Dni</td>
-                    <td>@item.Apellido</td>
-                    <td>@item.Nombre</td>
+                    <td>@item.Apellido, @item.Nombre</td>
+                    <td>
+                        @(item.Rol == 1 ? "Empleado" : item.Rol == 2 ? "Administrador" : "Sin Rol")
+                    </td>
                     <td>@item.Telefono</td>
                     <td>@item.Email</td>
                     <td>
@@ -84,14 +86,19 @@
                     <td>
                         <!-- Enlace para editar -->
                         <a href="@Url.Action("EditarUsuario", "Usuario", new { id = item.Id_Usuario })"
-                            class="btn btn-primary" title="Editar información">
+                            class="btn btn-primary me-2" title="Editar información">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
-
+                        <!-- Enlace para reiniciar contraseña -->
+                        <a href="@Url.Action("ResetearContrasena", new { id = item.Id_Usuario })"
+                            onclick="return confirm('La nueva contraseña será (pepe). ¿Quiere continuar?')"
+                            class="btn btn-warning me-2" title="Restablecer contraseña">
+                            <i class="fa-solid fa-eraser"></i>
+                        </a>
                         <!-- Enlace para desactivar -->
                         <a href="@Url.Action("baja", new { id = item.Id_Usuario })"
                             onclick="return confirm('¿Estás seguro de que deseas desactivar a @item.Apellido @item.Nombre?')"
-                            class="btn btn-danger" title="Desactivar Usuario">
+                            class="btn btn-danger me-2" title="Desactivar Usuario">
                             <i class="fa-solid fa-user-minus"></i>
                             @* <i class="fa-solid fa-trash"></i> *@
                         </a>

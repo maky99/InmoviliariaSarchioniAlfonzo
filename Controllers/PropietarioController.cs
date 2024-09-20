@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using InmoviliariaSarchioniAlfonzo.Models;
-
+using InmoviliariaSarchioniAlfonzo.Repositories;
 namespace InmoviliariaSarchioniAlfonzo.Controllers;
 
 public class PropietarioController : Controller
@@ -10,10 +10,14 @@ public class PropietarioController : Controller
 
     private PropietarioRepositorio po = new PropietarioRepositorio();
     private InmuebleRepositorio ir = new InmuebleRepositorio();
+    private ContratoRepositorio cr = new ContratoRepositorio();
+    private readonly ILogRepository _logRepository;
 
-    public PropietarioController(ILogger<PropietarioController> logger)
+
+    public PropietarioController(ILogger<PropietarioController> logger, ILogRepository logRepository)
     {
         _logger = logger;
+        _logRepository = logRepository;
     }
 
     public IActionResult ListPropietario()
@@ -50,6 +54,13 @@ public class PropietarioController : Controller
             else
             {
                 po.Alta(propietario);  // Crear nuevo propietario
+                _logRepository.AddLog(new Log
+                {
+                    LogLevel = "Guardar",
+                    Message = "Alta de nuevo propietario DNI: " + propietario.Dni,
+                    Timestamp = DateTime.Now,
+                    Usuario = User.Identity.Name
+                });
                 TempData["Advertencia"] = " se dio de alta nuevo propietario .";
             }
         }
@@ -63,6 +74,13 @@ public class PropietarioController : Controller
             else
             {
                 po.EditarDatosPropietario(propietario);  // Editar propietario existente
+                _logRepository.AddLog(new Log
+                {
+                    LogLevel = "Edita",
+                    Message = "Edita propietario ID: " + propietario.Id_Propietario,
+                    Timestamp = DateTime.Now,
+                    Usuario = User.Identity.Name
+                });
                 TempData["Advertencia"] = " se edito el propietario .";
             }
         }
@@ -74,9 +92,20 @@ public class PropietarioController : Controller
 
     public IActionResult EliminarPropietario(int id)
     {
-        po.Baja(id);
-        TempData["Advertencia"] = "El propietario se desactivo correctamente .";
+        var propiedad = ir.InformacionInmueblePropietario(id);
+        var contratosVigentes = cr.ContratoVigente();
 
+        var propiedadEnContrato = propiedad.Any(p => contratosVigentes.Any(c => c.Id_Inmueble == p.Id_Inmueble));
+        if (propiedadEnContrato)
+        {
+            // Si se encontró una propiedad en un contrato vigente
+            TempData["ErrorMessage"] = "No se puede desactivar ya que una de las propiedades tiene un contrato vigente.";
+        }
+        else
+        {
+            po.Baja(id);
+            TempData["Advertencia"] = "El propietario se desactivo correctamente .";
+        }
         return RedirectToAction(nameof(ListPropietario));
     }
 
