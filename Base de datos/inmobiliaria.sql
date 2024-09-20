@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 19-09-2024 a las 14:59:34
+-- Tiempo de generación: 20-09-2024 a las 04:29:06
 -- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Versión de PHP: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -50,10 +50,13 @@ INSERT INTO `contrato` (`Id_Contrato`, `Id_Inmueble`, `Id_Propietario`, `Id_Inqu
 (13, 1, 1, 2, '2024-09-01', 2, '2024-10-31', 120000, '2024-09-17', 1, 3, 0),
 (15, 3, 2, 4, '2024-09-12', 4, '2025-01-11', 150000, '2024-09-17', 1, 2, 0),
 (18, 2, 1, 1, '2024-09-26', 4, '2025-01-25', 80000, '2024-09-17', 3, 2, 0),
-(19, 6, 3, 1, '2024-09-18', 2, '2024-11-18', 110000, '0001-01-01', 3, 0, 1),
+(19, 6, 3, 1, '2024-09-18', 2, '2024-11-18', 110000, '0001-01-01', 3, 0, 0),
 (20, 11, 6, 10, '2024-10-01', 6, '2025-03-30', 85000, '0001-01-01', 2, 0, 1),
 (21, 14, 8, 15, '2024-11-01', 7, '2025-05-31', 140000, '0001-01-01', 1, 0, 1),
-(22, 15, 8, 12, '2024-10-01', 5, '2025-03-02', 90000, '0001-01-01', 2, 0, 1);
+(22, 15, 8, 12, '2024-10-01', 5, '2025-03-02', 90000, '2024-09-19', 2, 0, 0),
+(23, 3, 2, 6, '2024-09-03', 6, '2025-03-02', 150000, '0001-01-01', 2, 0, 1),
+(24, 5, 3, 2, '2024-09-05', 12, '2025-09-04', 60000, '0001-01-01', 2, 0, 1),
+(25, 10, 6, 9, '2024-09-24', 3, '2024-12-23', 160000, '0001-01-01', 2, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -146,6 +149,40 @@ INSERT INTO `inquilino` (`Id_Inquilino`, `Dni`, `Apellido`, `Nombre`, `Telefono`
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `logs`
+--
+
+CREATE TABLE `logs` (
+  `Id` int(11) NOT NULL,
+  `LogLevel` varchar(50) DEFAULT NULL,
+  `Message` text DEFAULT NULL,
+  `Timestamp` datetime DEFAULT current_timestamp(),
+  `Usuario` varchar(256) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `logs`
+--
+
+INSERT INTO `logs` (`Id`, `LogLevel`, `Message`, `Timestamp`, `Usuario`) VALUES
+(1, 'Information', 'El usuario ha accedido a la página de inicio.', '2024-09-20 01:24:21', 'lopes,ricardo-(2)'),
+(2, 'Information', 'El usuario ha accedido a la página de inicio.', '2024-09-20 01:24:24', 'lopes,ricardo-(2)'),
+(3, 'Information', 'El usuario ha accedido a la página de inicio.', '2024-09-20 01:36:27', 'lopes,ricardo-(2)'),
+(4, 'Information', 'El usuario ha accedido a nuevo pago de id: 19', '2024-09-20 01:58:59', 'lopes,ricardo-(2)'),
+(5, 'Information', 'El usuario ha accedido a guardar pago cuota paga:1', '2024-09-20 01:59:07', 'lopes,ricardo-(2)'),
+(6, 'Information', 'El usuario ha accedido a nuevo pago de id: 21', '2024-09-20 01:59:30', 'lopes,ricardo-(2)'),
+(7, 'Information', 'El usuario ha accedido a guardar pago cuota paga:1', '2024-09-20 01:59:35', 'lopes,ricardo-(2)'),
+(8, 'Information', 'El usuario ha accedido a nuevo pago de id: 22', '2024-09-20 01:59:38', 'lopes,ricardo-(2)'),
+(9, 'Information', 'El usuario ha accedido a guardar pago cuota paga:1', '2024-09-20 01:59:41', 'lopes,ricardo-(2)'),
+(10, 'Information', 'El usuario ha accedido a eliminar contarto de id: 22', '2024-09-20 02:08:21', 'lopes,ricardo-(2)'),
+(11, 'Information', 'El usuario ha accedido a finalizar contarto de id: 22', '2024-09-20 02:08:28', 'lopes,ricardo-(2)'),
+(12, 'Information', 'El usuario ha accedido a nuevo contrato: 0', '2024-09-20 02:09:10', 'lopes,ricardo-(2)'),
+(13, 'Information', ' nuevo contrato de id propietario: 3id inquilino :2', '2024-09-20 02:14:11', 'lopes,ricardo-(2)'),
+(14, 'Information', ' nuevo contrato de id propietario: 6  id inquilino :9', '2024-09-20 02:27:11', 'lopes,ricardo-(2)');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `pago`
 --
 
@@ -173,7 +210,10 @@ INSERT INTO `pago` (`Id_Pago`, `Id_Contrato`, `Importe`, `CuotaPaga`, `Fecha`, `
 (50, 13, 120000, 0, '2024-09-17', 120000, 0, 3, 1),
 (51, 15, 150000, 0, '2024-09-17', 300000, 0, 3, 1),
 (52, 18, 80000, 0, '2024-09-17', 160000, 3, 0, 1),
-(53, 19, 110000, 2, '2024-09-17', 0, 1, 1, 1);
+(53, 19, 110000, 2, '2024-09-17', 0, 1, 1, 1),
+(54, 19, 110000, 1, '2024-09-19', 0, 1, 1, 1),
+(55, 21, 140000, 1, '2024-09-19', 0, 1, 1, 1),
+(56, 22, 90000, 1, '2024-09-19', 0, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -265,10 +305,11 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`Id_Usuario`, `Apellido`, `Nombre`, `Dni`, `Telefono`, `Rol`, `Email`, `Password`, `Avatar`, `Estado_Usuario`) VALUES
-(1, 'aguero', 'oscar', 12345, '12345', 2, 'o@o.com', '3A0G2+zJ3luLnlC44+Xe5HGw/9RWJNoyF2XZACvev20=', NULL, 1),
-(2, 'lopes', 'ricardo', 123455, '123434565', 1, 'a@a.com', '3A0G2+zJ3luLnlC44+Xe5HGw/9RWJNoyF2XZACvev20=', '/Uploads\\avatar_2.PNG', 1),
+(1, 'aguero', 'oscar', 12345, '12345', 2, 'o@o.com', '3A0G2+zJ3luLnlC44+Xe5HGw/9RWJNoyF2XZACvev20=', '/Uploads\\avatar_1.PNG', 1),
+(2, 'lopes', 'ricardo', 123455, '123434565', 1, 'a@a.com', '3A0G2+zJ3luLnlC44+Xe5HGw/9RWJNoyF2XZACvev20=', '/Uploads\\avatar.png', 1),
 (3, 'Lucero', 'Gaston', 1223344, '1233454', 1, 'b@b', '3A0G2+zJ3luLnlC44+Xe5HGw/9RWJNoyF2XZACvev20=', '/Uploads\\avatar_3.jpg', 1),
-(4, 'Sapo', 'Pepe', 1234567, '121212121', 1, 'elSapo@pepe.com', '3A0G2+zJ3luLnlC44+Xe5HGw/9RWJNoyF2XZACvev20=', '/Uploads\\avatar_4.jpg', 1);
+(4, 'Sapo', 'Pepe', 1234567, '121212121', 1, 'elSapo@pepe.com', '3A0G2+zJ3luLnlC44+Xe5HGw/9RWJNoyF2XZACvev20=', '/Uploads\\avatar_4.jpg', 1),
+(10, 'Rojas', 'raul', 989898988, '23456744', 1, 'raul@raul', '3A0G2+zJ3luLnlC44+Xe5HGw/9RWJNoyF2XZACvev20=', '/Uploads\\avatar.png', 1);
 
 --
 -- Índices para tablas volcadas
@@ -296,6 +337,12 @@ ALTER TABLE `inmueble`
 --
 ALTER TABLE `inquilino`
   ADD PRIMARY KEY (`Id_Inquilino`);
+
+--
+-- Indices de la tabla `logs`
+--
+ALTER TABLE `logs`
+  ADD PRIMARY KEY (`Id`);
 
 --
 -- Indices de la tabla `pago`
@@ -330,7 +377,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `contrato`
 --
 ALTER TABLE `contrato`
-  MODIFY `Id_Contrato` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `Id_Contrato` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `inmueble`
@@ -345,10 +392,16 @@ ALTER TABLE `inquilino`
   MODIFY `Id_Inquilino` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
+-- AUTO_INCREMENT de la tabla `logs`
+--
+ALTER TABLE `logs`
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
 -- AUTO_INCREMENT de la tabla `pago`
 --
 ALTER TABLE `pago`
-  MODIFY `Id_Pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `Id_Pago` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT de la tabla `propietario`
@@ -366,7 +419,7 @@ ALTER TABLE `tipo_inmueble`
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `Id_Usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `Id_Usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Restricciones para tablas volcadas
