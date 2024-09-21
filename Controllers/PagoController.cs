@@ -12,6 +12,7 @@ public class PagoController : Controller
     private readonly ILogRepository _logRepository;
     private PagoRepositorio pa = new PagoRepositorio();
     private ContratoRepositorio cr = new ContratoRepositorio();
+    private UsuarioRepositorio usuarioRepo = new UsuarioRepositorio();
 
     public PagoController(ILogger<PagoController> logger, ILogRepository logRepository)
     {
@@ -133,7 +134,7 @@ public class PagoController : Controller
             TempData["NotificationMessage"] = "Pago guardado exitosamente. Y se ha finalizado el contrato.";
         }
 
-        return RedirectToAction("ListContVigentes");
+        return RedirectToAction("ListPagos");
 
     }
     public IActionResult DetallePago(int id, string previousUrl, string source)
@@ -142,6 +143,13 @@ public class PagoController : Controller
         ViewData["pago"] = pago;
         var idcontrato = pago.Id_Contrato;
         var contrato = cr.ObtenerTodosContrato(idcontrato);
+        var usuarioCrea = usuarioRepo.UsuariosPorId(pago.Id_Creado_Por);
+        ViewData["usuarioCrea"] = usuarioCrea;
+        if (pago.Id_Terminado_Por != 0)
+        {
+            var usuarioTermina = usuarioRepo.UsuariosPorId(pago.Id_Terminado_Por);
+            ViewData["usuarioTermina"] = usuarioTermina;
+        }
         ViewData["contrato"] = contrato;
         ViewData["QuienLlamo"] = source;
         TempData["PreviousUrl"] = previousUrl;

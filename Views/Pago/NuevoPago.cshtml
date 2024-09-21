@@ -1,11 +1,14 @@
 @model InmoviliariaSarchioniAlfonzo.Models.Pago
 @using System.Globalization
+@using System.Security.Claims
 
 @{
     ViewData["Title"] = "Nuevo Pago";
+    var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid);
+    var userId = userIdClaim?.Value;
     var contrato = ViewData["contrato"] as Contrato;
     var pagos = ViewData["pagos"] as List<InmoviliariaSarchioniAlfonzo.Models.Pago>;
-    var cuotasPagadas = pagos?.Select(p => p.CuotaPaga).ToHashSet() ?? new HashSet<int>(); // Usar HashSet para eficiencia
+    var cuotasPagadas = pagos?.Select(p => p.CuotaPaga).ToHashSet() ?? new HashSet<int>(); // HashSet para eficiencia
 
     @* var cuotasPagadas = pagos?.Select(p => p.Mes).ToList() ?? new List<int>(); *@
 }
@@ -27,7 +30,7 @@
             <form asp-action="GuardarPago" method="post">
                 <input type="hidden" asp-for="Id_Contrato" value="@contrato?.Id_Contrato" />
                 <input type="hidden" asp-for="Multa" value="0" />
-                <input type="hidden" asp-for="Id_Creado_Por" value="1" />
+                <input type="hidden" asp-for="Id_Creado_Por" value="@userId" />
                 <input type="hidden" asp-for="Id_Terminado_Por" value="0" />
                 <input type="hidden" asp-for="Estado_Pago" value="1" />
                 <input type="hidden" asp-for="Importe" value="@contrato?.Monto" />
@@ -49,7 +52,7 @@
                 </div>
                 <div class="form-group">
                     <label class="control-label">Cuota</label>
-                    <select class="form-control" name="CuotaPaga">
+                    <select class="form-control" name="CuotaPaga" required>
                         <option value="" disabled selected>Seleccione cuota</option>
                         @for (int cuota = 1; cuota <= contrato?.Meses; cuota++)
                         {
