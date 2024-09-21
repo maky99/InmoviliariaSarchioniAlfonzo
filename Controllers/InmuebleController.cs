@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using InmoviliariaSarchioniAlfonzo.Models;
 using InmoviliariaSarchioniAlfonzo.Repositories;
+using Microsoft.AspNetCore.Authorization;
 namespace InmoviliariaSarchioniAlfonzo.Controllers;
 
 public class InmuebleController : Controller
@@ -21,14 +22,14 @@ public class InmuebleController : Controller
         _logRepository = logRepository;
 
     }
-
+    [Authorize]
     public IActionResult ListInmueble()
     {
         var inmueble = ir.ObtenerInmuebles();
 
         return View("ListInmueble", inmueble);
     }
-
+    [Authorize]
     public IActionResult NuevoInmueble(int idPropietario)
     {
         if (idPropietario == 0)
@@ -48,6 +49,8 @@ public class InmuebleController : Controller
             return View("NuevoInmueblePropietario");
         }
     }
+
+    [Authorize]
     [HttpPost]
     public IActionResult GuardarInmueble(Inmueble inmueble, string source, string previousUrl)
     {
@@ -67,7 +70,7 @@ public class InmuebleController : Controller
         }
         return RedirectToAction("ListInmueble");
     }
-
+    [Authorize]
     public IActionResult DetalleInmueble(int id, string source)
     {
 
@@ -82,7 +85,7 @@ public class InmuebleController : Controller
             return View("DetalleInmueble", inmueble);
         }
     }
-
+    [Authorize]
     public IActionResult EditarInmueble(int id, string source)
     {
         var inmueble = ir.ObtenerInmueblePorId(id);
@@ -104,9 +107,9 @@ public class InmuebleController : Controller
         return View("EditarInmueble", inmueble);
     }
 
-
+    [Authorize]
     [HttpPost]
-    [ValidateAntiForgeryToken]
+
     public IActionResult ActualizarInmueble(Inmueble inmueble, string source, string previousUrl)
     {
         if (!ModelState.IsValid)
@@ -132,6 +135,7 @@ public class InmuebleController : Controller
         }
         return RedirectToAction(nameof(ListInmueble));
     }
+    [Authorize]
     public IActionResult BuscarInmueble()
     {
 
@@ -143,7 +147,7 @@ public class InmuebleController : Controller
 
         return View("BuscarInmueble");
     }
-
+    [Authorize]
     public IActionResult Buscador(int Id_Tipo_Inmueble, int Ambientes, double PrecioMin, double PrecioMax, DateTime? FechaInicio, DateTime? FechaFin)
     {
         // Obtener todos los inmuebles

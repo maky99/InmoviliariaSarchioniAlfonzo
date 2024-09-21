@@ -47,11 +47,12 @@ namespace InmoviliariaSarchioniAlfonzo.Repositories
                             logs.Add(new Log
                             {
                                 Id = reader.GetInt32("Id"),
-                                LogLevel = reader.GetString("LogLevel"),
-                                Message = reader.GetString("Message"),
-                                Timestamp = reader.GetDateTime("Timestamp"),
-                                Usuario = reader.GetString("Usuario")
+                                LogLevel = reader.IsDBNull(reader.GetOrdinal("LogLevel")) ? string.Empty : reader.GetString("LogLevel"),
+                                Message = reader.IsDBNull(reader.GetOrdinal("Message")) ? string.Empty : reader.GetString("Message"),
+                                Timestamp = reader.IsDBNull(reader.GetOrdinal("Timestamp")) ? DateTime.MinValue : reader.GetDateTime("Timestamp"),
+                                Usuario = reader.IsDBNull(reader.GetOrdinal("Usuario")) ? string.Empty : reader.GetString("Usuario")
                             });
+
                         }
                     }
                 }

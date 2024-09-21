@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using InmoviliariaSarchioniAlfonzo.Models;
 using InmoviliariaSarchioniAlfonzo.Repositories;
+using Microsoft.AspNetCore.Authorization;
 
 namespace InmoviliariaSarchioniAlfonzo.Controllers;
 
@@ -19,17 +20,20 @@ public class Tipo_InmuebleController : Controller
         _logRepository = logRepository;
 
     }
-
+    [Authorize]
     public IActionResult ListTipo()
     {
         var list = ti.TipoInmu();
 
         return View("ListTipoInmueble", list);
     }
+
+    [Authorize]
     public IActionResult NuevoTipo()
     {
         return View("NuevoTipoInmueble");
     }
+    [Authorize]
     public IActionResult AgregarNuevoTipo(Tipo_Inmueble tipo_inmueble)
     {
         if (ModelState.IsValid)
@@ -49,11 +53,14 @@ public class Tipo_InmuebleController : Controller
         return View("NuevoTipoInmueble");
 
     }
+
+    [Authorize(Policy = "Administrador")]
     public IActionResult EditarTipo(int id)
     {
         var tipo = ti.BuscaparaEditar(id);
         return View("EditaTipoInmueble", tipo);
     }
+    [Authorize]
     [HttpPost]
     public IActionResult GuardarCambiosTipo(Tipo_Inmueble tipo_inmueble)
     {
@@ -72,6 +79,7 @@ public class Tipo_InmuebleController : Controller
         }
         return View("EditaTipoInmueble", tipo_inmueble);
     }
+    [Authorize(Policy = "Administrador")]
     public IActionResult CambioEstado(int id)
     {
         var tipo = ti.BuscaparaEditar(id);

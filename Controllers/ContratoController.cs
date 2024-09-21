@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using InmoviliariaSarchioniAlfonzo.Models;
 using InmoviliariaSarchioniAlfonzo.Repositories;
+using Microsoft.AspNetCore.Authorization;
 namespace InmoviliariaSarchioniAlfonzo.Controllers;
 
 public class ContratoController : Controller
@@ -17,15 +18,16 @@ public class ContratoController : Controller
     private InquilinoRepositorio inq = new InquilinoRepositorio();
     private UsuarioRepositorio usuarioRepo = new UsuarioRepositorio();
     private PagoRepositorio pa = new PagoRepositorio();
- private readonly ILogRepository _logRepository;
+    private readonly ILogRepository _logRepository;
 
 
-    public ContratoController(ILogger<ContratoController> logger,ILogRepository logRepository)
+    public ContratoController(ILogger<ContratoController> logger, ILogRepository logRepository)
     {
         _logger = logger;
-          _logRepository = logRepository;
+        _logRepository = logRepository;
     }
 
+    [Authorize]
     public IActionResult ListContrato()
     {
         var lista = co.ObtenerContratos();
@@ -33,6 +35,7 @@ public class ContratoController : Controller
     }
 
 
+    [Authorize]
 
     public IActionResult EditarContrato(int id)
     {
@@ -62,6 +65,8 @@ public class ContratoController : Controller
             return View(Contrato);
         }
     }
+    [Authorize]
+
     [HttpPost]
     public IActionResult Guardar(int id, Contrato Contrato)
     {
@@ -70,13 +75,13 @@ public class ContratoController : Controller
 
         if (id == 0)
         {
- _logRepository.AddLog(new Log
-        {
-            LogLevel = "Information",
-            Message = " nuevo contrato de id propietario: "+ Contrato.Id_Propietario +" " +" id inquilino :"+Contrato.Id_Inquilino,
-            Timestamp = DateTime.UtcNow,
-            Usuario = User.Identity.Name // Nombre del usuario autenticado
-        });
+            _logRepository.AddLog(new Log
+            {
+                LogLevel = "Information",
+                Message = " nuevo contrato de id propietario: " + Contrato.Id_Propietario + " " + " id inquilino :" + Contrato.Id_Inquilino,
+                Timestamp = DateTime.UtcNow,
+                Usuario = User.Identity.Name // Nombre del usuario autenticado
+            });
 
 
 
@@ -96,12 +101,14 @@ public class ContratoController : Controller
 
         return RedirectToAction(nameof(ListContrato));
     }
+    [Authorize(Policy = "Administrador")]
+
     public IActionResult EliminarContrato(int id)
     {
- _logRepository.AddLog(new Log
+        _logRepository.AddLog(new Log
         {
             LogLevel = "Information",
-            Message = "El usuario ha accedido a eliminar contrato de id: "+ id,
+            Message = "El usuario ha accedido a eliminar contrato de id: " + id,
             Timestamp = DateTime.UtcNow,
             Usuario = User.Identity.Name // Nombre del usuario autenticado
         });
@@ -118,14 +125,15 @@ public class ContratoController : Controller
 
         return View("FinalizaContrato", Contrato);
     }
+    [Authorize]
 
     public IActionResult FinalizaFechaContrato(Contrato contrato)
     {
 
- _logRepository.AddLog(new Log
+        _logRepository.AddLog(new Log
         {
             LogLevel = "Information",
-            Message = "El usuario ha accedido a finalizar contrato de id: "+ contrato.Id_Contrato,
+            Message = "El usuario ha accedido a finalizar contrato de id: " + contrato.Id_Contrato,
             Timestamp = DateTime.UtcNow,
             Usuario = User.Identity.Name // Nombre del usuario autenticado
         });
@@ -135,6 +143,7 @@ public class ContratoController : Controller
         return RedirectToAction(nameof(ListContrato));
     }
 
+    [Authorize]
 
     public IActionResult DetalleContrato(int id)
 
@@ -150,11 +159,13 @@ public class ContratoController : Controller
         return View("DetalleContrato", Contrato);
 
     }
+    [Authorize]
+
     public IActionResult CrearContrato(int id)
     {
         var inmueble = ir.ObtenerInmueblePorId(id);
 
-      
+
         ViewData["inmueble"] = inmueble;
         var propietarios = po.ObtenerPropietarios();
         ViewData["propietario"] = propietarios;
@@ -163,10 +174,13 @@ public class ContratoController : Controller
 
         return View("NuevoContratoDirecto");
     }
+    [Authorize]
+
     public IActionResult FiltroContrato()
     {
         return View("FiltarContrato", new List<Contrato>());
     }
+    [Authorize]
     public IActionResult BuscarContra(int Meses)
     {
         var contratosVigentes = co.ContratoVigente();

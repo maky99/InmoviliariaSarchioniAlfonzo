@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using InmoviliariaSarchioniAlfonzo.Models;
 using InmoviliariaSarchioniAlfonzo.Repositories;
+using Microsoft.AspNetCore.Authorization;
 namespace InmoviliariaSarchioniAlfonzo.Controllers;
 
 public class PropietarioController : Controller
@@ -19,14 +20,14 @@ public class PropietarioController : Controller
         _logger = logger;
         _logRepository = logRepository;
     }
-
+    [Authorize]
     public IActionResult ListPropietario()
     {
         var lista = po.ObtenerPropietarios();
         return View("ListaPropietario", lista);
     }
 
-
+    [Authorize]
 
     public IActionResult EditarPropietario(int id)
     {
@@ -38,6 +39,7 @@ public class PropietarioController : Controller
             return View(propietario);
         }
     }
+    [Authorize]
     [HttpPost]
     public IActionResult Guardar(int id, Propietario propietario)
     {
@@ -88,7 +90,7 @@ public class PropietarioController : Controller
 
         return RedirectToAction(nameof(ListPropietario));
     }
-
+    [Authorize(Policy = "Administrador")]
 
     public IActionResult EliminarPropietario(int id)
     {
@@ -108,7 +110,7 @@ public class PropietarioController : Controller
         }
         return RedirectToAction(nameof(ListPropietario));
     }
-
+    [Authorize]
     public IActionResult ListInmueblePropietario(int id)
     {
         ViewBag.DesdeListInmueblePropietario = true;

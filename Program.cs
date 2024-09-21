@@ -15,8 +15,8 @@ builder.Services.AddScoped<ILogRepository, LogRepository>();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        options.LoginPath = "/Usuarios/Login";
-        options.LogoutPath = "/Usuarios/Logout";
+        options.LoginPath = "/Home/Login";
+        options.LogoutPath = "/Home";
         options.AccessDeniedPath = "/Home";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(5); // Tiempo de expiración
     });

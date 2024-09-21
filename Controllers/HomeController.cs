@@ -62,15 +62,17 @@ namespace InmoviliariaSarchioniAlfonzo.Controllers
                     if (usuario == null || usuario.Password != hashed)
                     {
                         Mensaje = "El usuario o la contraseña son incorrectos";
-                  if (usuariologin.Password == ""){
-                        Mensaje = "";}
-                    
+                        if (usuariologin.Password == "")
+                        {
+                            Mensaje = "";
+                        }
+
                         ViewBag.Mensaje = Mensaje;
                         return View();
                     }
 
                     var claims = new List<Claim>{
-                       
+
                         new Claim(ClaimTypes.Name, usuario.ToString()),
                         new Claim(ClaimTypes.PrimarySid, usuario.Id_Usuario.ToString()),
                         new Claim(ClaimTypes.UserData, usuario.Avatar ?? ""),
@@ -91,13 +93,13 @@ namespace InmoviliariaSarchioniAlfonzo.Controllers
                 return View();
             }
         }
- public async Task<ActionResult> salir()
-    {
-    
-        await HttpContext.SignOutAsync(
-           CookieAuthenticationDefaults.AuthenticationScheme);
-        return RedirectToAction("Index", "Home");
-    }
+        public async Task<ActionResult> salir()
+        {
+
+            await HttpContext.SignOutAsync(
+               CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
+        }
 
 
 

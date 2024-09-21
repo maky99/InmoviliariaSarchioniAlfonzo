@@ -5,7 +5,6 @@ using System.Linq;
 
 namespace InmoviliariaSarchioniAlfonzo.Controllers
 {
-    [Authorize(Policy = "Administrador")]
     public class LogController : Controller
     {
         private readonly ILogRepository _logRepository;
@@ -15,6 +14,7 @@ namespace InmoviliariaSarchioniAlfonzo.Controllers
             _logRepository = logRepository;
         }
 
+        [Authorize(Policy = "Administrador")]
         public IActionResult VerLogs()
         {
             var logs = _logRepository.GetAllLogs();

@@ -4,6 +4,7 @@ using InmoviliariaSarchioniAlfonzo.Models;
 using System.Runtime.Intrinsics.X86;
 using InmoviliariaSarchioniAlfonzo.Repositories;
 using System;
+using Microsoft.AspNetCore.Authorization;
 namespace InmoviliariaSarchioniAlfonzo.Controllers;
 
 public class PagoController : Controller
@@ -19,22 +20,25 @@ public class PagoController : Controller
         _logger = logger;
         _logRepository = logRepository;
     }
-
+    [Authorize]
     public IActionResult ListPagos()
     {
         var pago = pa.ObtenerPagos();
         return View("ListaPago", pago);
     }
+    [Authorize]
     public IActionResult ListPagosOrdexInqu()
     {
         var pago = pa.ObtenerPagosOrdxInqui();
         return View("ListaPago", pago);
     }
+    [Authorize]
     public IActionResult ListContVigentes()
     {
         var contratos = cr.ContratoVigente();
         return View("ListContraVgernteAPago", contratos);
     }
+    [Authorize]
     public IActionResult NuevoPago(int id, string source, string previousUrl)
     {
 
@@ -63,6 +67,8 @@ public class PagoController : Controller
             return View("NuevoPagoMulta");
         }
     }
+    [Authorize]
+
     [HttpPost]
     public IActionResult GuardarPago(Pago pago, string previousUrl, string source)
     {
@@ -107,7 +113,7 @@ public class PagoController : Controller
         TempData["ErrorMessage"] = "Error al guardar el pago.";
         return View("NuevoPago", pago);
     }
-
+    [Authorize]
 
     [HttpPost]
     public IActionResult GuardarPagoAnulado(Pago pago)
@@ -137,6 +143,7 @@ public class PagoController : Controller
         return RedirectToAction("ListPagos");
 
     }
+    [Authorize]
     public IActionResult DetallePago(int id, string previousUrl, string source)
     {
         var pago = pa.DetallePago(id);
@@ -155,6 +162,7 @@ public class PagoController : Controller
         TempData["PreviousUrl"] = previousUrl;
         return View("DetallePago");
     }
+    [Authorize]
     public IActionResult DetallePagContrato(int id, string previousUrl, string source)
     {
 
@@ -163,6 +171,7 @@ public class PagoController : Controller
         TempData["PreviousUrl"] = previousUrl;
         return View("ListaPago", pago);
     }
+    [Authorize]
 
     public IActionResult AnularPago(int id, int id_Usuario, string previousUrl, string source, int id_Contrato)
     {

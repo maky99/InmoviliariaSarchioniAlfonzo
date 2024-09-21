@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using InmoviliariaSarchioniAlfonzo.Models;
 using InmoviliariaSarchioniAlfonzo.Repositories;
+using Microsoft.AspNetCore.Authorization;
 namespace InmoviliariaSarchioniAlfonzo.Controllers;
 
 public class InquilinoController : Controller
@@ -16,17 +17,18 @@ public class InquilinoController : Controller
         _logger = logger;
         _logRepository = logRepository;
     }
-
+    [Authorize]
     public IActionResult ListInquilino()
     {
         var lista = ir.OptenerInquilinos();
         return View("ListaInquilino", lista);
     }
+    [Authorize]
     public IActionResult NuevoInquilino()
     {
         return View("NuevoInquilino"); // Devuelve la vista para crear un nuevo inquilino
     }
-
+    [Authorize]
     [HttpPost]
     public IActionResult CrearInquilino(Inquilino inquilino)
     {
@@ -56,13 +58,13 @@ public class InquilinoController : Controller
         return View("NuevoInquilino", inquilino);
     }
 
-
+    [Authorize]
     public IActionResult EditarInquilino(int id)
     {
         var inquilino = ir.BuscarInquilino(id);
         return View(inquilino);
     }
-
+    [Authorize(Policy = "Administrador")]
     public IActionResult EditarDatos(Inquilino inquilino)
     {
         if (ModelState.IsValid)
@@ -89,7 +91,7 @@ public class InquilinoController : Controller
         // si el modelo esta mal vuelve a la vista
         return View("EditarInquilino", inquilino);
     }
-
+    [Authorize]
     [HttpGet]
     public IActionResult CambEstadoInquilino(int id)
     {
