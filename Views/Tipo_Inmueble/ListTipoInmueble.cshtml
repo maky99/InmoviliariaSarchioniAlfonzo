@@ -64,13 +64,15 @@
                             class="btn btn-primary" title="Editar información">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
-
-                        <!-- Enlace para desactivar -->
-                        <a href="@Url.Action("CambioEstado", new { id = item.Id_Tipo_Inmueble })"
-                            onclick="return confirm('¿Estás seguro de que deseas desactivar el tipo de inmueble @item.Tipo?')"
-                            class="btn btn-danger" title="Desactivar Tipo de Inmueble">
-                            <i class="fa-solid fa-minus-circle"></i>
-                        </a>
+                        @if (User.IsInRole("Administrador"))
+                        {
+                            <!-- Enlace para desactivar -->
+                            <a href="@Url.Action("CambioEstado", new { id = item.Id_Tipo_Inmueble })"
+                                onclick="return confirm('¿Estás seguro de que deseas desactivar el tipo de inmueble @item.Tipo?')"
+                                class="btn btn-danger" title="Desactivar Tipo de Inmueble">
+                                <i class="fa-solid fa-minus-circle"></i>
+                            </a>
+                        }
                     </td>
                 </tr>
             }

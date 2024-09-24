@@ -34,6 +34,14 @@
         <a asp-action="NuevoInmueble" class="btn btn-success" title="Cargar Nuevo Inmueble">
             <i class="fa-solid fa-house"></i> Nuevo
         </a>
+        @if (User.IsInRole("Administrador"))
+        {
+            <a asp-controller="Tipo_Inmueble" asp-action="ListTipo" class="btn btn-secondary"
+                title="Cargar Nuevo Tipo Inmueble">
+                <i class="fa-solid fa-building"></i> Tipo Inmueble
+            </a>
+        }
+
     </div>
     <div class="mb-3">
         <a asp-action="BuscarInmueble" class="btn btn-warning" title="Cargar Nuevo Inmueble">

@@ -54,7 +54,7 @@ public class Tipo_InmuebleController : Controller
 
     }
 
-    [Authorize(Policy = "Administrador")]
+    [Authorize]
     public IActionResult EditarTipo(int id)
     {
         var tipo = ti.BuscaparaEditar(id);

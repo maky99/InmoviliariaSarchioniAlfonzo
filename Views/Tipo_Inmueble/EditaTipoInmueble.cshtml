@@ -25,16 +25,17 @@
                     <input asp-for="Tipo" class="form-control" />
                     <span asp-validation-for="Tipo" class="text-danger"></span>
                 </div>
-                <div class="form-group">
-                    <label asp-for="Estado_Tipo_Inmueble" class="control-label">Estado Tipo Inmueble</label>
-                    <select asp-for="Estado_Tipo_Inmueble" class="form-control">
-                        <option value="1">Activo</option>
-                        <option value="0">Inactivo</option>
-                    </select>
-                    <span asp-validation-for="Estado_Tipo_Inmueble" class="text-danger"></span>
-                </div>
-
-
+                @if (User.IsInRole("Administrador"))
+                {
+                    <div class="form-group">
+                        <label asp-for="Estado_Tipo_Inmueble" class="control-label">Estado Tipo Inmueble</label>
+                        <select asp-for="Estado_Tipo_Inmueble" class="form-control">
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                        <span asp-validation-for="Estado_Tipo_Inmueble" class="text-danger"></span>
+                    </div>
+                }
                 <button type="submit" class="btn btn-primary mt-3">Guardar</button>
                 <a asp-action="ListTipo" class="btn btn-secondary mt-3">Cancelar</a>
             </form>
