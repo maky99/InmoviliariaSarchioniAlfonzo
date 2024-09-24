@@ -91,8 +91,9 @@ public class InquilinoController : Controller
         // si el modelo esta mal vuelve a la vista
         return View("EditarInquilino", inquilino);
     }
-    [Authorize]
+    
     [HttpGet]
+     [Authorize(Policy = "Administrador")]
     public IActionResult CambEstadoInquilino(int id)
     {
         _logRepository.AddLog(new Log
