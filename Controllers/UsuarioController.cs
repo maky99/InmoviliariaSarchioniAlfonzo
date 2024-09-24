@@ -278,27 +278,74 @@ public IActionResult CreateUsuario(Usuario usuario)
 		usRe.Baja(id);
 		return RedirectToAction(nameof(ListUsuario));
 	}
+[Authorize]
+public ActionResult ModificaPerfil(Usuario usuario)
+{
+    // Obtener la identidad del usuario autenticado
+    var claimsIdentity = User.Identity as ClaimsIdentity;
+    
+    // Obtener el ID y el rol del usuario autenticado
+    var claimId = claimsIdentity?.FindFirst(ClaimTypes.PrimarySid)?.Value; // Usamos el mismo ClaimType que antes
+    var claimRole = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value; // Obtener el rol del usuario autenticado
 
-	[Authorize]
-	public ActionResult ModificaPerfil(Usuario usuario)
-	{
+    // Convertir el claimId a entero para compararlo con el Id_Usuario
+    if (int.TryParse(claimId, out int id_usuario))
+    {
+        // Si el usuario es empleado, verificar que esté modificando solo su propio perfil
+        if (claimRole == "Empleado" && id_usuario != usuario.Id_Usuario)
+        {
+            // Si los IDs no coinciden, devolver un error 403 (Prohibido)
+            return new ForbidResult();
+        }
 
-		UsuarioRepositorio usuRepo = new UsuarioRepositorio();
+        // Si es administrador o el usuario autenticado está modificando su propio perfil, permitir la modificación
+        UsuarioRepositorio usuRepo = new UsuarioRepositorio();
+        usuRepo.ModificarPerfil(usuario);
+        TempData["Advertencia"] = " se edito el perfil .";
+        return RedirectToAction("Perfil", new { id = usuario.Id_Usuario });
+		
+    }
+    else
+    {
+        // Si no se puede convertir el claimId, devolver un error 400 (Bad Request)
+        return BadRequest("ID de usuario no válido");
+    }
+}
 
-		usuRepo.ModificarPerfil(usuario);
+[HttpGet]
+[Authorize]
+public ActionResult Perfil(int id)
+{
+    // Obtener la identidad del usuario autenticado
+    var claimsIdentity = User.Identity as ClaimsIdentity;
+    
+    // Obtener el valor del claim PrimarySid (que usas en la vista)
+    var userIdClaim = claimsIdentity?.FindFirst(ClaimTypes.PrimarySid)?.Value;
+    var claimRole = claimsIdentity?.FindFirst(ClaimTypes.Role)?.Value; // Obtener el rol del usuario autenticado
 
-		return RedirectToAction("Perfil", new { id = usuario.Id_Usuario });
-	}
+    // Convertir el claim PrimarySid (userIdClaim) a int
+    if (int.TryParse(userIdClaim, out int id_usuario))
+    {
+        // Verificar si el usuario es empleado y está intentando acceder a un perfil distinto del suyo
+        if (claimRole == "Empleado" && id_usuario != id)
+        {
+            // Si es un empleado e intenta acceder a un perfil que no es el suyo, devolver un error 403 (Prohibido)
+            return new ForbidResult();
+        }
 
-	[HttpGet]
-	[Authorize]
-	public ActionResult Perfil(int id)
-	{
-		var id_usuario = Convert.ToInt32(((User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid).Value)));
-		ViewBag.Roles = Usuario.ObtenerRoles();
+        // Si es administrador o el usuario autenticado está accediendo a su propio perfil, cargar la vista
+        ViewBag.Roles = Usuario.ObtenerRoles();
 
-		return View(usuarioRepo.UsuariosPorId(id));
-	}
+        // Mostrar el perfil del usuario solicitado por el ID
+        return View(usuarioRepo.UsuariosPorId(id));
+    }
+    else
+    {
+        // Si no se puede convertir el claimId, devolver un error 400 (Bad Request)
+        return BadRequest("ID de usuario no válido");
+    }
+}
+
 
 }
 

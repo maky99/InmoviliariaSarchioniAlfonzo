@@ -9,6 +9,24 @@
 
             <div class="card-body">
                 <h1 class="text-center"><b>Perfil</b></h1>
+                                @{
+                var advertencia = TempData["Advertencia"] as string;
+                var error = TempData["Error"] as string;
+            }
+
+            @if (!string.IsNullOrEmpty(advertencia))
+            {
+                <div class="alert alert-warning temp-message">
+                    @advertencia
+                </div>
+            }
+            @if (!string.IsNullOrEmpty(error))
+            {
+                <div class="alert alert-danger temp-message">
+                    @error
+
+                </div>
+            }
                 <hr />
                 <dl class="row">
                     <form asp-action="ModificaPerfil" enctype="multipart/form-data">
