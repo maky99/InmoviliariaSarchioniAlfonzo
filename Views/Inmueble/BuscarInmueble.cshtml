@@ -35,7 +35,6 @@
                                     }
                                 }
                             </select>
-                            <span asp-validation-for="Id_Tipo_Inmueble" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -51,7 +50,6 @@
                                     }
                                 }
                             </select>
-                            <span asp-validation-for="Ambientes" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -60,14 +58,12 @@
                         <div class="form-group">
                             <label asp-for="PrecioMin" class="control-label">Precio Min</label>
                             <input asp-for="PrecioMin" class="form-control" type="number" step="0.01" />
-                            <span asp-validation-for="PrecioMin" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label asp-for="PrecioMax" class="control-label">Precio Max</label>
                             <input asp-for="PrecioMax" class="form-control" type="number" step="0.01" />
-                            <span asp-validation-for="PrecioMax" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -84,7 +80,6 @@
                         <div class="form-group">
                             <label asp-for="Mes" class="control-label">Meses</label>
                             <input asp-for="Mes" id="Meses" class="form-control" type="number" step="1" />
-                            <span asp-validation-for="Mes" class="text-danger"></span>
                         </div>
                     </div>
 
@@ -107,10 +102,3 @@
 </div>
 
 <script src="~/js/site.js"></script>
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-
-
-}

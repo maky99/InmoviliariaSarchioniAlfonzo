@@ -10,13 +10,11 @@ public class Inmueble
     public string? Direccion { get; set; }
     [Required(ErrorMessage = "El uso es obligatorio.")]
     public string? Uso { get; set; }
-    [Required(ErrorMessage = "La cantidad de ambientes es obligatoria.")]
     public int Ambientes { get; set; }
     public string? Latitud { get; set; }
     public string? Longitud { get; set; }
     [Required(ErrorMessage = "El tamaño es obligatorio.")]
     public double Tamano { get; set; }
-    [Required(ErrorMessage = "El tipo de inmueble es obligatorio.")]
     public int Id_Tipo_Inmueble { get; set; }
     [Required(ErrorMessage = "Los servicios son obligatorios.")]
     public string? Servicios { get; set; }
@@ -26,15 +24,11 @@ public class Inmueble
     public int Cochera { get; set; }
     [Required(ErrorMessage = "El patio es obligatorio.")]
     public int Patio { get; set; }
-    [Required(ErrorMessage = "El precio es obligatorio.")]
-
     public double Precio { get; set; }
     [Required(ErrorMessage = "La condición es obligatoria.")]
-
     public string? Condicion { get; set; }
     public int Estado_Inmueble { get; set; }
     public Tipo_Inmueble? tipo { get; set; }
-
     public Propietario? propietario { get; set; }
     public int Mes { get; set; }
     public double PrecioMin { get; set; }

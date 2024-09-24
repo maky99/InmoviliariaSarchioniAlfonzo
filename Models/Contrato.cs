@@ -8,7 +8,6 @@ public class Contrato
    public int Id_Inmueble { get; set; }
    public int Id_Propietario { get; set; }
    public int Id_Inquilino { get; set; }
-   [Required(ErrorMessage = "El campo Fecha de Inicio es obligatorio.")]
    public DateTime Fecha_Inicio { get; set; }
    [Required(ErrorMessage = "El campo Mes es obligatorio.")]
    [RegularExpression(@"^\d+$", ErrorMessage = "El campo debe contener solo números.")]
