@@ -110,8 +110,7 @@ public class PagoController : Controller
                 return RedirectToAction("ListContVigentes");
             }
         }
-        TempData["ErrorMessage"] = "Error al guardar el pago.";
-        return View("NuevoPago", pago);
+        return RedirectToAction("ListContVigentes");
     }
     [Authorize]
 
